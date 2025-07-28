@@ -1,4 +1,4 @@
-import { hexToRgbObj, hslToRgb, rgbToHex, rgbToHexObj, rgbToHsl } from "./colorConverter";
+import { hexToRgbObj, hslToRgb, rgbToHexObj, rgbToHsl } from "./colorConverter";
 
 export function getContrastingTextColor(color: string): string {
     // Remove any hash from the beginning

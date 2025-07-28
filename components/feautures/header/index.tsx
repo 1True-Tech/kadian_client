@@ -1,9 +1,5 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
-
-export default function Header({}: Props) {
-  return (
-    <header className='w-full py-2 sticky top-0'>Header</header>
-  )
+export default function Header() {
+  return <header className="w-full py-2 z-50 sticky top-0 bg-background">Header</header>;
 }

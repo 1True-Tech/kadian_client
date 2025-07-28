@@ -35,7 +35,8 @@ const CarouselContext = React.createContext<CarouselContextProps | null>(null);
 
 function useCarousel() {
   const context = React.useContext(CarouselContext);
-  if (!context) throw new Error("useCarousel must be used within a <Carousel />");
+  if (!context)
+    throw new Error("useCarousel must be used within a <Carousel />");
   return context;
 }
 
@@ -59,9 +60,9 @@ function Carousel({
 
   // sync state on every selection
   const onSelect = React.useCallback((embla: CarouselApi) => {
-    setCurrentIndex(embla?.selectedScrollSnap()||0);
-    setCanScrollPrev(embla?.canScrollPrev()||false);
-    setCanScrollNext(embla?.canScrollNext()||false);
+    setCurrentIndex(embla?.selectedScrollSnap() || 0);
+    setCanScrollPrev(embla?.canScrollPrev() || false);
+    setCanScrollNext(embla?.canScrollNext() || false);
   }, []);
 
   const scrollPrev = React.useCallback(() => {
@@ -106,7 +107,8 @@ function Carousel({
         carouselRef,
         api: api!,
         opts,
-        orientation: orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
+        orientation:
+          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
         scrollPrev,
         scrollNext,
         canScrollPrev,
@@ -128,7 +130,13 @@ function Carousel({
   );
 }
 
-function CarouselContent({ className, slotProps, ...props }: React.ComponentProps<"div"> & { slotProps?: { main: React.HTMLAttributes<HTMLDivElement> } }) {
+function CarouselContent({
+  className,
+  slotProps,
+  ...props
+}: React.ComponentProps<"div"> & {
+  slotProps?: { main: React.HTMLAttributes<HTMLDivElement> };
+}) {
   const { carouselRef, orientation } = useCarousel();
   return (
     <div
@@ -149,11 +157,23 @@ function CarouselContent({ className, slotProps, ...props }: React.ComponentProp
   );
 }
 
-function CarouselIndicators({ className, slotProps, ...props }: React.ComponentProps<"div"> & { slotProps?: { item: React.HTMLAttributes<HTMLButtonElement> } }) {
+function CarouselIndicators({
+  className,
+  slotProps,
+  ...props
+}: React.ComponentProps<"div"> & {
+  slotProps?: { item: React.HTMLAttributes<HTMLButtonElement> };
+}) {
   const { api, currentIndex } = useCarousel();
 
   return (
-    <div className={cn("flex items-center justify-center gap-2 py-4 pointer-events-none", className)} {...props}>
+    <div
+      className={cn(
+        "flex items-center justify-center gap-2 py-4 pointer-events-none",
+        className
+      )}
+      {...props}
+    >
       {api?.scrollSnapList().map((_, idx) => (
         <button
           key={idx}
@@ -165,7 +185,7 @@ function CarouselIndicators({ className, slotProps, ...props }: React.ComponentP
           )}
           onClick={(e) => {
             api?.scrollTo(idx);
-            slotProps?.item.onClick?.(e as any);
+            slotProps?.item.onClick?.(e);
           }}
           aria-label={`Go to slide ${idx + 1}`}
         />
@@ -191,12 +211,23 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function CarouselPrevious({ className, variant = "outline", size = "icon", icon, slotProps, ...props }: React.ComponentProps<typeof Button> & { icon?: React.ReactNode; slotProps?: { textProps: React.HTMLAttributes<HTMLSpanElement> } }) {
+function CarouselPrevious({
+  className,
+  variant = "outline",
+  size = "icon",
+  icon,
+  slotProps,
+  ...props
+}: React.ComponentProps<typeof Button> & {
+  icon?: React.ReactNode;
+  slotProps?: { textProps: React.HTMLAttributes<HTMLSpanElement> };
+}) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
   return (
     <Button
       data-slot="carousel-previous"
       variant={variant}
+      data-usable={canScrollPrev}
       size={size}
       className={cn(
         "absolute size-8 rounded-full",
@@ -210,18 +241,32 @@ function CarouselPrevious({ className, variant = "outline", size = "icon", icon,
       {...props}
     >
       {icon || <ArrowLeft />}
-      <span {...slotProps?.textProps} className={cn("sr-only", slotProps?.textProps.className)}>
+      <span
+        {...slotProps?.textProps}
+        className={cn("sr-only", slotProps?.textProps.className)}
+      >
         Previous slide
       </span>
     </Button>
   );
 }
 
-function CarouselNext({ className, variant = "outline", size = "icon",icon, slotProps, ...props }: React.ComponentProps<typeof Button> & { icon?: React.ReactNode; slotProps?: { textProps: React.HTMLAttributes<HTMLSpanElement> } }) {
+function CarouselNext({
+  className,
+  variant = "outline",
+  size = "icon",
+  icon,
+  slotProps,
+  ...props
+}: React.ComponentProps<typeof Button> & {
+  icon?: React.ReactNode;
+  slotProps?: { textProps: React.HTMLAttributes<HTMLSpanElement> };
+}) {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
   return (
     <Button
       data-slot="carousel-next"
+      data-usable={canScrollNext}
       variant={variant}
       size={size}
       className={cn(
@@ -236,7 +281,12 @@ function CarouselNext({ className, variant = "outline", size = "icon",icon, slot
       {...props}
     >
       {icon || <ArrowRight />}
-      <span {...slotProps?.textProps} className={cn("sr-only", slotProps?.textProps.className)}>Next slide</span>
+      <span
+        {...slotProps?.textProps}
+        className={cn("sr-only", slotProps?.textProps.className)}
+      >
+        Next slide
+      </span>
     </Button>
   );
 }

@@ -10,16 +10,14 @@ import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorG
 import { getImageColors } from "@/lib/utils/colorsProcessors/colorsFromImage";
 import { ImageColors } from "@/lib/utils/colorsProcessors/types";
 import { ShoppingBagIcon } from "lucide-react";
-import { useTheme } from "next-themes";
 import Image from "next/image";
-import { CSSProperties, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   image: string;
 };
 
 export default function HeroItem({ image }: Props) {
-  const { theme } = useTheme();
   const [imageColors, setImageColors] = useState<ImageColors>({
     bgColor: "#000000",
     primaryColor: "#000000",
@@ -37,7 +35,7 @@ export default function HeroItem({ image }: Props) {
   // console.log(i)
   return (
     <CarouselItem
-      className="max-w-[95%] !pl-5 h-full relative overflow-visible isolate"
+      className="max-w-[95%] lg:w-md md:max-w-[50%] !pl-5 h-full relative overflow-visible isolate"
       style={{
         color: generateAccessibleColorPair({
           primary: imageColors.bgColor,
@@ -76,8 +74,8 @@ export default function HeroItem({ image }: Props) {
           </Button>
 
           <div className="w-full flex items-center justify-start gap-4 relative">
-           <CarouselPrevious className="!relative !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0"/>
-            <CarouselNext className="!relative !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0"/>
+           <CarouselPrevious className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0"/>
+            <CarouselNext className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0"/>
             
           </div>
         </div>
