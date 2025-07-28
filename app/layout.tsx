@@ -1,16 +1,18 @@
+import Header from "@/components/feautures/header";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Toaster } from "@/components/ui/sonner";
+import {
+  CircleCheckBigIcon,
+  CircleOff,
+  InfoIcon,
+  LoaderCircleIcon,
+  TriangleAlertIcon,
+  XCircleIcon,
+} from "lucide-react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,9 +27,35 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`font-poppins antialiased`}
       >
-        {children}
+        <ThemeProvider storageKey="web-theme" attribute="class">
+          <ScrollArea className="size-full">
+            <Header/>
+          {children}
+          </ScrollArea>
+          <Toaster
+            icons={{
+              close: <XCircleIcon />,
+              success: <CircleCheckBigIcon />,
+              error: <CircleOff />,
+              info: <InfoIcon />,
+              loading: <LoaderCircleIcon className="animate-spin" />,
+              warning: <TriangleAlertIcon />,
+            }}
+            visibleToasts={3}
+            swipeDirections={["top", "left", "right", "bottom"]}
+            closeButton
+            duration={3000}
+            offset={{
+              top: 20,
+              bottom: 20,
+              left: 20,
+              right: 20,
+            }}
+            richColors
+          />
+        </ThemeProvider>
       </body>
     </html>
   );
