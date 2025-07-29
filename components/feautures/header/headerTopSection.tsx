@@ -17,7 +17,7 @@ import HeaderAccountSection from "./headerAccountSection";
 
 export default function HeaderTopSection() {
   return (
-    <div className="w-full h-10 bg-background flex items-center justify-between px-4 sm:px-8">
+    <div className="w-full h-10 bg-background flex items-center justify-between">
       {/* language */}
       <ul className="w-fit flex items-center gap-3 border-transparent border-b-1 active:border-foreground hover:border-foreground">
         <li className="size-5 overflow-hidden rounded-full flex items-center justify-center">

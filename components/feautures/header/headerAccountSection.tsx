@@ -19,7 +19,7 @@ import {
 
 export default function HeaderAccountSection() {
   const isMobile = useIsMobile(640);
-  const isLoggedIn = true;
+  const isLoggedIn = false;
   if (isMobile) return null;
   return (
     <>
