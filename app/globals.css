@@ -165,9 +165,12 @@
 /* ─── BASE STYLES ──────────────────────────────────────────────────────────── */
 @layer base {
   *, *::before, *::after {
-    @apply box-border border-border outline-ring/50;
+    @apply border-border outline-ring/50;
+  }
+  *{
+    @apply box-border;
   }
   body {
-    @apply bg-background text-foreground w-screen h-screen overflow-y-auto;
+    @apply bg-background text-foreground w-[100dvw] h-screen overflow-y-auto overflow-x-hidden;
   }
 }

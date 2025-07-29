@@ -6,7 +6,7 @@ import HeroItem from "./heroItem";
 
 export default function HeroSection() {
   return (
-    <section className="w-full relative isolate pr-4 sm:pr-8 flex items-center justify-center h-screen max-h-[500px]">
+    <section className="w-full overflow-x-hidden relative isolate pr-4 sm:pr-8 flex items-center justify-center h-screen max-h-[500px]">
       <Carousel opts={{
         align:"center",
         dragThreshold:0.2,
