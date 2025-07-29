@@ -12,8 +12,11 @@ export function useIsMobile(MOBILE_BREAKPOINT: number = __BREAKPOINT) {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
     mql.addEventListener("change", onChange);
+    window.addEventListener("resize", onChange);
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     return () => {
+      window.removeEventListener("resize", onChange);
+
       mql.removeEventListener("change", onChange);
     };
   }, [MOBILE_BREAKPOINT]);

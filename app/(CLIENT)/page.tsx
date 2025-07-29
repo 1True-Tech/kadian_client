@@ -1,5 +1,7 @@
 "use client";
-import ServiceFeatures from "@/components/pages/home/feautures";
+import FeaturedContent from "@/components/pages/home/featuredContent";
+import ServiceFeatures from "@/components/pages/home/features";
+import FeaturedCategories from "@/components/pages/home/feauredCategories";
 import HeroSection from "@/components/pages/home/HeroSection";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/lib/hooks/theme";
@@ -36,6 +38,10 @@ export default function Home() {
           },
         ]}
       />
+      <FeaturedContent items={[{
+        title:"Country wears"
+      }]}/>
+      <FeaturedCategories/>
       <Switch
         onCheckedChange={(isChecked) => {
           setTheme(isChecked ? "dark" : "light");
