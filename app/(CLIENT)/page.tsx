@@ -2,11 +2,11 @@
 import ServiceFeatures from "@/components/pages/home/feautures";
 import HeroSection from "@/components/pages/home/HeroSection";
 import { Switch } from "@/components/ui/switch";
+import { useTheme } from "@/lib/hooks/theme";
 import { CreditCardIcon, PhoneIcon, Truck, UndoDotIcon } from "lucide-react";
-import { useTheme } from "next-themes";
 
 export default function Home() {
-  const { setTheme } = useTheme();
+  const { setTheme,theme } = useTheme();
   return (
     <main className="w-full">
       <HeroSection />
@@ -40,6 +40,7 @@ export default function Home() {
         onCheckedChange={(isChecked) => {
           setTheme(isChecked ? "dark" : "light");
         }}
+        checked={theme==="dark"}
       >
         Dark
       </Switch>

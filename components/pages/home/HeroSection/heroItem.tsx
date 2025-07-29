@@ -35,7 +35,7 @@ export default function HeroItem({ image }: Props) {
   // console.log(i)
   return (
     <CarouselItem
-      className="max-w-[95%] lg:w-md md:max-w-[50%] !pl-5 h-full relative overflow-visible isolate"
+      className="max-w-[95%] lg:w-md md:max-w-[50%] !pl-5 md:!pl-7.5 h-full relative overflow-visible isolate"
       style={{
         color: generateAccessibleColorPair({
           primary: imageColors.bgColor,
@@ -55,7 +55,7 @@ export default function HeroItem({ image }: Props) {
 
         <div
           className={cn(
-            "w-full flex flex-col gap-4 absolute bottom-0 z-10 py-5 px-4 sm:px-8 md:px-12",
+            "w-full flex flex-col gap-4 absolute bottom-0 z-10 py-5 px-4 sm:px-8 md:px-4 lg:px-12",
             "bg-gradient-to-t from-black/70 via-90% via-black/30 to-transparent"
           )}
         >
