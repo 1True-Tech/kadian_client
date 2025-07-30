@@ -7,3 +7,6 @@
 .ft-category-item:hover .item_btn:hover::before{
     @apply w-full;
 }
+
+
+/* carousel buttons hover effect */
