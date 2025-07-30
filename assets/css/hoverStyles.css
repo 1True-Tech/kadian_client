@@ -1,0 +1,32 @@
+/* Hover styles for button variants */
+@base button {
+  .btn-default:hover {
+  @apply bg-primary/90;
+}
+
+.btn-destructive:hover {
+  @apply bg-destructive/90;
+}
+
+.btn-outline:hover {
+  @apply bg-accent text-accent-foreground;
+}
+.dark .btn-outline:hover {
+  @apply bg-input/50;
+}
+
+.btn-secondary:hover {
+  @apply bg-secondary/80;
+}
+
+.btn-ghost:hover {
+  @apply bg-accent text-accent-foreground;
+}
+.dark .btn-ghost:hover {
+  @apply bg-accent/50;
+}
+
+.btn-link:hover {
+  @apply underline;
+}
+}

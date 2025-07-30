@@ -1,6 +1,9 @@
 @import "../assets/css/fonts.properties.css";
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../assets/css/hoverStyles.css";
+@import "../assets/css/pages/home.css";
+
 
 @custom-variant dark (&:is(.dark *));
 
