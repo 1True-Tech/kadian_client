@@ -1,19 +1,19 @@
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    ChevronDown,
-    MailIcon,
-    MessageSquareIcon,
-    PhoneCallIcon,
+  ChevronDown,
+  MailIcon,
+  MessageSquareIcon,
+  PhoneCallIcon,
 } from "lucide-react";
 import ReactCountryFlag from "react-country-flag";
-import HeaderAccountSection from "./headerAccountSection";
+import HeaderTopClient from "./headerTopClient";
 
 export default function HeaderTopSection() {
   return (
@@ -81,7 +81,7 @@ export default function HeaderTopSection() {
           </DropdownMenuContent>
         </DropdownMenu>
         {/* account */}
-        <HeaderAccountSection />
+        <HeaderTopClient />
       </div>
     </div>
   );

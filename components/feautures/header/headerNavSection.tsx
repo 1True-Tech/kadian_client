@@ -37,7 +37,7 @@ export default function HeaderNavSection() {
             <SearchIcon /> Search
           </Button>
         </div>
-        <ActionsClient />
+        <ActionsClient navigationList={navItems} />
       </div>
       {/* bottom */}
       <HeaderNavListing navItems={navItems} />
