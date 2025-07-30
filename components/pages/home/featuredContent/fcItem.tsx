@@ -4,6 +4,7 @@ import { FeaturedContentItem } from "./types";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ShoppingBagIcon } from "lucide-react";
+import Image from "next/image";
 
 type Props = {
   item: FeaturedContentItem;
@@ -49,10 +50,12 @@ export default function FcItem({ item }: Props) {
             </div>
           </div>
           <span className="w-full sm:w-fit shrink-0 bg-highlight">
-            <img
+            <Image
               className="w-full sm:w-fit rounded-md max-h-96 lg:max-h-[70vh] object-cover drop-shadow-xl drop-shadow-accent/20 dark:drop-shadow-background"
               src="/images/hero-image-2.jpg"
               alt="featuredProduct.image"
+              width={500}
+              height={700}
             />
           </span>
         </div>

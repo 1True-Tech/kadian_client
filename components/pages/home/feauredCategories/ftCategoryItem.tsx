@@ -33,7 +33,7 @@ export default function FtCategoryItem({ image, text }: Props) {
         </Button>
       </span>
       {/* content */}
-      <div className="ft-category-item-content px-small sm:px-peers duration-500 w-full max-h-15 bg-gradient-to-t from-black/30 to-transparent py-5 flex flex-col gap-2">
+      <div className="ft-category-item-content px-small sm:px-peers duration-500 w-full max-h-15 bg-gradient-to-t from-black/30 rounded-b-sm to-transparent py-5 flex flex-col gap-2">
         <h4 className="ft-category-item-title text-lg font-semibold !text-white bg-light">
           {text}
         </h4>
