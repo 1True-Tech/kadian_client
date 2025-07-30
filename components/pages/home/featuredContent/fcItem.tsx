@@ -11,7 +11,7 @@ type Props = {
 
 export default function FcItem({ item }: Props) {
   return (
-    <article className="w-full min-h-[60vh] relative isolate">
+    <article className="w-full relative isolate">
       <BgBlob />
 
       <div className="w-full flex flex-col gap-3 items-center mt-10">
@@ -50,7 +50,7 @@ export default function FcItem({ item }: Props) {
           </div>
           <span className="w-full sm:w-fit shrink-0 bg-highlight">
             <img
-              className="w-full sm:w-fit max-h-96 lgmax-h-[70vh] object-cover drop-shadow-xl drop-shadow-accent/20"
+              className="w-full sm:w-fit rounded-md max-h-96 lgmax-h-[70vh] object-cover drop-shadow-xl drop-shadow-accent/20"
               src="/images/hero-image-2.jpg"
               alt="featuredProduct.image"
             />
