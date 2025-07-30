@@ -4,11 +4,18 @@
 @import "../assets/css/hoverStyles.css";
 @import "../assets/css/pages/home.css";
 
-
 @custom-variant dark (&:is(.dark *));
 
 /* ─── LIGHT MODE ───────────────────────────────────────────────────────────── */
 :root {
+  /* sizing */
+  --spacing-sections: calc(var(--spacing) * 8);
+  --spacing-medium: calc(var(--spacing) * 16);
+  --spacing-peers: calc(var(--spacing) * 8);
+  --spacing-small: calc(var(--spacing) * 4);
+  --spacing-xtrasmall: calc(var(--spacing) * 2);
+  --spacing-container: calc(var(--spacing) * 4);
+
   /* Core Brand Colors */
   --primary: #111111;
   --secondary: #1e1e1e;
@@ -68,6 +75,16 @@
 
   /* Radius */
   --radius: 0.625rem;
+}
+@media (width >= 40rem) {
+  :root {
+    --spacing-container: calc(var(--spacing) * 8);
+    --spacing-sections: calc(var(--spacing) * 15);
+    --spacing-medium: calc(var(--spacing) * 8);
+    --spacing-peers: calc(var(--spacing) * 4);
+    --spacing-small: calc(var(--spacing) * 2);
+    --spacing-xtrasmall: calc(var(--spacing) * 1);
+  }
 }
 
 /* ─── DARK MODE ─────────────────────────────────────────────────────────────── */
@@ -171,6 +188,14 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --spacing-sections: var(--spacing-sections);
+  --spacing-peers: var(--spacing-peers);
+  --spacing-container: var(--spacing-container);
+
+  --spacing-small: var(--spacing-small);
+  --spacing-xtrasmall: var(--spacing-xtrasmall);
+  --spacing-medium: var(--spacing-medium);
 }
 
 /* ─── BASE STYLES ──────────────────────────────────────────────────────────── */
