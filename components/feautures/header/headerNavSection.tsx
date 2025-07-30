@@ -23,12 +23,12 @@ export default function HeaderNavSection() {
       </div>
       {/* left */}
       <div className="w-full flex flex-row-reverse md:flex-row gap-peers items-center justify-between">
-        <div className="header-nav-section-search w-full md:w-50 flex items-center gap-xtrasmall border-y-1 border-y-foreground/40">
+        <div className="header-nav-section-search w-full md:w-70 flex items-center gap-xtrasmall border-y-1 border-y-foreground/40">
           <Input
             id="search-content"
             name="search-content"
             type="search"
-            className="w-full !shadow-none !rounded-none !outline-none !ring-0 !border-0"
+            className="w-full !shadow-none !rounded-none !outline-none !ring-0 !border-0 !px-0 !pl-2"
           />
           <Button
             variant={"outline"}

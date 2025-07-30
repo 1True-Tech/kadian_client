@@ -1,6 +1,8 @@
 @import "../assets/css/fonts.properties.css";
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../assets/css/animations.css";
+@import "../assets/css/components.css";
 @import "../assets/css/hoverStyles.css";
 @import "../assets/css/pages/home.css";
 
@@ -189,6 +191,8 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
+  --animate-scaleIn: scaleIn 0.5s ease-outout;
+
   --spacing-sections: var(--spacing-sections);
   --spacing-peers: var(--spacing-peers);
   --spacing-container: var(--spacing-container);
@@ -214,4 +218,5 @@
   html {
     @apply w-full;
   }
+
 }

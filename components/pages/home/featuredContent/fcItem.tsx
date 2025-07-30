@@ -50,7 +50,7 @@ export default function FcItem({ item }: Props) {
           </div>
           <span className="w-full sm:w-fit shrink-0 bg-highlight">
             <img
-              className="w-full sm:w-fit rounded-md max-h-96 lgmax-h-[70vh] object-cover drop-shadow-xl drop-shadow-accent/20"
+              className="w-full sm:w-fit rounded-md max-h-96 lg:max-h-[70vh] object-cover drop-shadow-xl drop-shadow-accent/20 dark:drop-shadow-background"
               src="/images/hero-image-2.jpg"
               alt="featuredProduct.image"
             />

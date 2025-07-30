@@ -1,0 +1,8 @@
+.PopoverContent {
+    @apply animate-in;
+	transform-origin: var(--radix-popover-content-transform-origin);
+}
+
+[data-radix-popper-content-wrapper]:has([data-position="center"]){
+    @apply !left-1/2 -translate-x-1/2;
+}

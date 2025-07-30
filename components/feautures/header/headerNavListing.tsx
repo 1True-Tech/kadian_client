@@ -1,4 +1,5 @@
 import { NavItem } from "@/types";
+import HeaderNavListItem from "./headerNavListingItem";
 
 type Props = {
   navItems: NavItem[];
@@ -6,11 +7,9 @@ type Props = {
 
 export default function HeaderNavListing({ navItems }: Props) {
   return (
-    <ul className="mt-peers w-fit hidden md:flex items-center gap-3 justify-between">
+    <ul className="mt-peers w-fit hidden md:flex items-center gap-medium justify-between">
       {navItems.map((i, idx) => (
-        <li key={idx} className="capitalize active:underline hover:underline">
-          {i.label}
-        </li>
+        <HeaderNavListItem key={idx} {...i} />
       ))}
     </ul>
   );

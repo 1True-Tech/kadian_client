@@ -22,7 +22,6 @@
   @apply bg-accent/50 text-white;
 }
 
-
 .btn-link:hover {
   @apply underline;
 }
@@ -30,6 +29,22 @@
 .header-nav-section .header-nav-section-search {
   @apply before:w-0 before:bg-accent relative before:h-0.5 before:absolute before:left-1/2 before:-translate-x-1/2 before:top-[100%] before:duration-300;
 }
-.header-nav-section .header-nav-section-search:hover {
+
+.header-nav-section .header-nav-section-search:hover,
+.header-nav-section .header-nav-section-search:has(input:focus-visible) {
   @apply before:w-full;
 }
+
+.header-nav-list-item .header-nav-list-item-link:active,
+.header-nav-list-item-nested-link:active {
+  @apply before:w-full;
+}
+.header-nav-list-item:hover .header-nav-list-item-link,
+.header-nav-list-item-nested-link:hover {
+  @apply before:w-full;
+}
+.header-nav-list-item .header-nav-list-item-link,
+.header-nav-list-item-nested-link {
+  @apply before:w-0 before:h-[1px] before:duration-300 before:left-1/2 before:bg-accent before:-translate-x-1/2 relative before:absolute before:top-[calc(100%+2px)];
+}
+
