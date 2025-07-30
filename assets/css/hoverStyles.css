@@ -1,6 +1,5 @@
 /* Hover styles for button variants */
-@base button {
-  .btn-default:hover {
+.btn-default:hover {
   @apply bg-primary/90;
 }
 
@@ -9,7 +8,7 @@
 }
 
 .btn-outline:hover {
-  @apply bg-accent text-accent-foreground;
+  @apply bg-accent text-white;
 }
 .dark .btn-outline:hover {
   @apply bg-input/50;
@@ -20,13 +19,17 @@
 }
 
 .btn-ghost:hover {
-  @apply bg-accent text-accent-foreground;
+  @apply bg-accent/50 text-white;
 }
-.dark .btn-ghost:hover {
-  @apply bg-accent/50;
-}
+
 
 .btn-link:hover {
   @apply underline;
 }
+
+.header-nav-section .header-nav-section-search {
+  @apply before:w-0 before:bg-accent relative before:h-0.5 before:absolute before:left-1/2 before:-translate-x-1/2 before:top-[100%] before:duration-300;
+}
+.header-nav-section .header-nav-section-search:hover {
+  @apply before:w-full;
 }

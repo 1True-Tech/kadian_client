@@ -1,16 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/lib/hooks/isMobile";
-import { HeartIcon, SearchIcon, ShoppingBagIcon } from "lucide-react";
+import { HeartIcon, Menu, ShoppingBagIcon } from "lucide-react";
+import MobileHeaderNav from "../mobileNavs/headerNav";
 
 export default function ActionsClient() {
-  const isMobile = useIsMobile(640);
-  if (isMobile) return null;
+  const isMobile = useIsMobile(768);
+  if (isMobile) return <MobileHeaderNav/>;
   return (
     <div className="w-fit flex items-center gap-3">
-      <Button variant={"link"}>
-        <SearchIcon /> Search
-      </Button>
       <Button variant={"link"}>
         <HeartIcon /> Wishlist (0)
       </Button>
