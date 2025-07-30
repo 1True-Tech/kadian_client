@@ -29,7 +29,6 @@ type Props = {
 export default function MobileHeaderNav({ navigationList }: Props) {
   const isMobile = useIsMobile(768);
   if (!isMobile) return null;
-  console.log(navigationList);
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -44,7 +43,7 @@ export default function MobileHeaderNav({ navigationList }: Props) {
         </Button>
       </SheetTrigger>
       <SheetContent icon={null} side="left" className="max-w-sm">
-        <SheetHeader className="w-full flex !flex-row items-center justify-between">
+        <SheetHeader id="mobile-nav-header-sheet" className="w-full flex !flex-row items-center justify-between">
           <SheetTitle className="font-cinzel text-lg min-[498px]:text-2xl">
             Kadian Fashion
           </SheetTitle>
@@ -52,14 +51,14 @@ export default function MobileHeaderNav({ navigationList }: Props) {
             <XIcon className="size-8 text-foreground/70 cursor-pointer" />
           </SheetClose>
         </SheetHeader>
-        <ScrollArea className="w-full shrink flex flex-col h-full px-small">
-          <ul className="w-full h-fit flex flex-col gap-2">
+        <ScrollArea className="w-full h-[68dvh] shrink">
+          <ul className="w-full h-fit flex flex-col gap-4 px-small">
           {navigationList.map((navItem, idx) => (
             <HeaderNavListItem key={idx} {...navItem} />
           ))}
         </ul>
         </ScrollArea>
-        <SheetFooter>
+        <SheetFooter id="mobile-nav-footer-sheet">
           <div className="w-full flex flex-col gap-2">
             <div className="w-full flex gap-2">
               <Button

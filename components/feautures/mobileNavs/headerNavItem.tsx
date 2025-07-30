@@ -4,6 +4,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { NavItem } from "@/types";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
@@ -16,20 +21,20 @@ export default function HeaderNavListItem({ label, children, url }: NavItem) {
     label
   );
   return (
-    <li className="header-nav-list-item capitalize">
+    <li className="w-full header-nav-list-item capitalize">
       {!children ? (
         LabelComp
       ) : (
-        <Accordion type="multiple">
-          <AccordionItem value={label}>
-            <AccordionTrigger
-              icon={null}
-              className="cursor-pointer flex items-center gap-2"
+        <Collapsible>
+          <CollapsibleTrigger className="cursor-pointer data-[state=closed]:[--rotate:0deg] data-[state=open]:[--rotate:45deg] flex items-center justify-between gap-2 w-full">
+            {LabelComp}
+            {!url && <PlusIcon className="size-4 rotate-[var(--rotate)] duration-300" />}
+          </CollapsibleTrigger>
+          <CollapsibleContent className="!w-full">
+            <Accordion
+              type="single"
+              className="w-full header-nav-list-item-nested flex flex-col !gap-0"
             >
-              {LabelComp}
-              {!url && <PlusIcon className="size-3" />}
-            </AccordionTrigger>
-            <AccordionContent className="!w-fit">
               {children.map((child, idx) => {
                 const itemsMap = (
                   <ul className="w-full flex flex-col gap-2">
@@ -48,31 +53,27 @@ export default function HeaderNavListItem({ label, children, url }: NavItem) {
                 return !child.hasLabel ? (
                   itemsMap
                 ) : (
-                  <Accordion
-                    type="single"
+                  <AccordionItem
                     key={idx}
-                    className="w-full header-nav-list-item-nested flex flex-col gap-4"
+                    value={child.label}
+                    className="w-full"
                   >
-                    <AccordionItem value={child.label} className="w-full">
-                      <AccordionTrigger
-                        icon={null}
-                        className="flex items-center justify-between w-full"
-                      >
-                        <h4 className="w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize">
-                          {child.label}
-                        </h4>
-                        <PlusIcon className="size-3" />
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        {itemsMap}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                    <AccordionTrigger
+                      icon={null}
+                      className="flex cursor-pointer items-center justify-between w-full data-[state=closed]:[--rotate:0deg] data-[state=open]:[--rotate:45deg]"
+                    >
+                      <h4 className="w-full text-foreground/70 font-bold capitalize">
+                        {child.label}
+                      </h4>
+                      <PlusIcon className="size-4 !rotate-[var(--rotate)] duration-300" />
+                    </AccordionTrigger>
+                    <AccordionContent>{itemsMap}</AccordionContent>
+                  </AccordionItem>
                 );
               })}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+            </Accordion>
+          </CollapsibleContent>
+        </Collapsible>
       )}
     </li>
   );
