@@ -14,3 +14,20 @@ export namespace Booleanish {
 export type TrueObject<T> = {
   [K in keyof T]: Booleanish.Truthy<T[K]>;
 };
+
+interface NavItemChildrenBase {
+  hasLabel?: boolean;
+  items: {
+    name: string;
+    url: string;
+  }[];
+}
+interface NavItemChildrenWithLabel extends NavItemChildrenBase {
+  hasLabel: true;
+  label: string;
+}
+export interface NavItem {
+  label: string;
+  url?: string;
+  children?: NavItemChildrenWithLabel[];
+}

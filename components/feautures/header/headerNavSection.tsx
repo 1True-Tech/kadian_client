@@ -1,25 +1,46 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { SearchIcon } from "lucide-react";
+import Image from "next/image";
 import ActionsClient from "./actionsClient";
-
-const categories = ["women", "men", "kids"];
+import HeaderNavListing from "./headerNavListing";
+import navItems from "./navigationList";
 
 export default function HeaderNavSection() {
   return (
-    <nav className="w-full py-4 relative flex items-center justify-between">
-      {/* left */}
-      <ul className="w-fit flex items-center gap-3 justify-between">
-        {categories.map((i, idx) => (
-          <li key={idx} className="capitalize active:underline hover:underline">
-            {i}
-          </li>
-        ))}
-      </ul>
+    <nav className="header-nav-section w-full py-4 relative flex flex-col gap-small items-center justify-between">
       {/* center */}
 
-      <div className="w-fit pointer-events-none opacity-0 min-[950px]:opacity-100 duration-300 min-[950px]:pointer-events-auto flex gap-2 flex-col font-cinzel text-3xl font-bold absolute top-1/2 left-1/2 -translate-1/2">
+      <div className="w-fit flex gap-2 flex-col items-center font-cinzel text-2xl md:text-3xl font-bold md:absolute md:top-5 md:left-1/2 md:-translate-x-1/2">
+        <Image
+          src={"/icon.jpg"}
+          alt="logo"
+          width={300}
+          height={300}
+          className="block size-7 md:hidden"
+        />
         <b>KADIAN</b>
       </div>
-      {/* right */}
-      <ActionsClient/>
+      {/* left */}
+      <div className="w-full flex flex-row-reverse md:flex-row gap-peers items-center justify-between">
+        <div className="header-nav-section-search w-full md:w-70 flex items-center gap-xtrasmall border-y-1 border-y-foreground/40">
+          <Input
+            id="search-content"
+            name="search-content"
+            type="search"
+            className="w-full !shadow-none !rounded-none !outline-none !ring-0 !border-0 !px-0 !pl-2"
+          />
+          <Button
+            variant={"outline"}
+            className="bg-transparent !border-transparent !rounded-none"
+          >
+            <SearchIcon /> Search
+          </Button>
+        </div>
+        <ActionsClient navigationList={navItems} />
+      </div>
+      {/* bottom */}
+      <HeaderNavListing navItems={navItems} />
     </nav>
   );
 }

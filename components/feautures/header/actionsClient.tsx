@@ -1,22 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/lib/hooks/isMobile";
-import { HeartIcon, SearchIcon, ShoppingBagIcon } from "lucide-react";
+import { HeartIcon, ShoppingBagIcon } from "lucide-react";
+import MobileHeaderNav from "../mobileNavs/headerNav";
+import { NavItem } from "@/types";
 
-export default function ActionsClient() {
-  const isMobile = useIsMobile(640);
-  if (isMobile) return null;
+export default function ActionsClient({navigationList}:{navigationList:NavItem[]}) {
+  const isMobile = useIsMobile(768);
+  const isNotMobile = !isMobile || false
+  if (isMobile) return <MobileHeaderNav navigationList={navigationList}/>;
   return (
-    <div className="w-fit flex items-center gap-3">
-      <Button variant={"link"}>
-        <SearchIcon /> Search
-      </Button>
-      <Button variant={"link"}>
-        <HeartIcon /> Wishlist (0)
-      </Button>
-      <Button variant={"link"}>
-        <ShoppingBagIcon /> My Bag (0)
-      </Button>
-    </div>
+    <>
+      {!isNotMobile?null:<MobileHeaderNav navigationList={navigationList}/>}
+      <div className="w-fit hidden md:flex items-center gap-3">
+        <Button variant={"link"}>
+          <HeartIcon /> Wishlist (0)
+        </Button>
+        <Button variant={"link"}>
+          <ShoppingBagIcon /> My Bag (0)
+        </Button>
+      </div>
+    </>
   );
 }

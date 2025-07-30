@@ -1,37 +1,40 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useIsMobile } from "@/lib/hooks/isMobile";
 import {
-    ChevronDownIcon,
-    LogOutIcon,
-    SettingsIcon,
-    UserCircleIcon
+  ChevronDownIcon,
+  LogOutIcon,
+  SettingsIcon,
+  UserCircleIcon
 } from "lucide-react";
+import React from "react";
 
 
-export default function HeaderAccountSection() {
-  const isMobile = useIsMobile(640);
+
+export default function HeaderAccountSection({loggedInChild,notLoggedInChild}:{
+  loggedInChild?:React.ReactNode;
+  notLoggedInChild?:React.ReactNode;
+}) {
   const isLoggedIn = false;
-  if (isMobile) return null;
   return (
     <>
       {!isLoggedIn ? (
-        <Button variant={"link"}>Sign in</Button>
+        notLoggedInChild?notLoggedInChild:<Button variant={"link"}>Sign in</Button>
       ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <span className="flex bg-secondary text-secondary-foreground px-4 py-1 rounded-md items-center gap-2 data-[state=open]:[--rotate:180deg] data-[state=closed]:[--rotate:0deg]">
+
+            {loggedInChild?loggedInChild:<span className="flex bg-secondary text-secondary-foreground px-4 py-1 rounded-md items-center gap-2 data-[state=open]:[--rotate:180deg] data-[state=closed]:[--rotate:0deg]">
               John Doe{" "}
               <ChevronDownIcon className="rotate-[var(--rotate)] duration-300" />
-            </span>
+            </span>}
+
           </DropdownMenuTrigger>
           <DropdownMenuContent className="min-w-50">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>

@@ -7,3 +7,18 @@
 .ft-category-item:hover .item_btn:hover::before{
     @apply w-full;
 }
+
+.ft-category-item:hover .ft-category-item-content{
+    @apply max-h-100;
+}
+.ft-category-item:hover .ft-category-item-content-sub-text{
+    @apply opacity-100 translate-y-0 delay-250;
+}
+.ft-category-item .ft-category-item-title{
+    @apply before:w-0 before:duration-300 before:h-1 w-fit relative before:top-[100%] before:absolute;
+}
+.ft-category-item:hover .ft-category-item-title{
+    @apply before:bg-accent before:w-full;
+}
+
+/* carousel buttons hover effect */

@@ -10,7 +10,7 @@ type Props = {
 
 export default function FtCategoryItem({ image, text }: Props) {
   return (
-    <li className="ft-category-item  relative isolate border-2 border-accent rounded-md basis-sm grow w-full max-w-md aspect-square max-h-[85vh] flex items-end gap-2">
+    <li className="ft-category-item relative isolate border-2 border-accent rounded-md basis-[12rem] sm:basis-[18rem] grow w-full max-w-md aspect-square max-h-[85vh] flex items-end gap-2">
       <span className="absolute rounded-sm overflow-hidden pointer-events-none inset-0 -z-5 size-full flex items-center justify-center">
         <Image
           src={image}
@@ -33,10 +33,12 @@ export default function FtCategoryItem({ image, text }: Props) {
         </Button>
       </span>
       {/* content */}
-      <div className="w-full bg-gradient-to-t from-black/30 to-transparent py-5 px-4">
-        <h4 className="text-lg font-semibold !text-white bg-light px-2">
+      <div className="ft-category-item-content px-small sm:px-peers duration-500 w-full max-h-15 bg-gradient-to-t from-black/30 rounded-b-sm to-transparent py-5 flex flex-col gap-2">
+        <h4 className="ft-category-item-title text-lg font-semibold !text-white bg-light">
           {text}
         </h4>
+        {/* sub text/description */}
+        <p className="ft-category-item-content-sub-text translate-y-2 opacity-0 line-clamp-2 sm:line-clamp-3 duration-300">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae mollitia maiores ipsum in dolores, libero quam. Consectetur, quam dolore? Architecto dolores doloremque facere. Natus aliquam, impedit quisquam distinctio explicabo obcaecati?</p>
       </div>
     </li>
   );
