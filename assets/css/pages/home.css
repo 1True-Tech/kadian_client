@@ -1,0 +1,9 @@
+.ft-category-item:hover .item_bg{
+    @apply brightness-50;
+}
+.ft-category-item:hover .item_btn_container{
+    @apply pointer-events-auto opacity-100;
+}
+.ft-category-item:hover .item_btn:hover::before{
+    @apply w-full;
+}
