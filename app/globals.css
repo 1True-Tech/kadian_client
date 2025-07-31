@@ -192,6 +192,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   --animate-scaleIn: scaleIn 0.5s ease-outout;
+  --animate-bounce-self: bounce-self 0.5s ease-out;
 
   --spacing-sections: var(--spacing-sections);
   --spacing-peers: var(--spacing-peers);
@@ -200,6 +201,11 @@
   --spacing-small: var(--spacing-small);
   --spacing-xtrasmall: var(--spacing-xtrasmall);
   --spacing-medium: var(--spacing-medium);
+
+  --leading-medium: 160%;
+  --leading-xtrasmall: 120%;
+  --leading-small: 140%;
+  --leading-large: 180%;
 }
 
 /* ─── BASE STYLES ──────────────────────────────────────────────────────────── */
@@ -208,6 +214,22 @@
   *::before,
   *::after {
     @apply border-border outline-ring/50;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply leading-small;
+  }
+  b,
+  a,
+  p,
+  i,
+  em,
+  strong {
+    @apply leading-medium;
   }
   * {
     @apply box-border;
@@ -218,5 +240,4 @@
   html {
     @apply w-full;
   }
-
 }

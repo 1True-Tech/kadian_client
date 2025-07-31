@@ -36,15 +36,23 @@
 }
 
 .header-nav-list-item .header-nav-list-item-link:active,
-.header-nav-list-item-nested-link:active {
+.header-nav-list-item-nested-link:active,
+.footer-nav-list-item .footer-nav-list-item-link:active {
   @apply before:w-full;
 }
 .header-nav-list-item:hover .header-nav-list-item-link,
-.header-nav-list-item-nested-link:hover {
+.header-nav-list-item-nested-link:hover,
+.footer-nav-list-item:hover .footer-nav-list-item-link {
   @apply before:w-full;
 }
 .header-nav-list-item .header-nav-list-item-link,
-.header-nav-list-item-nested-link {
+.header-nav-list-item-nested-link,
+.footer-nav-list-item .footer-nav-list-item-link {
   @apply before:w-0 before:h-[1px] before:duration-300 before:left-1/2 before:bg-accent before:-translate-x-1/2 relative before:absolute before:top-[calc(100%+2px)];
 }
 
+
+.footer-nav-list-item:hover .footer-nav-list-item-link-icon{
+  @apply text-accent animate-bounce-self inline-block;
+  transform-origin: center;
+}

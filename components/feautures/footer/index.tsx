@@ -1,16 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { InstagramIcon, SendHorizontalIcon } from "lucide-react";
+import { SendHorizontalIcon } from "lucide-react";
 import Link from "next/link";
 
-type Props = {};
 
-export default function Footer({}: Props) {
+export default function Footer() {
   return (
     <footer className="px-4 sm:px-8 py-8">
-      <div className="max-w-7xl text-primary-foreground bg-primary dark:bg-secondary rounded-xl py-sections px-container mx-auto flex flex-col md:flex-row md:gap-container md:flex-wrap justify-between md:justify-evenly gap-peers">
+      <div className="max-w-7xl text-primary-foreground bg-primary dark:bg-secondary rounded-xl py-sections px-container mx-auto flex flex-col md:grid gap-container md:grid-cols-[repeat(auto-fit,_minmax(18rem,_1fr))] justify-between">
         {/* Company Info */}
-        <div className="flex flex-col gap-small max-w-md basis-50">
+        <div className="flex flex-col gap-small max-w-md">
           <h2 className="text-2xl font-extrabold font-cinzel">Kadian Fashion</h2>
           <p className="text-sm">
             Discover the latest trends in fashion. We bring you quality products
@@ -18,48 +17,48 @@ export default function Footer({}: Props) {
           </p>
         </div>
         {/* Navigation */}
-        <nav className="flex flex-col gap-small min-w-44 basis-50">
+        <nav className="flex flex-col gap-small min-w-44">
           <h3 className="text-lg font-extrabold font-cinzel">Information</h3>
           <ul className="flex flex-col gap-xtrasmall">
-            <li>
-              <Link href="/" className="hover:underline">
+            <li className="footer-nav-list-item">
+              <Link href="/" className="footer-nav-list-item-link">
                 About us
               </Link>
             </li>
-            <li>
-              <Link href="/shop" className="hover:underline">
+            <li className="footer-nav-list-item">
+              <Link href="/shop" className="footer-nav-list-item-link">
                 Contact
               </Link>
             </li>
-            <li>
-              <Link href="/about" className="hover:underline">
+            <li className="footer-nav-list-item">
+              <Link href="/about" className="footer-nav-list-item-link">
                 FAQ&apos;s
               </Link>
             </li>
           </ul>
         </nav>
-        <nav className="flex flex-col gap-small min-w-44 basis-50">
+        <nav className="flex flex-col gap-small min-w-44">
           <h3 className="text-lg font-extrabold font-cinzel">Our Services</h3>
           <ul className="flex flex-col gap-xtrasmall">
-            <li>
-              <Link href="/" className="hover:underline">
+            <li className="footer-nav-list-item">
+              <Link href="/" className="footer-nav-list-item-link">
                 Shipping & delivery
               </Link>
             </li>
-            <li>
-              <Link href="/shop" className="hover:underline">
+            <li className="footer-nav-list-item">
+              <Link href="/shop" className="footer-nav-list-item-link">
                 Returns & Refunds
               </Link>
             </li>
-            <li>
-              <Link href="/about" className="hover:underline">
+            <li className="footer-nav-list-item">
+              <Link href="/about" className="footer-nav-list-item-link">
                 Book a Consultation
               </Link>
             </li>
           </ul>
         </nav>
         {/* Newsletter Signup */}
-        <div className="flex flex-col gap-small basis-70">
+        <div className="flex flex-col gap-small">
           <h3 className="text-lg font-extrabold font-cinzel">Newsletter</h3>
           <p className="text-sm">
             Subscribe to get the latest updates and exclusive offers.
@@ -84,24 +83,24 @@ export default function Footer({}: Props) {
         {/* Socials */}
         <div className="flex flex-col gap-small">
           <h3 className="text-lg font-extrabold font-cinzel">Follow Us</h3>
-          <ul className="flex gap-4 text-2xl">
-            <li>
-              <a href="#">
+          <ul className="flex gap-peers text-2xl">
+            <li className="footer-nav-list-item">
+              <a href="#" className="footer-nav-list-item-link-icon duration-300">
                 <i className="pi pi-tiktok"></i>
               </a>
             </li>
-            <li>
-              <a href="#">
+            <li className="footer-nav-list-item">
+              <a href="#" className="footer-nav-list-item-link-icon duration-300">
                 <i className="pi pi-instagram"></i>
               </a>
             </li>
-            <li>
-              <a href="#">
+            <li className="footer-nav-list-item">
+              <a href="#" className="footer-nav-list-item-link-icon duration-300">
                 <i className="pi pi-whatsapp"></i>
               </a>
             </li>
-            <li>
-              <a href="#">
+            <li className="footer-nav-list-item">
+              <a href="#" className="footer-nav-list-item-link-icon duration-300">
                 <i className="pi pi-pinterest"></i>
               </a>
             </li>
@@ -110,7 +109,7 @@ export default function Footer({}: Props) {
       </div>
       {/* Bottom Footer Links */}
       <div className="mt-8 text-foreground pt-4 text-center text-xs flex flex-col-reverse min-[498px]:flex-row gap-small items-center justify-between">
-        <p className="text-xs opacity-70">&copy; 2025 Elberyth. All rights reserved.</p>
+        <p className="text-xs opacity-70">&copy; 2025 Kadian-fashion. All rights reserved.</p>
 
         <p className="flex items-center justify-center gap-small">
           <a href="#" className="hover:underline">

@@ -8,3 +8,26 @@
 		transform: scale(1);
 	}
 }
+@keyframes bounce-self {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    /* vertical squeeze */
+    transform: scaleY(0.8);
+  }
+  40% {
+    /* horizontal squeeze */
+    transform: scaleX(0.8);
+  }
+  60% {
+    /* both axes expand (“pop”) */
+    transform: scale(1.2);
+  }
+  100% {
+    /* back to normal */
+    transform: scale(1);
+  }
+}
+
+
