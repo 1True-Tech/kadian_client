@@ -8,7 +8,7 @@ type Props = {};
 export default function Footer({}: Props) {
   return (
     <footer className="px-4 sm:px-8 py-8">
-      <div className="max-w-7xl text-primary-foreground bg-primary dark:bg-secondary rounded-xl py-sections px-container mx-auto flex flex-col md:flex-row md:flex-wrap justify-between gap-peers">
+      <div className="max-w-7xl text-primary-foreground bg-primary dark:bg-secondary rounded-xl py-sections px-container mx-auto flex flex-col md:flex-row md:gap-container md:flex-wrap justify-between md:justify-evenly gap-peers">
         {/* Company Info */}
         <div className="flex flex-col gap-small max-w-md basis-50">
           <h2 className="text-2xl font-extrabold font-cinzel">Kadian Fashion</h2>
