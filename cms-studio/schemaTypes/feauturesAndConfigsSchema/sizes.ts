@@ -18,6 +18,38 @@ export const sizeType = defineType({
       title: 'Description',
       type: 'string',
       description: 'Optional description for this size'
+    }),
+    defineField({
+      name: 'measurements',
+      title: 'Measurements',
+      type: 'object',
+      description: 'Size measurements in centimeters',
+      fields: [
+        defineField({
+          name: 'chest',
+          title: 'Chest',
+          type: 'number',
+          description: 'Chest measurement in cm'
+        }),
+        defineField({
+          name: 'waist',
+          title: 'Waist',
+          type: 'number',
+          description: 'Waist measurement in cm'
+        }),
+        defineField({
+          name: 'hips',
+          title: 'Hips',
+          type: 'number',
+          description: 'Hip measurement in cm'
+        }),
+        defineField({
+          name: 'length',
+          title: 'Length',
+          type: 'number',
+          description: 'Length measurement in cm'
+        })
+      ]
     })
   ],
    preview: {

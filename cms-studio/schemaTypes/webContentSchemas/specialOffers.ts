@@ -1,127 +1,230 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
+import { validatePrice } from '../validators/priceValidators'
+import { imageGallery } from '../productSchemas/imageGallery'
 
 export const SpecialOffers = defineType({
   name: 'special_offers',
   title: 'Special Offers',
   type: 'document',
+  fieldsets: [
+    {
+      name: 'offerDetails',
+      title: 'Offer Details',
+      options: { collapsible: true }
+    },
+    {
+      name: 'products',
+      title: 'Products & Pricing',
+      options: { collapsible: true }
+    },
+    {
+      name: 'scheduling',
+      title: 'Offer Schedule',
+      options: { collapsible: true }
+    },
+    {
+      name: 'display',
+      title: 'Display Settings',
+      options: { collapsible: true }
+    },
+    {
+      name: 'seo',
+      title: 'SEO Settings',
+      options: { collapsible: true }
+    }
+  ],
   fields: [
     defineField({
       name: 'category',
-      title: 'Category',
+      title: 'Offer Type',
       type: 'string',
+      fieldset: 'offerDetails',
       options: {
-        list: ['sales', 'featured'],
-        layout: 'radio',
+        list: [
+          { title: 'Flash Sale', value: 'flash_sale' },
+          { title: 'Seasonal Sale', value: 'seasonal_sale' },
+          { title: 'Clearance', value: 'clearance' },
+          { title: 'Bundle Deal', value: 'bundle' },
+          { title: 'New Customer Offer', value: 'new_customer' },
+          { title: 'Featured Products', value: 'featured' }
+        ],
+        layout: 'radio'
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required()
     }),
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Offer Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
+      fieldset: 'offerDetails',
+      validation: (Rule) => Rule.required().min(5).max(100)
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      description: 'URL-friendly identifier for the offer',
-      options: {source: 'title', maxLength: 96},
-      validation: (Rule) => Rule.required(),
+      fieldset: 'offerDetails',
+      options: { source: 'title', maxLength: 96 },
+      validation: (Rule) => Rule.required()
     }),
     defineField({
-      name: 'product',
-      title: 'Product',
-      type: 'reference',
-      to: [{type: 'product'}],
-      description: 'Select the product for this offer',
-      validation: (Rule) => Rule.required(),
+      name: 'products',
+      title: 'Products in Offer',
+      type: 'array',
+      fieldset: 'products',
+      of: [{
+        type: 'object',
+        fields: [
+          defineField({
+            name: 'product',
+            title: 'Product',
+            type: 'reference',
+            to: [{ type: 'product' }],
+            validation: (Rule) => Rule.required()
+          }),
+          defineField({
+            name: 'discountType',
+            title: 'Discount Type',
+            type: 'string',
+            options: {
+              list: [
+                { title: 'Percentage Off', value: 'percentage' },
+                { title: 'Fixed Amount Off', value: 'fixed' },
+                { title: 'Special Price', value: 'special' }
+              ]
+            },
+            validation: (Rule) => Rule.required()
+          }),
+          defineField({
+            name: 'discountValue',
+            title: 'Discount Value',
+            type: 'number',
+            validation: (Rule) => Rule.required().custom(validatePrice)
+          }),
+          defineField({
+            name: 'featured',
+            title: 'Featured in Offer',
+            type: 'boolean',
+            initialValue: false
+          })
+        ],
+        preview: {
+          select: {
+            title: 'product.name',
+            discountType: 'discountType',
+            discountValue: 'discountValue'
+          },
+          prepare({ title, discountType, discountValue }) {
+            const discountDisplay = discountType === 'percentage' 
+              ? `${discountValue}% off`
+              : `₦${discountValue} off`;
+            return {
+              title: title || 'Unnamed Product',
+              subtitle: discountDisplay
+            }
+          }
+        }
+      }],
+      validation: (Rule) => Rule.required().min(1)
     }),
     defineField({
-      name: 'offer_description',
-      title: 'Offer Description',
-      type: 'text',
-      description: 'Brief description of the special offer',
-      validation: (Rule) => Rule.required().max(200),
-    }),
-    defineField({
-      name: 'displayImage',
-      title: 'Display Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'discountPercentage',
-      title: 'Discount Percentage',
+      name: 'minPurchase',
+      title: 'Minimum Purchase Amount',
       type: 'number',
-      description: 'Percentage off the original price',
-      hidden: ({document}) => document?.category !== 'sales',
-      validation: (Rule) => Rule.min(0).max(100),
+      fieldset: 'products',
+      description: 'Minimum purchase amount to qualify for the offer (optional)',
+      validation: (Rule) => Rule.positive()
     }),
     defineField({
-      name: 'sale_start',
-      title: 'Sale Start',
-      type: 'datetime',
-      hidden: ({document}) => document?.category !== 'sales',
-      validation: (Rule) => 
-        Rule.custom((fieldValue, context) => {
-          if (context.document?.category === 'sales' && !fieldValue) {
-            return 'Sale start date is required for sales category'
-          }
-          return true
-        }),
+      name: 'maxDiscount',
+      title: 'Maximum Discount Amount',
+      type: 'number',
+      fieldset: 'products',
+      description: 'Maximum discount amount per order (optional)',
+      validation: (Rule) => Rule.positive()
     }),
     defineField({
-      name: 'sale_end',
-      title: 'Sale End',
+      name: 'start_date',
+      title: 'Start Date & Time',
       type: 'datetime',
-      hidden: ({document}) => document?.category !== 'sales',
+      fieldset: 'scheduling',
+      validation: (Rule) => Rule.required()
+    }),
+    defineField({
+      name: 'end_date',
+      title: 'End Date & Time',
+      type: 'datetime',
+      fieldset: 'scheduling',
       validation: (Rule) => 
-        Rule.custom((fieldValue, context) => {
-          if (context.document?.category === 'sales' && !fieldValue) {
-            return 'Sale end date is required for sales category'
-          }
-          return true
-        }),
+        Rule.required().min(Rule.valueOfField('start_date'))
+        .error('End date must be after start date')
+    }),
+    imageGallery({
+      name: 'displayImages',
+      title: 'Offer Display Images',
+      fieldset: 'display',
+      description: 'Images to display for this offer (banners, featured products, etc.)',
+    }),
+    defineField({
+      name: 'highlightColor',
+      title: 'Highlight Color',
+      type: 'string',
+      fieldset: 'display',
+      description: 'Color to use for offer highlights (hex code)',
+      validation: (Rule) => Rule.regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)
+        .error('Please enter a valid hex color code')
+    }),
+    defineField({
+      name: 'terms',
+      title: 'Terms & Conditions',
+      type: 'array',
+      of: [{ type: 'block' }],
+      fieldset: 'offerDetails'
     }),
     defineField({
       name: 'metadata',
       title: 'SEO Metadata',
       type: 'object',
-      description: 'Metadata for search engine optimization',
+      fieldset: 'seo',
       fields: [
         defineField({
           name: 'metaTitle',
           title: 'Meta Title',
           type: 'string',
-          description: 'Title for SEO (max 60 chars)',
-          validation: (Rule) => Rule.max(60),
+          validation: (Rule) => Rule.max(60)
         }),
         defineField({
           name: 'metaDescription',
           title: 'Meta Description',
           type: 'text',
-          description: 'Description for SEO (max 160 chars)',
-          validation: (Rule) => Rule.max(160),
+          validation: (Rule) => Rule.max(160)
         }),
-      ],
-    }),
+        defineField({
+          name: 'shareImage',
+          title: 'Social Share Image',
+          type: 'image',
+          options: { hotspot: true }
+        })
+      ]
+    })
   ],
   preview: {
     select: {
       title: 'title',
-      media: 'displayImage',
-      category: 'category',
+      startDate: 'start_date',
+      endDate: 'end_date',
+      media: 'displayImages.0',
+      category: 'category'
     },
-    prepare({title, media, category}) {
+    prepare({ title, startDate, endDate, media, category }) {
+      const dates = startDate && endDate 
+        ? `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}`
+        : '';
       return {
         title: title,
-        subtitle: `Category: ${category}`,
-        media: media,
+        subtitle: `${category.replace('_', ' ').toUpperCase()} • ${dates}`,
+        media: media
       }
-    },
-  },
+    }
+  }
 })

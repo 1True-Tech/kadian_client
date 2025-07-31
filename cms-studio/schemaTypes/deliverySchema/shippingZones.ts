@@ -15,6 +15,25 @@ export const deliveryZones = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'deliveryTime',
+      title: 'Estimated Delivery Time',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'min',
+          title: 'Minimum Days',
+          type: 'number',
+          validation: Rule => Rule.required().min(1)
+        }),
+        defineField({
+          name: 'max',
+          title: 'Maximum Days',
+          type: 'number',
+          validation: Rule => Rule.required().min(1)
+        })
+      ]
+    }),
+    defineField({
       name: 'rates',
       title: 'Zone rates',
       type: 'array',
