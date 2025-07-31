@@ -8,44 +8,59 @@ type Props = {};
 export default function Footer({}: Props) {
   return (
     <footer className="px-4 sm:px-8 py-8">
-      <div className="max-w-7xl text-primary-foreground bg-primary dark:bg-secondary rounded-xl py-sections px-container mx-auto flex flex-col md:flex-row justify-between gap-8">
+      <div className="max-w-7xl text-primary-foreground bg-primary dark:bg-secondary rounded-xl py-sections px-container mx-auto flex flex-col md:flex-row md:flex-wrap justify-between gap-peers">
         {/* Company Info */}
-        <div className="flex flex-col gap-4 max-w-md">
-          <h2 className="text-2xl font-bold">Kadian Fashion</h2>
+        <div className="flex flex-col gap-small max-w-md basis-50">
+          <h2 className="text-2xl font-extrabold font-cinzel">Kadian Fashion</h2>
           <p className="text-sm">
             Discover the latest trends in fashion. We bring you quality products
             to elevate your style and beauty.
           </p>
         </div>
         {/* Navigation */}
-        <nav className="flex flex-col gap-2 min-w-44">
-          <h3 className="text-lg font-semibold">Quick Links</h3>
-          <ul className="flex flex-col gap-1">
+        <nav className="flex flex-col gap-small min-w-44 basis-50">
+          <h3 className="text-lg font-extrabold font-cinzel">Information</h3>
+          <ul className="flex flex-col gap-xtrasmall">
             <li>
               <Link href="/" className="hover:underline">
-                Home
+                About us
               </Link>
             </li>
             <li>
               <Link href="/shop" className="hover:underline">
-                Shop
+                Contact
               </Link>
             </li>
             <li>
               <Link href="/about" className="hover:underline">
-                About Us
+                FAQ&apos;s
+              </Link>
+            </li>
+          </ul>
+        </nav>
+        <nav className="flex flex-col gap-small min-w-44 basis-50">
+          <h3 className="text-lg font-extrabold font-cinzel">Our Services</h3>
+          <ul className="flex flex-col gap-xtrasmall">
+            <li>
+              <Link href="/" className="hover:underline">
+                Shipping & delivery
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:underline">
-                Contact
+              <Link href="/shop" className="hover:underline">
+                Returns & Refunds
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="hover:underline">
+                Book a Consultation
               </Link>
             </li>
           </ul>
         </nav>
         {/* Newsletter Signup */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-lg font-semibold">Newsletter</h3>
+        <div className="flex flex-col gap-small basis-70">
+          <h3 className="text-lg font-extrabold font-cinzel">Newsletter</h3>
           <p className="text-sm">
             Subscribe to get the latest updates and exclusive offers.
           </p>
@@ -55,7 +70,7 @@ export default function Footer({}: Props) {
                 id="email"
                 name="email"
                 type="email"
-                className="!w-full text-primary rounded-sm !shadow-none !outline-none !h-fit  !border border-accent !px-0 py-4 !pl-2"
+                className="!w-full text-primary rounded-sm !shadow-none !outline-none !h-fit  !border border-accent !px-0 py-4 min-[498px]:py-2 !pl-2"
               />
               <Button
                 variant={"outline"}
@@ -67,14 +82,9 @@ export default function Footer({}: Props) {
           </form>
         </div>
         {/* Socials */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-lg font-semibold">Follow Us</h3>
+        <div className="flex flex-col gap-small">
+          <h3 className="text-lg font-extrabold font-cinzel">Follow Us</h3>
           <ul className="flex gap-4 text-2xl">
-            <li>
-              <a href="#">
-                <InstagramIcon />
-              </a>
-            </li>
             <li>
               <a href="#">
                 <i className="pi pi-tiktok"></i>

@@ -1,6 +1,7 @@
 @import "../assets/css/fonts.properties.css";
 @import "tailwindcss";
 @import "tw-animate-css";
+@import 'primeicons/primeicons.css';
 @import "../assets/css/animations.css";
 @import "../assets/css/components.css";
 @import "../assets/css/hoverStyles.css";
