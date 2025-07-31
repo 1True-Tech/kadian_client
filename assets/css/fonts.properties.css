@@ -20,7 +20,6 @@
   --font-poppins-style-italic: italic;
 }
 
-@layer components {
   .font-cinzel {
     font-family: var(--font-cinzel);
     font-optical-sizing: var(--font-cinzel-optical-sizing);
@@ -66,4 +65,3 @@
   .font-poppins-italic {
     --poppins-style: var(--font-poppins-style-italic);
   }
-}
