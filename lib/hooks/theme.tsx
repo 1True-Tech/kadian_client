@@ -67,12 +67,12 @@ const ThemeProvider = ({
       changeTheme(theme);
       updateTheme(theme, cookieKey);
     },
-    [theme,cookieKey]
+    [cookieKey]
   );
   const initiate = useCallback(() => {
     const initiated = getSystemTheme();
     updateTheme(initiated, cookieKey);
-  }, [theme, cookieKey]);
+  }, [cookieKey]);
 
   return (
     <ThemeContext

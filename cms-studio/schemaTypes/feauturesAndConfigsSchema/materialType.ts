@@ -15,6 +15,16 @@ export const materialType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({name: 'description', title: 'Description', type: 'text'}),
+    defineField({
+      name: 'careInstructions',
+      title: 'Care Instructions',
+      type: 'array',
+      of: [{type: 'string'}],
+      description: 'Instructions for garment care (washing, drying, ironing, etc.)',
+      options: {
+        layout: 'tags'
+      }
+    }),
   ],
   preview: {
     select: {name: 'name', description: 'description'},

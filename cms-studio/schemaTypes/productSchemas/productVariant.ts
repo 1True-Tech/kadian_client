@@ -31,6 +31,19 @@ export const variantType = defineField({
           validation: (Rule) => Rule.min(0),
         }),
         defineField({
+          name: 'barcode',
+          title: 'Barcode',
+          type: 'string',
+          description: 'Unique barcode identifier',
+        }),
+        defineField({
+          name: 'stockThreshold',
+          title: 'Low Stock Threshold',
+          type: 'number',
+          description: 'Notify when stock falls below this number',
+          validation: (Rule) => Rule.min(1),
+        }),
+        defineField({
           name: 'weight',
           title: 'Product Weight',
           type: 'object',
@@ -52,9 +65,9 @@ export const variantType = defineField({
         }),
         defineField({
           name: 'price',
-          title: 'Price (NGN)',
+          title: 'Price',
           type: 'number',
-          description: 'Retail price in Nigerian Naira',
+          description: 'Retail price',
           validation: (Rule) => Rule.required().min(0),
         }),
         // CLOTH-ONLY FIELDS
