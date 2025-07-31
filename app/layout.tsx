@@ -9,6 +9,7 @@ import {
   XCircleIcon,
 } from "lucide-react";
 import type { Metadata } from "next";
+import "../assets/css/fonts.properties.css";
 import 'primeicons/primeicons.css';
 import "./globals.css";
 import { cookies } from "next/headers";
