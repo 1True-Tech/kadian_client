@@ -48,7 +48,7 @@ export const productType = defineType({
 
       const subtitle = [
         brand,
-        price ? `₦${price.toLocaleString()}` : "Price not set",
+        price ? `$${price.toLocaleString()}` : "Price not set",
       ]
         .filter(Boolean)
         .join(" • ");
