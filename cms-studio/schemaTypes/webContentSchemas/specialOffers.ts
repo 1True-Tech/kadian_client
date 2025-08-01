@@ -1,231 +1,236 @@
-import { defineField, defineType } from 'sanity';
-import { imageGallery } from '../productSchemas/imageGallery';
+import { defineField, defineType } from "sanity";
+import { imageGallery } from "../productSchemas/imageGallery";
 
 export const SpecialOffers = defineType({
-  name: 'special_offers',
-  title: 'Special Offers',
-  type: 'document',
+  name: "special_offers",
+  title: "Special Offers",
+  type: "document",
   fieldsets: [
     {
-      name: 'offerDetails',
-      title: 'Offer Details',
-      options: { collapsible: true }
+      name: "offerDetails",
+      title: "Offer Details",
+      options: { collapsible: true },
     },
     {
-      name: 'products',
-      title: 'Products & Pricing',
-      options: { collapsible: true }
+      name: "products",
+      title: "Products & Pricing",
+      options: { collapsible: true },
     },
     {
-      name: 'scheduling',
-      title: 'Offer Schedule',
-      options: { collapsible: true }
+      name: "scheduling",
+      title: "Offer Schedule",
+      options: { collapsible: true },
     },
     {
-      name: 'display',
-      title: 'Display Settings',
-      options: { collapsible: true }
+      name: "display",
+      title: "Display Settings",
+      options: { collapsible: true },
     },
     {
-      name: 'seo',
-      title: 'SEO Settings',
-      options: { collapsible: true }
-    }
+      name: "seo",
+      title: "SEO Settings",
+      options: { collapsible: true },
+    },
   ],
   fields: [
     defineField({
-      name: 'category',
-      title: 'Offer Type',
-      type: 'string',
-      fieldset: 'offerDetails',
+      name: "category",
+      title: "Offer Type",
+      type: "string",
+      fieldset: "offerDetails",
       options: {
         list: [
-          { title: 'Flash Sale', value: 'flash_sale' },
-          { title: 'Seasonal Sale', value: 'seasonal_sale' },
-          { title: 'Clearance', value: 'clearance' },
-          { title: 'Bundle Deal', value: 'bundle' },
-          { title: 'New Customer Offer', value: 'new_customer' },
-          { title: 'Featured Products', value: 'featured' }
+          { title: "Flash Sale", value: "flash_sale" },
+          { title: "Seasonal Sale", value: "seasonal_sale" },
+          { title: "Clearance", value: "clearance" },
+          { title: "Bundle Deal", value: "bundle" },
+          { title: "New Customer Offer", value: "new_customer" },
+          { title: "Featured Products", value: "featured" },
         ],
-        layout: 'radio'
+        layout: "radio",
       },
-      validation: (Rule) => Rule.required()
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'title',
-      title: 'Offer Title',
-      type: 'string',
-      fieldset: 'offerDetails',
-      validation: (Rule) => Rule.required().min(5).max(100)
+      name: "title",
+      title: "Offer Title",
+      type: "string",
+      fieldset: "offerDetails",
+      validation: (Rule) => Rule.required().min(5).max(100),
     }),
     defineField({
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      fieldset: 'offerDetails',
-      options: { source: 'title', maxLength: 96 },
-      validation: (Rule) => Rule.required()
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      fieldset: "offerDetails",
+      options: { source: "title", maxLength: 96 },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'products',
-      title: 'Products in Offer',
-      type: 'array',
-      fieldset: 'products',
-      of: [{
-        type: 'object',
-        fields: [
-          defineField({
-            name: 'product',
-            title: 'Product',
-            type: 'reference',
-            to: [{ type: 'product' }],
-            validation: (Rule) => Rule.required()
-          }),
-          defineField({
-            name: 'discountType',
-            title: 'Discount Type',
-            type: 'string',
-            options: {
-              list: [
-                { title: 'Percentage Off', value: 'percentage' },
-                { title: 'Fixed Amount Off', value: 'fixed' },
-                { title: 'Special Price', value: 'special' }
-              ]
+      name: "products",
+      title: "Products in Offer",
+      type: "array",
+      fieldset: "products",
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({
+              name: "product",
+              title: "Product",
+              type: "reference",
+              to: [{ type: "product" }],
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "discountType",
+              title: "Discount Type",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Percentage Off", value: "percentage" },
+                  { title: "Fixed Amount Off", value: "fixed" },
+                  { title: "Special Price", value: "special" },
+                ],
+              },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "discountValue",
+              title: "Discount Value",
+              type: "number",
+              validation: (Rule) => Rule.required().min(0),
+            }),
+            defineField({
+              name: "featured",
+              title: "Featured in Offer",
+              type: "boolean",
+              initialValue: false,
+            }),
+          ],
+          preview: {
+            select: {
+              title: "product.name",
+              discountType: "discountType",
+              discountValue: "discountValue",
             },
-            validation: (Rule) => Rule.required()
-          }),
-          defineField({
-            name: 'discountValue',
-            title: 'Discount Value',
-            type: 'number',
-            validation: (Rule) =>
-            Rule.required()
-              .min(0)
-          }),
-          defineField({
-            name: 'featured',
-            title: 'Featured in Offer',
-            type: 'boolean',
-            initialValue: false
-          })
-        ],
-        preview: {
-          select: {
-            title: 'product.name',
-            discountType: 'discountType',
-            discountValue: 'discountValue'
+            prepare({ title, discountType, discountValue }) {
+              const discountDisplay =
+                discountType === "percentage"
+                  ? `${discountValue}% off`
+                  : `₦${discountValue} off`;
+              return {
+                title: title || "Unnamed Product",
+                subtitle: discountDisplay,
+              };
+            },
           },
-          prepare({ title, discountType, discountValue }) {
-            const discountDisplay = discountType === 'percentage' 
-              ? `${discountValue}% off`
-              : `₦${discountValue} off`;
-            return {
-              title: title || 'Unnamed Product',
-              subtitle: discountDisplay
-            }
-          }
-        }
-      }],
-      validation: (Rule) => Rule.required().min(1)
+        },
+      ],
+      validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
-      name: 'minPurchase',
-      title: 'Minimum Purchase Amount',
-      type: 'number',
-      fieldset: 'products',
-      description: 'Minimum purchase amount to qualify for the offer (optional)',
-      validation: (Rule) => Rule.positive()
+      name: "minPurchase",
+      title: "Minimum Purchase Amount",
+      type: "number",
+      fieldset: "products",
+      description:
+        "Minimum purchase amount to qualify for the offer (optional)",
+      validation: (Rule) => Rule.positive(),
     }),
     defineField({
-      name: 'maxDiscount',
-      title: 'Maximum Discount Amount',
-      type: 'number',
-      fieldset: 'products',
-      description: 'Maximum discount amount per order (optional)',
-      validation: (Rule) => Rule.positive()
+      name: "maxDiscount",
+      title: "Maximum Discount Amount",
+      type: "number",
+      fieldset: "products",
+      description: "Maximum discount amount per order (optional)",
+      validation: (Rule) => Rule.positive(),
     }),
     defineField({
-      name: 'start_date',
-      title: 'Start Date & Time',
-      type: 'datetime',
-      fieldset: 'scheduling',
-      validation: (Rule) => Rule.required()
+      name: "start_date",
+      title: "Start Date & Time",
+      type: "datetime",
+      fieldset: "scheduling",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'end_date',
-      title: 'End Date & Time',
-      type: 'datetime',
-      fieldset: 'scheduling',
-      validation: (Rule) => 
-        Rule.required().min(Rule.valueOfField('start_date'))
-        .error('End date must be after start date')
+      name: "end_date",
+      title: "End Date & Time",
+      type: "datetime",
+      fieldset: "scheduling",
+      validation: (Rule) =>
+        Rule.required()
+          .min(Rule.valueOfField("start_date"))
+          .error("End date must be after start date"),
     }),
     imageGallery({
-      name: 'displayImages',
-      title: 'Offer Display Images',
-      fieldset: 'display',
-      description: 'Images to display for this offer (banners, featured products, etc.)',
+      name: "displayImages",
+      title: "Offer Display Images",
+      fieldset: "display",
+      description:
+        "Images to display for this offer (banners, featured products, etc.)",
     }),
     defineField({
-      name: 'highlightColor',
-      title: 'Highlight Color',
-      type: 'string',
-      fieldset: 'display',
-      description: 'Color to use for offer highlights (hex code)',
-      validation: (Rule) => Rule.regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)
-        .error('Please enter a valid hex color code')
+      name: "highlightColor",
+      title: "Highlight Color",
+      fieldset: "display",
+      type: "reference",
+      to: [{ type: "color" }],
     }),
     defineField({
-      name: 'terms',
-      title: 'Terms & Conditions',
-      type: 'array',
-      of: [{ type: 'block' }],
-      fieldset: 'offerDetails'
+      name: "terms",
+      title: "Terms & Conditions",
+      type: "array",
+      of: [{ type: "block" }],
+      fieldset: "offerDetails",
     }),
     defineField({
-      name: 'metadata',
-      title: 'SEO Metadata',
-      type: 'object',
-      fieldset: 'seo',
+      name: "metadata",
+      title: "SEO Metadata",
+      type: "object",
+      fieldset: "seo",
       fields: [
         defineField({
-          name: 'metaTitle',
-          title: 'Meta Title',
-          type: 'string',
-          validation: (Rule) => Rule.max(60)
+          name: "metaTitle",
+          title: "Meta Title",
+          type: "string",
+          validation: (Rule) => Rule.max(60),
         }),
         defineField({
-          name: 'metaDescription',
-          title: 'Meta Description',
-          type: 'text',
-          validation: (Rule) => Rule.max(160)
+          name: "metaDescription",
+          title: "Meta Description",
+          type: "text",
+          validation: (Rule) => Rule.max(160),
         }),
         defineField({
-          name: 'shareImage',
-          title: 'Social Share Image',
-          type: 'image',
-          options: { hotspot: true }
-        })
-      ]
-    })
+          name: "shareImage",
+          title: "Social Share Image",
+          type: "image",
+          options: { hotspot: true },
+        }),
+      ],
+    }),
   ],
   preview: {
     select: {
-      title: 'title',
-      startDate: 'start_date',
-      endDate: 'end_date',
-      media: 'displayImages.0',
-      category: 'category'
+      title: "title",
+      startDate: "start_date",
+      endDate: "end_date",
+      media: "displayImages.0",
+      category: "category",
     },
     prepare({ title, startDate, endDate, media, category }) {
-      const dates = startDate && endDate 
-        ? `${new Date(startDate).toLocaleDateString()} - ${new Date(endDate).toLocaleDateString()}`
-        : '';
+      const dates =
+        startDate && endDate
+          ? `${new Date(startDate).toLocaleDateString()} - ${new Date(
+              endDate
+            ).toLocaleDateString()}`
+          : "";
       return {
         title: title,
-        subtitle: `${category.replace('_', ' ').toUpperCase()} • ${dates}`,
-        media: media
-      }
-    }
-  }
-})
+        subtitle: `${category.replace("_", " ").toUpperCase()} • ${dates}`,
+        media: media,
+      };
+    },
+  },
+});
