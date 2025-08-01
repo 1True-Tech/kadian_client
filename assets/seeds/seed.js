@@ -1,71 +1,90 @@
 const { createClient } = require("@sanity/client");
-
 const fs = require("fs");
 const path = require("path");
+require("dotenv").config();
 
-// Configure your Sanity client via environment variables
+// Instantiate Sanity client via .env
+const client = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_STUDIO_PID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_STUDIO_DATASET,
+  apiVersion:'2023-03-01',
+  token: process.env.SANITY_STUDIO_TOKEN_SEED,
+  useCdn: false,
+});
 
-async function run() {
-  // Grab the file path from CLI arguments
-  const [_, __, filePath, projectId, dataset, token] = process.argv;
-  const client = createClient({
-    projectId: projectId || "your-project-id",
-    dataset: dataset || "your-dataset",
-    apiVersion: "2023-03-01", // use current ISO date
-    token: token || "<your-write-token>",
-    useCdn: false,
-  });
+const helpText = `
+Usage: seed [options] <file1.json> [file2.json ...]
 
-  if (!filePath) {
-    console.error(
-      "❌  No file path provided. Usage: node seed.js <file-to-seed>"
-    );
-    process.exit(1);
+Options:
+  -b, --basePath <path>   Base directory for seed files (default: current dir)
+  -h, --help               Show this help message
+`;
+
+// Simple CLI args parsing
+const args = process.argv.slice(2);
+if (args.includes('-h') || args.includes('--help')) {
+  console.log(helpText);
+  process.exit(0);
+}
+
+let basePath = '';
+const files = [];
+for (let i = 0; i < args.length; i++) {
+  const arg = args[i];
+  if (arg === '-b' || arg === '--basePath') {
+    basePath = args[++i] || '';
+  } else if (arg.endsWith('.json')) {
+    files.push(arg);
   }
+}
 
-  const resolvedPath = path.resolve(process.cwd(), filePath);
-  console.log(`🔍  Reading file: ${resolvedPath}`);
+if (files.length === 0) {
+  console.error("❌  No JSON files specified. Use -h for help.");
+  process.exit(1);
+}
 
-  // Check existence
-  if (!fs.existsSync(resolvedPath)) {
-    console.error(`❌  File not found: ${resolvedPath}`);
-    process.exit(1);
+async function seedFile(filePath) {
+  const absPath = path.resolve(process.cwd(), basePath, filePath);
+  console.log(`
+📄  Seeding ${filePath} (from ${basePath})`);
+
+  if (!fs.existsSync(absPath)) {
+    console.error(`❌  File not found: ${absPath}`);
+    return;
   }
 
   let docs;
   try {
-    const content = fs.readFileSync(resolvedPath, "utf8");
-    docs = JSON.parse(content);
-    console.log(`✅  Parsed ${docs.length} documents from JSON`);
+    const raw = fs.readFileSync(absPath, 'utf8');
+    docs = JSON.parse(raw);
+    if (!Array.isArray(docs)) throw new Error('JSON must be an array of docs');
+    console.log(`✅  Parsed ${docs.length} docs from ${filePath}`);
   } catch (err) {
-    console.error(`❌  Failed to read or parse JSON: ${err.message}`);
-    process.exit(1);
+    console.error(`❌  Failed to parse ${filePath}: ${err.message}`);
+    return;
   }
 
-  const transaction = client.transaction();
-  console.log("⏳  Starting transaction...");
-
-  docs.forEach((doc, index) => {
-    const { _id, ...body } = doc
-    const operationIndex = index + 1
-    console.log(`🔄  [${operationIndex}/${docs.length}] ${_id ? 'Replacing' : 'Creating'} document${_id ? `: ${_id}` : ''}`)
-    if (_id) {
-      transaction.createOrReplace({ _id, ...body })
-    } else {
-      transaction.create(body)
-    }
+  const tx = client.transaction();
+  docs.forEach((doc, idx) => {
+    const { _id, ...body } = doc;
+    const op = _id ? 'createOrReplace' : 'create';
+    tx[op](_id ? { _id, ...body } : body);
+    process.stdout.write(`🔄  [${idx+1}/${docs.length}] ${op}\r`);
   });
 
   try {
-    await transaction.commit();
-    console.log("🎉  All documents seeded successfully!");
+    await tx.commit();
+    console.log(`
+🎉  Finished seeding ${filePath}`);
   } catch (err) {
-    console.error(`❌  Transaction failed: ${err.message}`);
-    process.exit(1);
+    console.error(`
+❌  Transaction failed for ${filePath}: ${err.message}`);
   }
 }
 
-run().catch((err) => {
-  console.error(`❌  Unexpected error: ${err.message}`);
-  process.exit(1);
-});
+(async function run() {
+  for (const file of files) {
+    await seedFile(file);
+  }
+  console.log("\n✅  All done.");
+})();

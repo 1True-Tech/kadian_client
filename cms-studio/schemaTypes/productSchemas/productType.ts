@@ -39,11 +39,14 @@ export const productType = defineType({
     prepare({ title, images, price, brand }) {
       const url =
         images?.length > 0
-          ? fashionImageBuilder(images.map((i: { asset: any; })=>i.asset), {
-              quality: 80,
-              treatment: "thumbnail",
-              format: "webp",
-            })[0]
+          ? fashionImageBuilder(
+              images.map((i: { asset: any }) => i.asset),
+              {
+                quality: 80,
+                treatment: "thumbnail",
+                format: "webp",
+              }
+            )[0]
           : undefined;
 
       const subtitle = [
@@ -85,10 +88,10 @@ export const productType = defineType({
       title: "Images",
       description:
         "Product image gallery; each image must have alt text for accessibility.",
-      fieldset:"general",
-      previewImgOptions:{
-        colorScheme:"blackAndWhite"
-      }
+      fieldset: "general",
+      previewImgOptions: {
+        colorScheme: "blackAndWhite",
+      },
     }),
     defineField({
       name: "description",
@@ -217,7 +220,16 @@ export const productType = defineType({
       title: "Base Price",
       type: "number",
       fieldset: "pricing",
-      validation: (Rule) => Rule.required().custom(validatePrice),
+      validation: (Rule) =>
+        Rule.required()
+          .min(0)
+          .custom((val) => {
+            if (val === undefined || val === null) return true;
+            const fixed = Number(val).toFixed(2);
+            return Number(fixed) === val
+              ? true
+              : "Price must have exactly two decimal places (e.g. 19.99)";
+          }),
     }),
     defineField({
       name: "seo",
