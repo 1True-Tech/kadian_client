@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const { createClient } = require("@sanity/client");
 const fs = require("fs");
 const path = require("path");
