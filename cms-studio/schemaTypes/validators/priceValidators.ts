@@ -1,9 +1,17 @@
 // schemaTypes/validators/priceValidators.ts
 
-const MIN_PRICE = 100 // Minimum price in NGN
-const MAX_PRICE = 1000000 // Maximum price in NGN
+const MIN_PRICE = 100 // Minimum price in $
+const MAX_PRICE = 1000000 // Maximum price in $
 
-export const validatePrice = (price: number|undefined) => {
+export const validatePrice = (price: number|undefined, options:{
+  min?: number;
+  max?: number;
+}={
+  min: MIN_PRICE,
+  max: MAX_PRICE
+}) => {
+
+  const { min = MIN_PRICE, max = MAX_PRICE } = options;
   // Check if price exists
   if (price === undefined || price === null) {
     return 'Price is required'
@@ -25,18 +33,18 @@ export const validatePrice = (price: number|undefined) => {
   }
 
   // Check minimum price
-  if (price < MIN_PRICE) {
-    return `Price must be at least ${MIN_PRICE} NGN`
+  if (price < min) {
+    return `Price must be at least $${min}`
   }
 
   // Check maximum price
-  if (price > MAX_PRICE) {
-    return `Price cannot exceed ${MAX_PRICE} NGN`
+  if (price > max) {
+    return `Price cannot exceed $${max}`
   }
 
   // Validate price is in proper increments (e.g., no prices like 1501)
   if (price % 100 !== 0) {
-    return 'Price must be in increments of 100 NGN'
+    return 'Price must be in increments of $100'
   }
 
   return true

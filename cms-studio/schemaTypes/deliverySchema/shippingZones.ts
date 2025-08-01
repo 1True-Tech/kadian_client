@@ -82,7 +82,7 @@ export const deliveryZones = defineType({
               });
 
               return {
-                title: `₦${amount?.toLocaleString() || 0} per ${
+                title: `$${amount?.toLocaleString() || 0} per ${
                   unit?.toUpperCase() || ""
                 }`,
                 imageUrl: createColorSwatchDataUrl(
