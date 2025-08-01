@@ -1,6 +1,9 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { imageGallery } from "./imageGallery";
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
+import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
+import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
+import { initialLetters } from "@/lib/utils/elipsis";
 
 export const collections = defineType({
   name: "collection",
@@ -80,14 +83,26 @@ export const collections = defineType({
       subtitle: "slug.current",
     },
     prepare({ title, media, subtitle }) {
+      const { primary, text } = generateAccessibleColorPair();
+      const moddedTitle = title || "Untitled collection";
+      const previewImgText = createColorSwatchDataUrl(
+        primary,
+        32,
+        0,
+        initialLetters(moddedTitle, 2),
+        text
+      );
       const url =
         media?.length > 0
-          ? fashionImageBuilder(media.map((i: { asset: any; })=>i.asset), {
-              quality: 80,
-              treatment: "thumbnail",
-              format: "webp",
-            })[0]
-          : undefined;
+          ? fashionImageBuilder(
+              media.map((i: { asset: any }) => i.asset),
+              {
+                quality: 80,
+                treatment: "thumbnail",
+                format: "webp",
+              }
+            )[0]
+          : previewImgText;
       return {
         title,
         imageUrl: url,

@@ -3,6 +3,7 @@ import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorG
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
 import { defineField, defineType } from "sanity";
 import { imageGallery } from "./imageGallery";
+import { initialLetters } from "@/lib/utils/elipsis";
 
 export const sizeGuide = defineType({
   name: "sizeGuide",
@@ -114,26 +115,28 @@ export const sizeGuide = defineType({
     select: {
       title: "title",
       category: "category.name",
-      media: "category.category_images[0].asset"
+      media: "category.category_images"
     },
     prepare({ title, category,media }) {
       const { primary, text } = generateAccessibleColorPair();
+      const moddedTitle = title||"Untitled Size Guide";
       const previewImgText = createColorSwatchDataUrl(
         primary,
         32,
         0,
-        `${title.at(0)}${title.at(title.length / 2 - 1)}`.toUpperCase(),
+        initialLetters(moddedTitle,2),
+        
         text
       );
-      const previewImg = fashionImageBuilder([media], {
+      const previewImg = media?.length>0?fashionImageBuilder([media[0].asset], {
         quality:75,
-        colorScheme:"warmTone",
+        colorScheme:"soft",
         treatment:"thumbnail",
         format:"webp"
-      })[0] || previewImgText;
+      })[0]: previewImgText;
       return {
-        title: title || "Untitled",
-        subtitle: category ? `For ${category}` : "",
+        title: moddedTitle || "Untitled",
+        subtitle: category ? `For ${category}` : "Uncategorized",
         imageUrl: previewImg,
       };
     },

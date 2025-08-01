@@ -3,6 +3,9 @@ import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { imageGallery } from "./imageGallery";
 import { variantType } from "./productVariant";
+import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
+import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
+import { initialLetters } from "@/lib/utils/elipsis";
 
 export const productType = defineType({
   name: "product",
@@ -36,6 +39,15 @@ export const productType = defineType({
       brand: "brand.name",
     },
     prepare({ title, images, price, brand }) {
+      const { primary, text } = generateAccessibleColorPair();
+      const moddedTitle = title || "Untitled Product";
+      const previewImgText = createColorSwatchDataUrl(
+        primary,
+        32,
+        0,
+        initialLetters(moddedTitle,2),
+        text
+      );
       const url =
         images?.length > 0
           ? fashionImageBuilder(
@@ -46,7 +58,7 @@ export const productType = defineType({
                 format: "webp",
               }
             )[0]
-          : undefined;
+          : previewImgText;
 
       const subtitle = [
         brand,

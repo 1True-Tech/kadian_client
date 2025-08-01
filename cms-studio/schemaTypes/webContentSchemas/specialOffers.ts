@@ -1,5 +1,9 @@
 import { defineField, defineType } from "sanity";
 import { imageGallery } from "../productSchemas/imageGallery";
+import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
+import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
+import { initialLetters } from "@/lib/utils/elipsis";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 
 export const SpecialOffers = defineType({
   name: "special_offers",
@@ -216,10 +220,29 @@ export const SpecialOffers = defineType({
       title: "title",
       startDate: "start_date",
       endDate: "end_date",
-      media: "displayImages.0",
+      media: "displayImages",
       category: "category",
     },
     prepare({ title, startDate, endDate, media, category }) {
+      const { primary, text } = generateAccessibleColorPair();
+      const moddedTitle = title || "Untitled Size Guide";
+      const previewImgText = createColorSwatchDataUrl(
+        primary,
+        32,
+        0,
+        initialLetters(moddedTitle, 2),
+
+        text
+      );
+      const previewImg =
+        media?.length > 0
+          ? fashionImageBuilder([media[0].asset], {
+              quality: 75,
+              colorScheme: "soft",
+              treatment: "thumbnail",
+              format: "webp",
+            })[0]
+          : previewImgText;
       const dates =
         startDate && endDate
           ? `${new Date(startDate).toLocaleDateString()} - ${new Date(
@@ -229,7 +252,7 @@ export const SpecialOffers = defineType({
       return {
         title: title,
         subtitle: `${category.replace("_", " ").toUpperCase()} • ${dates}`,
-        media: media,
+        imageUrl: previewImg,
       };
     },
   },
