@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import { validateDateRange } from "../../lib/validators";
 
 export const lookbook = defineType({
   name: "lookbook",

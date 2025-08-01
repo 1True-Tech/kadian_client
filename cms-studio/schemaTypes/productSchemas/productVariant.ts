@@ -1,8 +1,8 @@
 // schemas/variant.ts
 import { defineArrayMember, defineField } from "sanity";
-import { generateAccessibleColorPair } from "../../lib/helpers/color_generator";
-import { createColorSwatchDataUrl } from "../../lib/helpers/color_swatch";
 import units from "../feauturesAndConfigsSchema/units";
+import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
+import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
 
 export const variantType = defineField({
   name: "variants",
