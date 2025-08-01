@@ -1,6 +1,5 @@
-import { defineField, defineType } from 'sanity'
-import { validatePrice } from '../validators/priceValidators'
-import { imageGallery } from '../productSchemas/imageGallery'
+import { defineField, defineType } from 'sanity';
+import { imageGallery } from '../productSchemas/imageGallery';
 
 export const SpecialOffers = defineType({
   name: 'special_offers',
@@ -99,10 +98,9 @@ export const SpecialOffers = defineType({
             name: 'discountValue',
             title: 'Discount Value',
             type: 'number',
-            validation: (Rule) => Rule.required().custom(num => validatePrice(num, {
-              min:0,
-              max:1000000
-            }))
+            validation: (Rule) =>
+            Rule.required()
+              .min(0)
           }),
           defineField({
             name: 'featured',
