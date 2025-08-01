@@ -1,3 +1,6 @@
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
+import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
+import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
 import { defineField, defineType } from "sanity";
 import { imageGallery } from "./imageGallery";
 
@@ -109,13 +112,29 @@ export const sizeGuide = defineType({
   ],
   preview: {
     select: {
-      title: "title.en",
+      title: "title",
       category: "category.name",
+      media: "category.category_images[0].asset"
     },
-    prepare({ title, category }) {
+    prepare({ title, category,media }) {
+      const { primary, text } = generateAccessibleColorPair();
+      const previewImgText = createColorSwatchDataUrl(
+        primary,
+        32,
+        0,
+        `${title.at(0)}${title.at(title.length / 2 - 1)}`.toUpperCase(),
+        text
+      );
+      const previewImg = fashionImageBuilder([media], {
+        quality:75,
+        colorScheme:"warmTone",
+        treatment:"thumbnail",
+        format:"webp"
+      })[0] || previewImgText;
       return {
         title: title || "Untitled",
         subtitle: category ? `For ${category}` : "",
+        imageUrl: previewImg,
       };
     },
   },

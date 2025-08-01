@@ -1,7 +1,7 @@
 import {
   fashionImageBuilder,
   FashionImageOptions,
-} from "@/cms-studio/lib/utils/fashionImageTransformer";
+} from "@/lib/utils/fashionImageTransformer";
 import { Booleanish } from "@/types";
 import { defineField, defineArrayMember, Rule } from "sanity";
 

@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { imageGallery } from "./imageGallery";
-import { fashionImageBuilder } from "@/cms-studio/lib/utils/fashionImageTransformer";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 
 export const collections = defineType({
   name: "collection",

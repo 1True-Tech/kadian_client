@@ -1,7 +1,8 @@
+import { createColorSwatchDataUrl } from '@/lib/utils/colorsProcessors/color_swatch'
+import { generateAccessibleColorPair } from '@/lib/utils/colorsProcessors/colorGenerator'
+import { ellipsisMiddle } from '@/lib/utils/elipsis'
 import {defineField, defineType} from 'sanity'
-import {generateAccessibleColorPair} from '../../lib/helpers/color_generator'
-import {createColorSwatchDataUrl} from '../../lib/helpers/color_swatch'
-import { ellipsisMiddle } from '../../lib/helpers/elipsis';
+
 
 export const materialType = defineType({
   name: 'material',

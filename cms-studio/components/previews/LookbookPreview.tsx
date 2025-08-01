@@ -1,4 +1,4 @@
-import imageUrlBuilder from '@/cms-studio/lib/utils/imageUrlBuilder'
+import imageUrlBuilder from '@/lib/utils/imageUrlBuilder'
 import { Badge, Box, Card, Flex, Stack, Text } from '@sanity/ui'
 
 export const LookbookPreview = ({ value }: { value: any }) => {
