@@ -1,3 +1,7 @@
+import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
+import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
+import { initialLetters } from "@/lib/utils/elipsis";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { defineField, defineType } from "sanity";
 
 export const lookbook = defineType({
@@ -139,15 +143,29 @@ export const lookbook = defineType({
           ],
           preview: {
             select: {
-              title: "image.caption",
               media: "image",
               products: "products",
             },
-            prepare({ title, media, products }) {
+            prepare({ media, products }) {
+              const { primary, text } = generateAccessibleColorPair();
+              const previewImgText = createColorSwatchDataUrl(
+                primary,
+                32,
+                0,
+                initialLetters("Look", 2),
+                text
+              );
+              const url = media?.asset
+                ? fashionImageBuilder([media], {
+                    quality: 80,
+                    treatment: "thumbnail",
+                    format: "webp",
+                  })[0]
+                : previewImgText;
               return {
-                title: title || "Untitled Look",
+                title: media.caption || "Untitled Look",
                 subtitle: `${products?.length || 0} products tagged`,
-                media,
+                imageUrl: url,
               };
             },
           },
@@ -203,4 +221,36 @@ export const lookbook = defineType({
       ],
     }),
   ],
+  preview: {
+    select: {
+      title: "title",
+      season: "season",
+      looks: "looks"
+    },
+    prepare({ title, season,looks }) {
+      const { primary, text } = generateAccessibleColorPair();
+      const moddedTitle = title || "Untitled Lookbook";
+      const previewImgText = createColorSwatchDataUrl(
+        primary,
+        32,
+        0,
+        initialLetters(moddedTitle, 2),
+        text
+      );
+      const url = looks?.length > 0 && looks[0].image.asset
+                ? fashionImageBuilder([looks[0].image], {
+                    quality: 80,
+                    treatment: "thumbnail",
+                    format: "webp",
+                  })[0]
+                : previewImgText;
+      return {
+        title: moddedTitle,
+        subtitle: season
+          ? `${season.name} ${season.year}`
+          : "No Season Specified",
+        imageUrl: url,
+      };
+    },
+  },
 });
