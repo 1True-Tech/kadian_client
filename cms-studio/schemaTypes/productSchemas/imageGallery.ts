@@ -2,7 +2,8 @@ import {
   fashionImageBuilder,
   FashionImageOptions,
 } from "@/cms-studio/lib/utils/fashionImageTransformer";
-import { defineField, defineArrayMember } from "sanity";
+import { Booleanish } from "@/types";
+import { defineField, defineArrayMember, Rule } from "sanity";
 
 export const imageGallery = ({
   description,
@@ -10,7 +11,8 @@ export const imageGallery = ({
   title,
   fieldset,
   important = true,
-  previewImgOptions
+  previewImgOptions,
+  imageSubText,
 }: {
   name?: string;
   title?: string;
@@ -18,8 +20,26 @@ export const imageGallery = ({
   fieldset?: string;
   important?: boolean;
   previewImgOptions?: FashionImageOptions;
-}) =>
-  defineField({
+  imageSubText?: {
+    name: string;
+    title: string;
+    description?: string;
+    validation?: (rule: Rule) => Rule;
+  };
+}) => {
+  const constructImageSubText: Booleanish.Truthy<typeof imageSubText> = {
+    name: "alt",
+    title: "Alternative Text",
+    description: "A short, descriptive text for screen readers.",
+
+    validation: (Rule) =>
+      Rule.required()
+        .error("Alt text is required for every image.")
+        .min(5)
+        .max(100),
+    ...imageSubText,
+  };
+  return defineField({
     name: name || "images",
     title: title || "Images",
     type: "array",
@@ -37,15 +57,8 @@ export const imageGallery = ({
             options: { hotspot: true },
           },
           {
-            name: "alt",
-            title: "Alternative Text",
             type: "string",
-            description: "A short, descriptive text for screen readers.",
-            validation: (Rule) =>
-              Rule.required()
-                .error("Alt text is required for every image.")
-                .min(5)
-                .max(100),
+            ...constructImageSubText,
           },
         ],
         preview: {
@@ -59,7 +72,7 @@ export const imageGallery = ({
                   quality: 80,
                   treatment: "thumbnail",
                   format: "webp",
-                  ...previewImgOptions
+                  ...previewImgOptions,
                 })[0]
               : undefined;
             return {
@@ -75,3 +88,4 @@ export const imageGallery = ({
       : undefined,
     fieldset,
   });
+};

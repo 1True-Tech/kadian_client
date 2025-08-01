@@ -8,7 +8,7 @@ import {sizeType} from './feauturesAndConfigsSchema/sizes'
 import {SpecialOffers} from './webContentSchemas/specialOffers'
 import {deliveryStates} from './deliverySchema/ShippingStates'
 import {brand} from './productSchemas/brand'
-import {blogPost} from './webContentSchemas/blogPost'
+// import {blogPost} from './webContentSchemas/blogPost'
 import {lookbook} from './webContentSchemas/lookbook'
 import {styleGuide} from './webContentSchemas/styleGuide'
 import {sizeGuide} from './productSchemas/sizeGuide'
@@ -27,7 +27,7 @@ export const schemaTypes = [
 
   // Web content schemas
   homepageHero,
-  blogPost,
+  // blogPost,
   lookbook,
   styleGuide,
   SpecialOffers,
