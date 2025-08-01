@@ -80,23 +80,6 @@ export const productType = defineType({
       validation: (Rule) => Rule.required(),
       fieldset: "general",
     }),
-    defineField({
-      name: "categories",
-      title: "Categories",
-      type: "array",
-      description: "Product categories",
-      of: [{ type: "reference", to: { type: "category" } }],
-      validation: (Rule) => Rule.required().min(1),
-      fieldset: "general",
-    }),
-    defineField({
-      name: "collections",
-      title: "Collections",
-      type: "array",
-      description: "Collections that include this product",
-      of: [{ type: "reference", to: { type: "collection" } }],
-      fieldset: "general",
-    }),
     imageGallery({
       name: "images",
       title: "Images",

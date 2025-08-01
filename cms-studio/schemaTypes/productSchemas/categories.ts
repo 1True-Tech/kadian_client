@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 import { imageGallery } from "./imageGallery";
 import { fashionImageBuilder } from "@/cms-studio/lib/utils/fashionImageTransformer";
 
@@ -41,6 +41,19 @@ export const categories = defineType({
       title: "Category Images",
       description:
         "Category image gallery; each image must have alt text for accessibility.",
+    }),
+    defineField({
+      name: "collections",
+      title: "Collections",
+      type: "array",
+      description: "Which shop collections belong this category",
+      of: [
+        defineArrayMember({
+          type: "reference",
+          to: [{ type: "collection" }],
+        }),
+      ],
+      validation: (Rule) => Rule.required().min(1),
     }),
   ],
   preview: {
