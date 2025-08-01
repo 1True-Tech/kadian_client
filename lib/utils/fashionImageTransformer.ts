@@ -1,6 +1,6 @@
 // lib/utils/fashionImageTransformer.ts
-import imageUrlBuilder from './imageUrlBuilder'
 import { SanityImageObject } from '@sanity/image-url/lib/types/types'
+import imageUrlBuilder from './imageUrlBuilder';
 
 export interface FashionImageOptions {
   width?: number;
@@ -75,8 +75,4 @@ export const fashionImageBuilder = (
   return imageUrlBuilder(assets, combinedOptions);
 };
 
-// Example usage:
-// const imageUrl = fashionImageBuilder(product.images, {
-//   treatment: 'lookbook',
-//   colorScheme: 'warmTone'
-// });
+

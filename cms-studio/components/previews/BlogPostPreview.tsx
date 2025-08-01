@@ -1,4 +1,4 @@
-import imageUrlBuilder from '@/cms-studio/lib/utils/imageUrlBuilder'
+import imageUrlBuilder from '@/lib/utils/imageUrlBuilder'
 import { Box, Card, Stack, Text } from '@sanity/ui'
 
 export const BlogPostPreview = ({value}: {value: any}) => {

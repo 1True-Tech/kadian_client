@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Card, Flex, Stack, Text, Badge, Grid } from '@sanity/ui'
-import { fashionImageBuilder } from '../../lib/utils/fashionImageTransformer'
+import { fashionImageBuilder } from '../../../lib/utils/fashionImageTransformer'
 
 const ColorSwatch = ({ color }: { color: any }) => (
   <Box

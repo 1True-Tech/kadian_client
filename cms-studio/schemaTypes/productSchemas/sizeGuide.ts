@@ -1,4 +1,4 @@
-import { fashionImageBuilder } from "@/cms-studio/lib/utils/fashionImageTransformer";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
 import { defineField, defineType } from "sanity";
