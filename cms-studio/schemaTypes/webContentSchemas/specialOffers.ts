@@ -99,7 +99,10 @@ export const SpecialOffers = defineType({
             name: 'discountValue',
             title: 'Discount Value',
             type: 'number',
-            validation: (Rule) => Rule.required().custom(validatePrice)
+            validation: (Rule) => Rule.required().custom(num => validatePrice(num, {
+              min:0,
+              max:1000000
+            }))
           }),
           defineField({
             name: 'featured',

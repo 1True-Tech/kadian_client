@@ -1,7 +1,6 @@
 // schemas/product.ts
 import { fashionImageBuilder } from "@/cms-studio/lib/utils/fashionImageTransformer";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { validatePrice } from "../validators/priceValidators";
 import { imageGallery } from "./imageGallery";
 import { variantType } from "./productVariant";
 
