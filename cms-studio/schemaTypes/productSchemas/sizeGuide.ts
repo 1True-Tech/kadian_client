@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { imageGallery } from "./imageGallery";
 
 export const sizeGuide = defineType({
   name: "sizeGuide",
@@ -92,22 +93,18 @@ export const sizeGuide = defineType({
         },
       ],
     }),
-    defineField({
+    imageGallery({
       name: "images",
       title: "Measurement Guide Images",
-      type: "array",
-      of: [
-        {
-          type: "image",
-          fields: [
-            {
-              name: "caption",
-              type: "string",
-              title: "Caption",
-            },
-          ],
-        },
-      ],
+      description:
+        "Image gallery for measurement guide; each image must have alt text for accessibility.",
+      important: false,
+      imageSubText: {
+        name: "caption",
+        title: "Caption",
+        description: "A short description of the image.",
+        validation: undefined,
+      },
     }),
   ],
   preview: {
