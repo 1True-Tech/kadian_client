@@ -234,15 +234,14 @@ export const SpecialOffers = defineType({
 
         text
       );
-      const previewImg =
-        media?.length > 0
-          ? fashionImageBuilder([media[0].asset], {
-              quality: 75,
-              colorScheme: "soft",
-              treatment: "thumbnail",
-              format: "webp",
-            })[0]
-          : previewImgText;
+      const image = media?.length > 0 && media[0].asset ? media[0].asset : null;
+      const url = image
+        ? fashionImageBuilder([image], {
+            quality: 50,
+            treatment: "thumbnail",
+            format: "webp",
+          })[0]
+        : previewImgText;
       const dates =
         startDate && endDate
           ? `${new Date(startDate).toLocaleDateString()} - ${new Date(
@@ -252,7 +251,7 @@ export const SpecialOffers = defineType({
       return {
         title: title,
         subtitle: `${category.replace("_", " ").toUpperCase()} • ${dates}`,
-        imageUrl: previewImg,
+        imageUrl: url,
       };
     },
   },

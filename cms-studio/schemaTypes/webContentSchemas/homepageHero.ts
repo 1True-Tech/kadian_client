@@ -98,7 +98,7 @@ export const homepageHero = defineType({
       name: "endDate",
       title: "End Date",
       type: "datetime",
-      description: "When this hero section should stop displaying",
+      description: "When this hero section should stop displaying (optional)",
     }),
   ],
   preview: {
@@ -117,8 +117,9 @@ export const homepageHero = defineType({
         initialLetters(moddedTitle, 2),
         text
       );
-      const previewImg = media
-        ? fashionImageBuilder([media.asset], {
+      const image = media?.asset ? media : media?.mobile ? media?.mobile : null;
+      const previewImg = image
+        ? fashionImageBuilder([image], {
             quality: 75,
             colorScheme: "soft",
             treatment: "thumbnail",

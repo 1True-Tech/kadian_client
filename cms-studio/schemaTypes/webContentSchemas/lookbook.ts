@@ -237,13 +237,18 @@ export const lookbook = defineType({
         initialLetters(moddedTitle, 2),
         text
       );
-      const url = looks?.length > 0 && looks[0].image.asset
-                ? fashionImageBuilder([looks[0].image], {
-                    quality: 80,
-                    treatment: "thumbnail",
-                    format: "webp",
-                  })[0]
-                : previewImgText;
+      const image = looks?.length > 0 && looks[0].image.asset?looks[0].image: null;
+      const url =
+        image
+          ? fashionImageBuilder(
+              [image],
+              {
+                quality: 50,
+                treatment: "thumbnail",
+                format: "webp",
+              }
+            )[0]
+          : previewImgText;
       return {
         title: moddedTitle,
         subtitle: season

@@ -2,6 +2,8 @@ import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swa
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { initialLetters } from "@/lib/utils/elipsis";
 import { defineField, defineType } from "sanity";
+import { imageGallery } from "../productSchemas/imageGallery";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 
 export const styleGuide = defineType({
   name: "styleGuide",
@@ -87,6 +89,17 @@ export const styleGuide = defineType({
                   ],
                 },
               ],
+            }),
+            imageGallery({
+              name: "styleImages",
+              title: "Style Image Gallery",
+              description: "Optional gallery of images for this section",
+              important: false,
+              previewImgOptions: {
+                format: "webp",
+                quality: 50,
+                treatment: "thumbnail",
+              },
             }),
             defineField({
               name: "tips",
@@ -205,9 +218,18 @@ export const styleGuide = defineType({
     select: {
       title: "title",
       category: "category",
+      sections: "sections",
     },
-    prepare({ category, title }) {
+    prepare({ category, title, sections }) {
       const { primary, text } = generateAccessibleColorPair();
+      const guides = sections?.length || 0;
+      const image =
+        sections &&
+        sections.length > 0 &&
+        (sections[0].styleImages&&sections[0].styleImages.length>0) &&
+        sections[0].styleImages[0].asset
+          ? sections[0].styleImages[0].asset
+          : null;
       const moddedTitle = title || "Untitled Style Guide";
       const previewImgText = createColorSwatchDataUrl(
         primary,
@@ -216,10 +238,20 @@ export const styleGuide = defineType({
         initialLetters(moddedTitle, 2),
         text
       );
+      const previewImg = image
+        ? fashionImageBuilder([image], {
+            quality: 75,
+            colorScheme: "soft",
+            treatment: "thumbnail",
+            format: "webp",
+          })[0]
+        : previewImgText;
       return {
         title: moddedTitle,
-        subtitle: category ? `Category: ${category}` : "No Category",
-        imageUrl: previewImgText,
+        subtitle: category
+          ? `Category: ${category}, guides: ${guides}`
+          : `No Category, guides: ${guides}`,
+        imageUrl: previewImg,
       };
     },
   },

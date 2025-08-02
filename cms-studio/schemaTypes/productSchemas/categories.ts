@@ -75,12 +75,13 @@ export const categories = defineType({
         initialLetters(moddedTitle, 2),
         text
       );
+      const image = media?.length > 0 && media[0].asset?media[0].asset: null;
       const url =
-        media?.length > 0
+        image
           ? fashionImageBuilder(
-              media.map((i: { asset: any }) => i.asset),
+              [image],
               {
-                quality: 80,
+                quality: 50,
                 treatment: "thumbnail",
                 format: "webp",
               }

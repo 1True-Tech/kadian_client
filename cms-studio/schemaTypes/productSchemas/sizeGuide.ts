@@ -128,16 +128,23 @@ export const sizeGuide = defineType({
         
         text
       );
-      const previewImg = media?.length>0?fashionImageBuilder([media[0].asset], {
-        quality:75,
-        colorScheme:"soft",
-        treatment:"thumbnail",
-        format:"webp"
-      })[0]: previewImgText;
+
+      const image = media?.length > 0 && media[0].asset?media[0].asset: null;
+      const url =
+        image
+          ? fashionImageBuilder(
+              [image],
+              {
+                quality: 50,
+                treatment: "thumbnail",
+                format: "webp",
+              }
+            )[0]
+          : previewImgText;
       return {
         title: moddedTitle || "Untitled",
         subtitle: category ? `For ${category}` : "Uncategorized",
-        imageUrl: previewImg,
+        imageUrl: url,
       };
     },
   },
