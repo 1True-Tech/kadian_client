@@ -77,7 +77,7 @@ export const brand = defineType({
   preview: {
     select: {
       title: "name",
-      media: "logo.asset",
+      media: "logo",
       sub: "slug.current",
     },
     prepare({ title, media, sub }) {
@@ -90,7 +90,7 @@ export const brand = defineType({
         initialLetters(moddedTitle, 2),
         text
       );
-      const url = media
+      const url = media&&media.asset
         ? fashionImageBuilder([media], {
             quality: 80,
             treatment: "thumbnail",
