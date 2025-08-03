@@ -15,14 +15,14 @@ export type TrueObject<T> = {
   [K in keyof T]: Booleanish.Truthy<T[K]>;
 };
 
-interface NavItemChildrenBase {
+export interface NavItemChildrenBase {
   hasLabel?: boolean;
   items: {
     name: string;
     url: string;
   }[];
 }
-interface NavItemChildrenWithLabel extends NavItemChildrenBase {
+export interface NavItemChildrenWithLabel extends NavItemChildrenBase {
   hasLabel: true;
   label: string;
 }
@@ -30,4 +30,35 @@ export interface NavItem {
   label: string;
   url?: string;
   children?: NavItemChildrenWithLabel[];
+}
+
+
+export interface sanityImageAsset {
+  _ref: string;
+    _type: "image";
+}
+export interface imageAssetWithAsset {
+  type: string;
+  asset: sanityImageAsset;
+}
+export interface imageAssetWithAlt extends imageAssetWithAsset{
+  alt: string;
+}
+export interface imageAssetWithCaption extends imageAssetWithAsset {
+  caption: string;
+}
+
+export type imageAssetWithCaptionAndAlt = imageAssetWithAlt & imageAssetWithCaption;
+
+export interface ContentChild {
+  marks: string[];
+  text: string;
+  type: string | null;
+}
+
+// Any custom annotations (e.g. links) on a content line
+export interface MarkDef {
+  id: string;
+  type: string;
+  href?: string;
 }

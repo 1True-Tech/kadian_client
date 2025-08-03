@@ -4,9 +4,9 @@ import { SearchIcon } from "lucide-react";
 import Image from "next/image";
 import ActionsClient from "./actionsClient";
 import HeaderNavListing from "./headerNavListing";
-import navItems from "./navigationList";
 
-export default function HeaderNavSection() {
+import { NavItem } from "@/types";
+export default function HeaderNavSection({navItems}:{navItems:NavItem[]}) {
   return (
     <nav className="header-nav-section w-full py-4 relative flex flex-col gap-small items-center justify-between">
       {/* center */}

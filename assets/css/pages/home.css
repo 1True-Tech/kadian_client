@@ -1,23 +1,23 @@
-.ft-category-item:hover .item_bg{
+.ft-lookBook-item:hover .item_bg{
     @apply brightness-50;
 }
-.ft-category-item:hover .item_btn_container{
+.ft-lookBook-item:hover .item_btn_container{
     @apply pointer-events-auto opacity-100;
 }
-.ft-category-item:hover .item_btn:hover::before{
+.ft-lookBook-item:hover .item_btn:hover::before{
     @apply w-full;
 }
 
-.ft-category-item:hover .ft-category-item-content{
+.ft-lookBook-item:hover .ft-lookBook-item-content{
     @apply max-h-100;
 }
-.ft-category-item:hover .ft-category-item-content-sub-text{
+.ft-lookBook-item:hover .ft-lookBook-item-content-sub-text{
     @apply opacity-100 translate-y-0 delay-250;
 }
-.ft-category-item .ft-category-item-title{
+.ft-lookBook-item .ft-lookBook-item-title{
     @apply before:w-0 before:duration-300 before:h-1 w-fit relative before:top-[100%] before:absolute;
 }
-.ft-category-item:hover .ft-category-item-title{
+.ft-lookBook-item:hover .ft-lookBook-item-title{
     @apply before:bg-accent before:w-full;
 }
 

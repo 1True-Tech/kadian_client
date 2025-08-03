@@ -6,46 +6,36 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
+import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { getImageColors } from "@/lib/utils/colorsProcessors/colorsFromImage";
 import { ImageColors } from "@/lib/utils/colorsProcessors/types";
+import { HomePageHero } from "@/types/home";
 import { ShoppingBagIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Props = {
-  image: string;
+  data: HomePageHero;
 };
 
-export default function HeroItem({ image }: Props) {
-  const [imageColors, setImageColors] = useState<ImageColors>({
-    bgColor: "#000000",
-    primaryColor: "#000000",
-    secondaryColor: "#000000",
-  });
+export default function HeroItem({ data }: Props) {
 
-  useEffect(() => {
-    async function fetchImageColors() {
-      const colors = await getImageColors(image);
-      setImageColors(colors);
-    }
-    fetchImageColors();
-  }, [image]);
+  const image =
+        data.image.main ||
+        data.image.mobile ||
+        createColorSwatchDataUrl("#c49e45", 500, 0, data.title, "#111111");
 
   // console.log(i)
   return (
     <CarouselItem
-      className="max-w-[90%] lg:w-md md:max-w-[calc(50%)] first:!pl-0 first:!pr-xtrasmall sm:first:!pr-small not-last:!pr-0 not-first:pl-xtrasmall sm:not-first:pl-small h-full relative overflow-visible isolate"
-      style={{
-        color: generateAccessibleColorPair({
-          primary: imageColors.bgColor,
-        }).text,
-      }}
+      className="max-w-[90%] lg:w-md md:max-w-[calc(50%)] first:!pl-0 first:!pr-xtrasmall sm:first:!pr-small not-last:!pr-0 not-first:pl-xtrasmall sm:not-first:pl-small h-full relative overflow-visible isolate !text-white"
     >
       <div className="size-full relative overflow-hidden rounded-xl">
         <Image
           src={image}
-          alt={"image-1" + image}
+          alt={data.image.alt || "image-1" + image}
           width={1920}
           height={1080}
           className="size-full object-cover object-center absolute inset-0 -z-10"
@@ -60,23 +50,23 @@ export default function HeroItem({ image }: Props) {
           )}
         >
           <h4 className="font-poppins font-bold text-2xl sm:text-3xl max-w-sm">
-            Lorem ipsum dolor-sit amet consectetur.
+            {data.title}
           </h4>
           <p className="max-w-md text-sm">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel, sequi
-            nihil? Cumque in maxime aut iure iste. Odio, fugiat amet.
+            {data.subtitle}
           </p>
+          <Link href={data.cta.link}>
           <Button className="w-fit !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background h-fit rounded-full !pr-1 !py-1">
-            Shop Now{" "}
+            {data.cta.text}{" "}
             <span className="size-10 border-3 p-2 flex items-center justify-center border-primary dark:border-background bg-transparent rounded-full">
               <ShoppingBagIcon className="size-full" />
             </span>
           </Button>
+          </Link>
 
           <div className="w-full flex items-center justify-start gap-4 relative">
-           <CarouselPrevious className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0"/>
-            <CarouselNext className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0"/>
-            
+            <CarouselPrevious className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0" />
+            <CarouselNext className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0" />
           </div>
         </div>
       </div>
