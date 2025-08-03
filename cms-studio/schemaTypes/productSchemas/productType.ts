@@ -48,12 +48,13 @@ export const productType = defineType({
         initialLetters(moddedTitle,2),
         text
       );
+      const image = images?.length > 0 && images[0].asset?images[0].asset: null;
       const url =
-        images?.length > 0
+        image
           ? fashionImageBuilder(
-              images.map((i: { asset: any }) => i.asset),
+              [image],
               {
-                quality: 80,
+                quality: 50,
                 treatment: "thumbnail",
                 format: "webp",
               }
