@@ -1,17 +1,24 @@
-"use client";
-import FeaturedContent from "@/components/pages/home/featuredContent";
+import FeaturedContent from "@/components/pages/home/styleGuide";
 import ServiceFeatures from "@/components/pages/home/features";
-import FeaturedCategories from "@/components/pages/home/feauredCategories";
+import LookBookFeats from "@/components/pages/home/LookBookFeats";
 import HeroSection from "@/components/pages/home/HeroSection";
-import { Switch } from "@/components/ui/switch";
-import { useTheme } from "@/lib/hooks/theme";
+import { processHomepageHeroContent } from "@/lib/controllers/processHomepage/processHeroContent";
+import { processLookBook } from "@/lib/controllers/processHomepage/processLookBook";
 import { CreditCardIcon, PhoneIcon, Truck, UndoDotIcon } from "lucide-react";
+import { processHomeStyleGuide } from "@/lib/controllers/processHomepage/processStyleGuideContent";
+import { client } from "@/lib/utils/NSClient";
+import queries from "@/lib/queries";
 
-export default function Home() {
-  const { setTheme,theme } = useTheme();
+
+
+export default async function Home() {
+  const heroData = await processHomepageHeroContent()
+  const lookBookData = await processLookBook()
+  const styleGuide = await processHomeStyleGuide();
+
   return (
     <main className="w-full">
-      <HeroSection />
+      <HeroSection data={heroData}/>
       <ServiceFeatures
         items={[
           {
@@ -38,18 +45,8 @@ export default function Home() {
           },
         ]}
       />
-      <FeaturedContent items={[{
-        title:"Country wears"
-      }]}/>
-      <FeaturedCategories/>
-      <Switch
-        onCheckedChange={(isChecked) => {
-          setTheme(isChecked ? "dark" : "light");
-        }}
-        checked={theme==="dark"}
-      >
-        Dark
-      </Switch>
+      <FeaturedContent items={styleGuide}/>
+      <LookBookFeats items={lookBookData}/>
     </main>
   );
 }

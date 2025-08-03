@@ -3,8 +3,9 @@ import {
   CarouselContent
 } from "@/components/ui/carousel";
 import HeroItem from "./heroItem";
+import { HomePageHero } from "@/types/home";
 
-export default function HeroSection() {
+export default function HeroSection({data}:{data:HomePageHero[]}) {
   return (
     <section className="w-full px-container overflow-x-hidden relative isolate flex items-center justify-center h-screen max-h-[500px]">
       <Carousel opts={{
@@ -17,8 +18,11 @@ export default function HeroSection() {
             className:"!overflow-visible"
           }
         }}>
-          <HeroItem image="/images/hero-image-1.jpg" />
-          <HeroItem image="/images/hero-image-2.jpg" />
+          {
+            data.map((item, index) => (
+              <HeroItem key={index} data={item} />
+            ))
+          }
         </CarouselContent>
         
         {/* <CarouselIndicators className="py-4"/> */}
