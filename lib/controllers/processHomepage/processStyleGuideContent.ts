@@ -19,7 +19,7 @@ export const processHomeStyleGuide = async (): Promise<
   return items.map((item) => {
     const { alt, asset } = item.image;
 
-    let imageSrc = fashionImageBuilder([asset ], {
+    const imageSrc = fashionImageBuilder([asset ], {
       height: 700,
       width: 1200,
       quality: 100,

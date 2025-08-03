@@ -16,7 +16,7 @@ export const processLookBook = async (): Promise<LookBookItem[]> => {
 
     const { alt, ...image } = imageObj;
 
-    let imageSrc = fashionImageBuilder([{ ...image }], {
+    const imageSrc = fashionImageBuilder([{ ...image }], {
       height: 700,
       width: 1200,
       quality: 100,
