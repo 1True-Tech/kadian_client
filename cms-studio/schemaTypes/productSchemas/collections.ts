@@ -51,6 +51,13 @@ export const collections = defineType({
         "Collection image gallery; each image must have alt text for accessibility.",
     }),
     defineField({
+          name: "active",
+          title: "Active",
+          type: "boolean",
+          description: "Show this collection on the homepage",
+          initialValue: true,
+        }),
+    defineField({
       name: "priority",
       title: "Display Order",
       type: "number",
