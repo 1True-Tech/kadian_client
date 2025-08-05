@@ -1,10 +1,9 @@
-import React, { Fragment } from "react";
-import { HomeStyleGuideItem } from "./types";
-import FcItem from "./fcItem";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowRightCircle } from "lucide-react";
+import { Fragment } from "react";
+import FcItem from "./fcItem";
+import { HomeStyleGuideItem } from "./types";
 
 export default function StyleGuideContent({
   items,

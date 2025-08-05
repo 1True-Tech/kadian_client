@@ -20,6 +20,11 @@ export namespace Booleanish {
 export type TrueObject<T> = {
   [K in keyof T]: Booleanish.Truthy<T[K]>;
 };
+ export interface Color {
+  hex: string;
+  name: string;
+  rgba: string;
+}
 
 export interface NavItemChildrenBase {
   hasLabel?: boolean;
@@ -44,9 +49,12 @@ export interface sanityImageAsset {
     _type: "image";
 }
 export interface imageAssetWithAsset {
-  type: string;
+  asset:{
+    type: string;
   asset: sanityImageAsset;
+  }
 }
+
 export interface imageAssetWithAlt extends imageAssetWithAsset{
   alt: string;
 }

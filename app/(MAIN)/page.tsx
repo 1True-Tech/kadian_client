@@ -1,17 +1,16 @@
 import ServiceFeatures from "@/components/pages/home/features";
 import HeroSection from "@/components/pages/home/HeroSection";
 import LookBookFeats from "@/components/pages/home/LookBookFeats";
+import SpecialOffersSection from "@/components/pages/home/specialOffers";
 import FeaturedContent from "@/components/pages/home/styleGuide";
 import { processHomeStyleGuide } from "@/lib/controllers/processHomepage/processStyleGuideContent";
 import { CreditCardIcon, PhoneIcon, Truck, UndoDotIcon } from "lucide-react";
-
-
 
 export default async function Home() {
   const styleGuide = await processHomeStyleGuide();
   return (
     <main className="w-full">
-      <HeroSection/>
+      <HeroSection />
       <ServiceFeatures
         items={[
           {
@@ -38,9 +37,9 @@ export default async function Home() {
           },
         ]}
       />
-      {/* <ProductGridPreview/> */}
-      <FeaturedContent items={styleGuide}/>
-      <LookBookFeats/>
+      <SpecialOffersSection/>
+      <FeaturedContent items={styleGuide} />
+      <LookBookFeats />
     </main>
   );
 }

@@ -2,10 +2,9 @@ import { lBPtComponents } from "@/components/feautures/PortableText";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LookBookItem } from "@/types/home";
-import { PortableText, PortableTextComponents } from "next-sanity";
+import { PortableText } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 type Props = {
   data: LookBookItem;
