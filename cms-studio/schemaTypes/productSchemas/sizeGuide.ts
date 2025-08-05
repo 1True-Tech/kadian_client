@@ -124,7 +124,6 @@ export const sizeGuide = defineType({
         32,
         0,
         initialLetters(moddedTitle, 2),
-
         text
       );
 
