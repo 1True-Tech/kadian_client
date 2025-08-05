@@ -1,5 +1,5 @@
 import { defineField, defineType } from "sanity";
-import { imageGallery } from "../productSchemas/imageGallery";
+import { imageGallery } from "../general/imageGallery";
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
 import { initialLetters } from "@/lib/utils/elipsis";
@@ -234,14 +234,19 @@ export const SpecialOffers = defineType({
 
         text
       );
-      const image = media?.length > 0 && media[0].asset ? media[0].asset : null;
-      const url = image
-        ? fashionImageBuilder([image], {
-            quality: 50,
-            treatment: "thumbnail",
-            format: "webp",
-          })[0]
-        : previewImgText;
+      const mainImage = media?media.find((m: { primary: any; }) => m.primary):null
+
+      const url =
+        mainImage
+          ? fashionImageBuilder(
+              [mainImage.asset],
+              {
+                quality: 50,
+                treatment: "thumbnail",
+                format: "webp",
+              }
+            )[0]
+          : previewImgText;
       const dates =
         startDate && endDate
           ? `${new Date(startDate).toLocaleDateString()} - ${new Date(

@@ -1,5 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { imageGallery } from "./imageGallery";
+import { imageGallery } from "../general/imageGallery";
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
@@ -99,12 +99,14 @@ export const collections = defineType({
         initialLetters(moddedTitle, 2),
         text
       );
+      const mainImage = media?media.find((m: { primary: any; }) => m.primary):null
+
       const url =
-        media?.length > 0
+        mainImage
           ? fashionImageBuilder(
-              media.map((i: { asset: any }) => i.asset),
+              [mainImage.asset],
               {
-                quality: 80,
+                quality: 50,
                 treatment: "thumbnail",
                 format: "webp",
               }

@@ -1,7 +1,7 @@
 // schemas/product.ts
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { imageGallery } from "./imageGallery";
+import { imageGallery } from "../general/imageGallery";
 import { variantType } from "./productVariant";
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
@@ -34,11 +34,11 @@ export const productType = defineType({
   preview: {
     select: {
       title: "name",
-      images: "images",
+      media: "images",
       price: "basePrice",
       brand: "brand.name",
     },
-    prepare({ title, images, price, brand }) {
+    prepare({ title, media, price, brand }) {
       const { primary, text } = generateAccessibleColorPair();
       const moddedTitle = title || "Untitled Product";
       const previewImgText = createColorSwatchDataUrl(
@@ -48,11 +48,12 @@ export const productType = defineType({
         initialLetters(moddedTitle,2),
         text
       );
-      const image = images?.length > 0 && images[0].asset?images[0].asset: null;
+      const mainImage = media?media.find((m: { primary: any; }) => m.primary):null
+
       const url =
-        image
+        mainImage
           ? fashionImageBuilder(
-              [image],
+              [mainImage.asset],
               {
                 quality: 50,
                 treatment: "thumbnail",
@@ -101,9 +102,11 @@ export const productType = defineType({
       description:
         "Product image gallery; each image must have alt text for accessibility.",
       fieldset: "general",
-      previewImgOptions: {
-        colorScheme: "blackAndWhite",
-      },
+      singleImageConfig:{
+        previewImgOptions:{
+          colorScheme:"blackAndWhite"
+        }
+      }
     }),
     defineField({
       name: "description",

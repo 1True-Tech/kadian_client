@@ -2,7 +2,7 @@ import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
 import { defineField, defineType } from "sanity";
-import { imageGallery } from "./imageGallery";
+import { imageGallery } from "../general/imageGallery";
 import { initialLetters } from "@/lib/utils/elipsis";
 
 export const sizeGuide = defineType({
@@ -103,11 +103,10 @@ export const sizeGuide = defineType({
       description:
         "Image gallery for measurement guide; each image must have alt text for accessibility.",
       important: false,
-      imageSubText: {
-        name: "caption",
-        title: "Caption",
-        description: "A short description of the image.",
-        validation: undefined,
+      singleImageConfig: {
+        alt: {
+          description: "A short description of the image.",
+        },
       },
     }),
   ],
@@ -115,25 +114,26 @@ export const sizeGuide = defineType({
     select: {
       title: "title",
       category: "category.name",
-      media: "category.category_images"
+      media: "images",
     },
-    prepare({ title, category,media }) {
+    prepare({ title, category, media }) {
       const { primary, text } = generateAccessibleColorPair();
-      const moddedTitle = title||"Untitled Size Guide";
+      const moddedTitle = title || "Untitled Size Guide";
       const previewImgText = createColorSwatchDataUrl(
         primary,
         32,
         0,
-        initialLetters(moddedTitle,2),
-        
+        initialLetters(moddedTitle, 2),
+
         text
       );
 
-      const image = media?.length > 0 && media[0].asset?media[0].asset: null;
+      const mainImage = media?media.find((m: { primary: any; }) => m.primary):null
+
       const url =
-        image
+        mainImage
           ? fashionImageBuilder(
-              [image],
+              [mainImage.asset],
               {
                 quality: 50,
                 treatment: "thumbnail",
