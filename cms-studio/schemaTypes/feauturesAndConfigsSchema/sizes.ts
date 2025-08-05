@@ -1,5 +1,6 @@
 import { createColorSwatchDataUrl } from '@/lib/utils/colorsProcessors/color_swatch';
 import { generateAccessibleColorPair } from '@/lib/utils/colorsProcessors/colorGenerator';
+import { initialLetters } from '@/lib/utils/elipsis';
 import { defineField, defineType } from 'sanity';
 export const sizeType = defineType({
   name: 'size',
@@ -63,7 +64,7 @@ export const sizeType = defineType({
           primary,
           32,
           0,
-          title.toUpperCase(),
+          initialLetters(text, 1),
           text,
         )
         return {

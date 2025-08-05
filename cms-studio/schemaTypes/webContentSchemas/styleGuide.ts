@@ -2,7 +2,7 @@ import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swa
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { initialLetters } from "@/lib/utils/elipsis";
 import { defineField, defineType } from "sanity";
-import { imageGallery } from "../productSchemas/imageGallery";
+import { imageGallery } from "../general/imageGallery";
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 
 export const styleGuide = defineType({
@@ -95,11 +95,11 @@ export const styleGuide = defineType({
               title: "Style Image Gallery",
               description: "Optional gallery of images for this section",
               important: false,
-              previewImgOptions: {
+              singleImageConfig:{previewImgOptions: {
                 format: "webp",
                 quality: 50,
                 treatment: "thumbnail",
-              },
+              }},
             }),
             defineField({
               name: "tips",

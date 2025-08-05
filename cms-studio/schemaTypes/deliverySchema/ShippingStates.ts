@@ -1,5 +1,6 @@
 import { createColorSwatchDataUrl } from '@/lib/utils/colorsProcessors/color_swatch'
 import { generateAccessibleColorPair } from '@/lib/utils/colorsProcessors/colorGenerator'
+import { ellipsisMiddle, initialLetters } from '@/lib/utils/elipsis'
 import {defineField, defineType} from 'sanity'
 
 
@@ -30,11 +31,11 @@ export const deliveryStates = defineType({
         primary,
         32,
         0,
-        `${title.at(0)}${title.at(title.length / 2 - 1)}`.toUpperCase(),
+        initialLetters(title, 1),
         text,
       )
       return {
-        title,
+        title:ellipsisMiddle(title, 5, "char"),
         imageUrl: previewImg,
       }
     },

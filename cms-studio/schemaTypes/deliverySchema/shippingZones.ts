@@ -2,6 +2,7 @@ import { defineField, defineType } from "sanity";
 import units from "../feauturesAndConfigsSchema/units";
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
+import { ellipsisMiddle, initialLetters } from "@/lib/utils/elipsis";
 
 export const deliveryZones = defineType({
   name: "shipping_zone",
@@ -110,11 +111,11 @@ export const deliveryZones = defineType({
         primary,
         32,
         0,
-        `${title.at(0)}${title.at(title.length / 2 - 1)}`.toUpperCase(),
+        initialLetters(title, 1),
         text
       );
       return {
-        title,
+        title: ellipsisMiddle(title, 5, "char"),
         subtitle: `${rates?.length || 0} rate${
           rates?.length === 1 ? "" : "s"
         } configured`,

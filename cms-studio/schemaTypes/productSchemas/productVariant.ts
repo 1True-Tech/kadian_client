@@ -3,6 +3,9 @@ import { defineArrayMember, defineField } from "sanity";
 import units from "../feauturesAndConfigsSchema/units";
 import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
+import { imageGallery } from "../general/imageGallery";
+import { initialLetters } from "@/lib/utils/elipsis";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 
 export const variantType = defineField({
   name: "variants",
@@ -22,6 +25,19 @@ export const variantType = defineField({
           title: "SKU",
           type: "string",
           description: "Unique Stock Keeping Unit",
+        }),
+        imageGallery({
+          name: "images",
+          title: "Variant Images",
+          description:
+            "Images specific to this variant; can be different from the main product images.",
+        }),
+        defineField({
+          name: "isBase",
+          title: "Set as Base Variant",
+          type: "boolean",
+          description: "Show this variant as the default option",
+          initialValue: false,
         }),
         defineField({
           name: "stock",
@@ -76,7 +92,7 @@ export const variantType = defineField({
                 const fixed = Number(val).toFixed(2);
                 return Number(fixed) === val
                   ? true
-                  : "Price must have exactly two decimal places (e.g. 19.99)";
+                  : "Price must have exactly two decimal places (e.g. 19.99 or 10.00)";
               }),
         }),
         // CLOTH-ONLY FIELDS
@@ -96,24 +112,49 @@ export const variantType = defineField({
         }),
       ],
       preview: {
-        select: { sku: "sku", stock: "stock" },
-        prepare({ sku, stock }) {
+        select: { sku: "sku", stock: "stock", media: "images" },
+        prepare({ sku, stock, media }) {
           const { primary, text } = generateAccessibleColorPair({
             text: "#fff",
           });
+          const previewImgText = createColorSwatchDataUrl(
+            primary,
+            32,
+            0,
+            initialLetters(sku, 1),
+            text
+          );
+          const mainImage = media?media.find((m: { primary: any; }) => m.primary):null
+
+      const url =
+        mainImage
+          ? fashionImageBuilder(
+              [mainImage.asset],
+              {
+                quality: 50,
+                treatment: "thumbnail",
+                format: "webp",
+              }
+            )[0]
+          : previewImgText;
           return {
             title: sku,
             subtitle: `Stock: ${stock}`,
-            imageUrl: createColorSwatchDataUrl(
-              primary,
-              32,
-              0,
-              sku.charAt(0).toUpperCase(),
-              text
-            ),
+            imageUrl: url,
           };
         },
       },
     }),
   ],
+  validation: (Rule) =>
+    Rule.custom<{ isBase: boolean }[]>((variants) => {
+      if (!Array.isArray(variants)) return true;
+      if (variants.length <= 0)
+        return "You need a variant before this product can be shown.";
+      const baseCount = variants.filter((v) => v?.isBase === true).length;
+      if (baseCount > 1) {
+        return "Only one variant can be set as the base.";
+      }
+      return true;
+    }),
 });
