@@ -1,24 +1,17 @@
-import FeaturedContent from "@/components/pages/home/styleGuide";
 import ServiceFeatures from "@/components/pages/home/features";
-import LookBookFeats from "@/components/pages/home/LookBookFeats";
 import HeroSection from "@/components/pages/home/HeroSection";
-import { processHomepageHeroContent } from "@/lib/controllers/processHomepage/processHeroContent";
-import { processLookBook } from "@/lib/controllers/processHomepage/processLookBook";
-import { CreditCardIcon, PhoneIcon, Truck, UndoDotIcon } from "lucide-react";
+import LookBookFeats from "@/components/pages/home/LookBookFeats";
+import FeaturedContent from "@/components/pages/home/styleGuide";
 import { processHomeStyleGuide } from "@/lib/controllers/processHomepage/processStyleGuideContent";
-import { client } from "@/lib/utils/NSClient";
-import queries from "@/lib/queries";
+import { CreditCardIcon, PhoneIcon, Truck, UndoDotIcon } from "lucide-react";
 
 
 
 export default async function Home() {
-  const heroData = await processHomepageHeroContent()
-  const lookBookData = await processLookBook()
   const styleGuide = await processHomeStyleGuide();
-
   return (
     <main className="w-full">
-      <HeroSection data={heroData}/>
+      <HeroSection/>
       <ServiceFeatures
         items={[
           {
@@ -45,8 +38,9 @@ export default async function Home() {
           },
         ]}
       />
+      {/* <ProductGridPreview/> */}
       <FeaturedContent items={styleGuide}/>
-      <LookBookFeats items={lookBookData}/>
+      <LookBookFeats/>
     </main>
   );
 }

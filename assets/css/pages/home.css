@@ -4,21 +4,34 @@
 .ft-lookBook-item:hover .item_btn_container{
     @apply pointer-events-auto opacity-100;
 }
-.ft-lookBook-item:hover .item_btn:hover::before{
-    @apply w-full;
-}
 
 .ft-lookBook-item:hover .ft-lookBook-item-content{
     @apply max-h-100;
 }
-.ft-lookBook-item:hover .ft-lookBook-item-content-sub-text{
+.ft-lookBook-item:hover .ft-lookBook-item-content-sub-text,
+.style-guide-item:hover .style-guide-item-content-sub-text{
     @apply opacity-100 translate-y-0 delay-250;
 }
-.ft-lookBook-item .ft-lookBook-item-title{
+.ft-lookBook-item .ft-lookBook-item-title,
+.style-guide-item .style-guide-item-title{
     @apply before:w-0 before:duration-300 before:h-1 w-fit relative before:top-[100%] before:absolute;
 }
-.ft-lookBook-item:hover .ft-lookBook-item-title{
+.ft-lookBook-item:hover .ft-lookBook-item-title,
+.style-guide-item:hover .style-guide-item-title{
     @apply before:bg-accent before:w-full;
 }
+.style-guide-item .style-guide-item-content{
+    @apply max-h-15 duration-500;
+}
+.style-guide-item:hover .style-guide-item-content{
+    @apply max-h-500;
+}
+.style-guide-item:hover{
+    @apply shadow-lg shadow-accent/30 border-accent;
+}
+.ft-lookBook-item:hover .item_bg{
+    @apply scale-105;
+}
+
 
 /* carousel buttons hover effect */

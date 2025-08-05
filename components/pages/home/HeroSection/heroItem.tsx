@@ -1,36 +1,34 @@
-"use client";
+"use client"
 import { Button } from "@/components/ui/button";
 import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  useCarousel,
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 import { createColorSwatchDataUrl } from "@/lib/utils/colorsProcessors/color_swatch";
-import { generateAccessibleColorPair } from "@/lib/utils/colorsProcessors/colorGenerator";
-import { getImageColors } from "@/lib/utils/colorsProcessors/colorsFromImage";
-import { ImageColors } from "@/lib/utils/colorsProcessors/types";
 import { HomePageHero } from "@/types/home";
 import { ShoppingBagIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 type Props = {
   data: HomePageHero;
+  id:number;
 };
 
-export default function HeroItem({ data }: Props) {
-
+export default function HeroItem({ data,id }: Props) {
+const {currentIndex} = useCarousel()
+const isCurrent = currentIndex === id
   const image =
         data.image.main ||
         data.image.mobile ||
         createColorSwatchDataUrl("#c49e45", 500, 0, data.title, "#111111");
 
-  // console.log(i)
   return (
     <CarouselItem
-      className="max-w-[90%] lg:w-md md:max-w-[calc(50%)] first:!pl-0 first:!pr-xtrasmall sm:first:!pr-small not-last:!pr-0 not-first:pl-xtrasmall sm:not-first:pl-small h-full relative overflow-visible isolate !text-white"
+      className="max-w-[90%] lg:w-md md:max-w-[calc(50%)]  first:!pl-0 first:!pr-xtrasmall sm:first:!pr-small not-last:!pr-0 not-first:pl-xtrasmall sm:not-first:pl-small h-full relative overflow-visible isolate !text-white"
     >
       <div className="size-full relative overflow-hidden rounded-xl">
         <Image
@@ -45,8 +43,8 @@ export default function HeroItem({ data }: Props) {
 
         <div
           className={cn(
-            "w-full flex flex-col gap-4 absolute bottom-0 z-10 py-5 px-4 sm:px-8 md:px-4 lg:px-12",
-            "bg-gradient-to-t from-black/70 via-90% via-black/30 to-transparent"
+            "w-full flex flex-col justify-end gap-4 z-10 py-5 px-4 sm:px-8 md:px-4 lg:px-12",
+            "absolute inset-0 bg-gradient-to-t from-black/60 via-90% via-transparent to-transparent"
           )}
         >
           <h4 className="font-poppins font-bold text-2xl sm:text-3xl max-w-sm">
@@ -64,10 +62,10 @@ export default function HeroItem({ data }: Props) {
           </Button>
           </Link>
 
-          <div className="w-full flex items-center justify-start gap-4 relative">
+          {isCurrent&&<div className="w-full flex items-center justify-start gap-4 relative">
             <CarouselPrevious className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0" />
             <CarouselNext className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0" />
-          </div>
+          </div>}
         </div>
       </div>
     </CarouselItem>
