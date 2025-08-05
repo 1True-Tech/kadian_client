@@ -76,18 +76,17 @@ export interface Product {
   createdAt: string
   updatedAt: string
 }
-export type ProductListing = {
-  _id: string
-  name: string
-  slug: string
-  mainImage: ProductImage
-  brandName: string
-  price: number
-  currency: Currency
-  isInStock: boolean
-  badge?: 'NEW' | 'SALE' | 'LIMITED'
-}
 
+
+export interface ProductCardData {
+  name: string;
+  slug: string;
+  price: number;
+  image: {
+    src: string;
+    alt: string;
+  };
+}
 
 // Price range type
 export type PriceRange = {

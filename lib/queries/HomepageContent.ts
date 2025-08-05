@@ -1,3 +1,5 @@
+import { ProductListingItem } from "./Product";
+
 export const homepageHero = `
 *[
   _type == "homepageHero" &&
@@ -47,4 +49,24 @@ export const homePageStyleGuide = `
   "description":introduction,
   title
 }
+`
+export const HomePageSpecialOffer = `
+*[_type == "special_offers"][0...5]{
+  "displayImages": displayImages[]{
+    alt,
+    asset
+  },
+  "highlightColor": highlightColor->{hex,name,rgba},
+  title,
+  terms,
+  category,
+  "slug": slug.current,
+  "products": products[]{
+    discountType,
+    discountValue,
+    featured,
+    "product": product->${ProductListingItem}
+  }
+}
+
 `
