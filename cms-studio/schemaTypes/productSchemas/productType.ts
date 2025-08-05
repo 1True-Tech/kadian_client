@@ -167,6 +167,21 @@ export const productType = defineType({
               validation: (Rule) => Rule.min(0).max(100),
             }),
           ],
+          preview:{
+            select:{
+              title: "material.name",
+              sub: 'percentage'
+            },
+            prepare({title, sub}) {
+              const {primary,text} = generateAccessibleColorPair()
+              const url = createColorSwatchDataUrl(primary, 100, 0, title, text)
+                return{
+                  title,
+                  subtitle: sub||'--no title info--',
+                  imageUrl:url
+                }
+            },
+          }
         },
       ],
       fieldset: "fashionFields",
