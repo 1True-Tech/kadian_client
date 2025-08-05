@@ -41,6 +41,10 @@ export const homePageStyleGuide = `
   "image": sections[0].styleImages[0] {
     alt,
     asset
-  }
+  },
+  "sectionsLength":count(sections),
+  category,
+  "description":introduction,
+  title
 }
 `

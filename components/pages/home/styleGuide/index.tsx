@@ -1,46 +1,68 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { HomeStyleGuideItem } from "./types";
 import FcItem from "./fcItem";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ArrowRightCircle } from "lucide-react";
 
-export default function StyleGuideContent({items}:{items:HomeStyleGuideItem[]}) {
-  // placeholder items array for demo
-  const count = items.length;
-
-  // determine grid layout classes based on number of items
-  const rightGridClasses = (() => {
-    if (count === 1) return "grid-cols-1";
-    if (count === 2) return "grid-cols-2";
-    if (count === 3) return "grid-cols-2";
-    return "grid-cols-2 grid-rows-2";
-  })();
-
+export default function StyleGuideContent({
+  items,
+}: {
+  items: HomeStyleGuideItem[];
+}) {
+  const bgImages = items.map((item) => item.image.src);
   return (
-    <div className="w-full max-w-screen-lg mx-auto px-container grid grid-cols-1 items-center sm:grid-cols-2 gap-5">
-      {/* LEFT / TOP on mobile */}
-      <div className="space-y-4">
-        <h2 className="text-center sm:text-left w-fit mx-auto sm:mx-0 text-2xl sm:text-3xl font-bold underline decoration-accent underline-offset-4">
-          Style Guide
-        </h2>
-        <p className="text-center sm:text-left text-base leading-relaxed max-w-prose">
-          A curated style guide to help you build look.
-        </p>
-      </div>
+    <div className="w-full h-fit my-container">
+      <div
+        className="w-full sticky top-0 h-[100dvh] brightness-50"
+        style={{
+          backgroundImage: `url(${
+            bgImages[Math.floor(Math.random() * bgImages.length)]
+          })`,
+          backgroundAttachment: "fixed",
+          backgroundPosition: "top",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        }}
+      />
+      <div className="w-full relative mt-[-90dvh] pb-20 h-fit isolate max-w-screen-lg mx-auto p-container flex flex-col items-center justify-center gap-5">
+        {/* LEFT / TOP on mobile */}
+        <div className="space-y-4 text-white">
+          <h2 className="text-center w-fit mx-auto text-2xl sm:text-3xl font-bold underline decoration-accent underline-offset-4">
+            Style Guide
+          </h2>
+          <p className="text-center text-base leading-relaxed max-w-prose">
+            From clean lines to bold statements, this guide helps you build a look that&apos;s elevated, effortless, and all you.
+          </p>
+        </div>
 
-      {/* RIGHT */}
-      <div className={`w-full grid ${rightGridClasses} h-100 gap-4`}>
-        {items.slice(0, 4).map((item, idx) => {
-          // for 3 items, make the 3rd span both columns
-          const spanClass = count === 3 && idx === 2 ? "col-span-2" : "";
-
-          return (
-            <article
-              key={idx}
-              className={`${spanClass} flex items-center w-fit justify-center`}
-            >
-              <FcItem item={item}/>
-            </article>
-          );
-        })}
+        {/* RIGHT */}
+        <div className={`w-full h-fit flex flex-wrap gap-4 justify-center`}>
+          {items.slice(0, 4).map((item, idx) => {
+            // for 3 items, make the 3rd span both columns
+            return (
+              <Fragment key={idx}>
+              <article
+                className={`grow max-w-sm basis-md flex items-center w-full justify-center`}
+              >
+                <FcItem item={item} />
+              </article>
+              </Fragment>
+            );
+          })}
+        </div>
+        <Button
+          variant={"default"}
+          className={cn(
+            "fluid_btn !bg-transparent !overflow-hidden border-2 relative isolate !border-accent !text-white !h-fit !py-2 !px-4 rounded-full",
+            "before:w-0 before:h-full before:absolute before:left-0 before:inset-0",
+            "before:duration-300 before:bg-accent/70 before:backdrop-blur-3xl before:-z-1"
+          )}
+        >
+          See All Guides{" "}
+          <ArrowRightCircle className="hidden_icon size-5 [--w:1.25rem]" />
+        </Button>
       </div>
     </div>
   );
