@@ -82,6 +82,7 @@ export interface ProductCardData {
   name: string;
   slug: string;
   price: number;
+  discount?:DiscountInfo;
   image: {
     src: string;
     alt: string;
@@ -102,14 +103,14 @@ export type StockStatus = 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK'
 export type SizeCategory = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL'
 
 // Product status type
-export type ProductStatus = 'DRAFT' | 'ACTIVE' | 'ARCHIVED'
+export type ProductStatus = 'draft' | 'active' | 'archived'
 
 // Discount type
 export type DiscountInfo = {
-  type: 'PERCENTAGE' | 'FIXED'
+  type: 'percentage' | 'fixed' | 'special'
   value: number
-  startDate: string
-  endDate: string
+  startDate?: string
+  endDate?: string
 }
 // Price validation type
 export type PriceValidation = {

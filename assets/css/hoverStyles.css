@@ -54,15 +54,25 @@
   @apply w-full;
 }
 .fluid_btn .hidden_icon {
-  @apply w-0 duration-300 -ml-2;
+  @apply max-w-0 duration-300 -ml-2;
   --w: 2rem;
 }
 .fluid_btn:hover .hidden_icon {
   @apply ml-0;
-  width: var(--w);
+  max-width: var(--w);
 }
 
 .footer-nav-list-item:hover .footer-nav-list-item-link-icon {
   @apply text-accent animate-bounce-self inline-block;
   transform-origin: center;
+}
+
+.product-card:hover{
+  @apply shadow-md;
+}
+.product-card:hover .product-card-image{
+  @apply scale-105;
+}
+.product-card .product-card-link:hover{
+  @apply text-primary;
 }
