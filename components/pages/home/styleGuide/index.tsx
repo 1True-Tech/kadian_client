@@ -14,7 +14,7 @@ export default function StyleGuideContent({
   return (
     <div className="w-full h-fit my-container">
       <div
-        className="w-full sticky top-0 h-[100dvh] brightness-50"
+        className="w-full sticky duration-500 top-0 h-[100dvh] brightness-50"
         style={{
           backgroundImage: `url(${
             bgImages[Math.floor(Math.random() * bgImages.length)]
@@ -25,7 +25,7 @@ export default function StyleGuideContent({
           backgroundSize: "cover",
         }}
       />
-      <div className="w-full relative mt-[-90dvh] pb-20 h-fit isolate max-w-screen-lg mx-auto p-container flex flex-col items-center justify-center gap-5">
+      <div className="w-full relative mt-[-90dvh] min-h-fit h-[100dvh] pb-20 isolate max-w-screen-lg mx-auto p-container flex flex-col items-center justify-center gap-5">
         {/* LEFT / TOP on mobile */}
         <div className="space-y-4 text-white">
           <h2 className="text-center w-fit mx-auto text-2xl sm:text-3xl font-bold underline decoration-accent underline-offset-4">
@@ -60,7 +60,7 @@ export default function StyleGuideContent({
           )}
         >
           See All Guides{" "}
-          <ArrowRightCircle className="hidden_icon size-5 [--w:1.25rem]" />
+          <span className="hidden_icon [--w:calc(var(--spacing)_*_5)] overflow-hidden"><ArrowRightCircle className="size-5" /></span>
         </Button>
       </div>
     </div>
