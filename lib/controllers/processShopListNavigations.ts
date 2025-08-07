@@ -41,14 +41,6 @@ export const processShopListNavigations = async (): Promise<NavItem[]> => {
     {
       label: "Consultation",
       url: "/consultation",
-    },
-    {
-      label: "Blog",
-      url: "/blog",
-    },
-    {
-      label: "Contact",
-      url: "/contact",
-    },
+    }
   ];
 };
