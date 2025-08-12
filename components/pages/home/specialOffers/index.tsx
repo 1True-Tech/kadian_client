@@ -13,7 +13,7 @@ import { CSSProperties } from "react";
 
 export default async function SpecialOffersSection() {
   const specialOffers = await processSpecialOffersHome();
-
+  if(specialOffers.length <= 0) return null
   return (
     <div className="flex flex-col gap-10 py-sections sm:px-container">
       {specialOffers.map((offer) => {

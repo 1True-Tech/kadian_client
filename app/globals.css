@@ -214,6 +214,9 @@
   *::after {
     @apply border-border outline-ring/50;
   }
+  .link:hover{
+    @apply underline;
+  }
   h1,
   h2,
   h3,

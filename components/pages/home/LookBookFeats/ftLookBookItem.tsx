@@ -13,7 +13,7 @@ type Props = {
 
 export default function FtLookBookItem({ data }: Props) {
   return (
-    <li className="ft-lookBook-item overflow-hidden relative isolate border-2 border-accent rounded-md basis-[12rem] sm:basis-[18rem] grow w-full max-w-md h-72 sm:aspect-square max-h-[85vh] flex items-end gap-2">
+    <li className="ft-lookBook-item overflow-hidden relative isolate border-2 border-accent rounded-md basis-[12rem] sm:basis-[18rem] grow w-full max-w-md h-84 sm:aspect-square max-h-[85vh] flex items-end gap-2">
       <span className="absolute rounded-sm overflow-hidden pointer-events-none inset-0 -z-5 size-full flex items-center justify-center">
         <Image
           src={data.previewImage.src}

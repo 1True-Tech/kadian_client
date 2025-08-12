@@ -1,4 +1,4 @@
-import { ProductCardData } from "@/types/product";
+import { ProductCardDataReady } from "@/types/product";
 import ProductCard, { ProductCardProps } from ".";
 import ProductCardSkeleton from "./skeleton";
 
@@ -10,7 +10,7 @@ export default function ProductGrid({
   productProps
 }: {
   loading: boolean;
-  products: ProductCardData[];
+  products: ProductCardDataReady[];
   productProps?: Omit<ProductCardProps,"product">
 }) {
   if (loading) return <ProductCardSkeleton />;

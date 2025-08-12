@@ -1,11 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import calculatePercentage from "@/lib/utils/percentage";
-import { ProductCardData } from "@/types/product";
+import { ProductCardDataReady } from "@/types/product";
 import Image from "next/image";
 
 export interface ProductCardProps {
-  product: ProductCardData;
+  product: ProductCardDataReady;
   isInCart?: boolean;
   quantity?: number;
   onAdd?: () => void;

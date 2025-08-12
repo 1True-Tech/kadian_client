@@ -4,5 +4,5 @@
 }
 
 [data-radix-popper-content-wrapper]:has([data-position="center"]){
-    @apply !left-1/2 -translate-x-1/2;
+    @apply !left-1/2 !-translate-x-1/2;
 }

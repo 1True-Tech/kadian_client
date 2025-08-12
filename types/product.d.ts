@@ -1,5 +1,8 @@
+import { imageAssetWithAlt } from ".";
+import { ReadyImage } from "./home";
+
 type Currency = "JAD" | "USD";
-export type ProductVariant = {
+export interface ProductVariantBase{
   sku: string
   size: string
   color: string
@@ -8,17 +11,30 @@ export type ProductVariant = {
   images: ProductImage[],
   isBase?: boolean
 }
+export interface ProductVariantRaw extends ProductVariantBase{
+  images: ProductImageRaw[],
+}
+export interface ProductVariantReady extends ProductVariantBase{
+  images: ProductImageReady[],
+}
 
-export type ProductImage = {
-  url: string
-  alt: string
+export interface ProductImageRaw extends imageAssetWithAlt{
+  isPrimary?: boolean
+}
+export interface ProductImageReady extends ReadyImage{
   isPrimary?: boolean
 }
 
-export type BrandSummary = {
+export interface BrandSummaryBase {
   name: string
   slug: string
   logo?: ProductImage
+}
+export interface BrandSummaryRaw {
+  logo?: ProductImageRaw
+}
+export interface BrandSummaryReady {
+  logo?: ProductImageReady
 }
 
 export type MaterialInfo = {
@@ -49,7 +65,7 @@ export type ProductJsonLd = {
   }
 }
 
-export interface Product {
+export interface ProductBase {
   _id: string
   _type: "product"
   name: string
@@ -76,17 +92,35 @@ export interface Product {
   createdAt: string
   updatedAt: string
 }
+export interface ProductRaw extends ProductBase{
+    mainImage: ProductImageRaw;
+  brand: BrandSummaryRaw;
+  mainImage: ProductImageRaw;
+  gallery: ProductImageRaw[];
+  variants: ProductVariantRaw[];
+
+}
+export interface ProductReady extends ProductBase{
+    mainImage: ProductImageReady;
+  brand: BrandSummaryReady;
+  mainImage: ProductImageReady;
+  gallery: ProductImageReady[];
+  variants: ProductVariantReady[];
+
+}
 
 
-export interface ProductCardData {
+export interface ProductCardDataBase {
   name: string;
   slug: string;
   price: number;
   discount?:DiscountInfo;
-  image: {
-    src: string;
-    alt: string;
-  };
+}
+export interface ProductCardDataRaw extends ProductCardDataBase {
+  image: imageAssetWithAlt;
+}
+export interface ProductCardDataReady extends ProductCardDataBase {
+  image: ReadyImage;
 }
 
 // Price range type

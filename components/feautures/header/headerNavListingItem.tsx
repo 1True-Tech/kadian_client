@@ -31,20 +31,25 @@ export default function HeaderNavListItem({ label, children, url }: NavItem) {
           </PopoverTrigger>
           <PopoverContent
             sideOffset={10}
-            position="center"
-            className="!w-fit !max-w-[98dvw] max-h-[80vh] overflow-y-auto grid grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-4"
+            // position="center"
+            className="!w-fit !max-w-[98dvw] max-h-[80vh] overflow-y-auto !grid grid-cols-[repeat(auto-fit,_minmax(15rem,1fr))] gap-4"
           >
             {children.map((child, idx) => {
+              const LabelComp2 = child.url ? (
+                <Link href={`/shop/${child.url}`} className="header-nav-list-item-link w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize">
+                  {child.label}
+                </Link>
+              ) : (
+                <h4 className="w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize">
+                  {child.label}
+                </h4>
+              );
               return (
                 <div
                   key={idx}
                   className="w-full header-nav-list-item-nested flex flex-col gap-4"
                 >
-                  {child.hasLabel && (
-                    <h4 className="w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize">
-                      {child.label}
-                    </h4>
-                  )}
+                  {child.hasLabel && LabelComp2}
                   <ul className="w-full flex flex-col gap-2">
                     {child.items.map((item, idx_item) => (
                       <li key={idx_item} className="w-full">

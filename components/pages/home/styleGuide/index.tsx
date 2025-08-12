@@ -1,20 +1,20 @@
 import { Button } from "@/components/ui/button";
+import { processHomeStyleGuide } from "@/lib/controllers/processHomepage/processStyleGuideContent";
 import { cn } from "@/lib/utils";
 import { ArrowRightCircle } from "lucide-react";
 import { Fragment } from "react";
 import FcItem from "./fcItem";
-import { HomeStyleGuideItem } from "./types";
 
-export default function StyleGuideContent({
-  items,
-}: {
-  items: HomeStyleGuideItem[];
-}) {
-  const bgImages = items.map((item) => item.image.src);
+export default async function StyleGuideContent() {
+  const styleGuide = await processHomeStyleGuide();
+
+  if(styleGuide.length <= 0) return null
+
+  const bgImages = styleGuide.map((item) => item.image.src);
   return (
     <div className="w-full h-fit my-container">
       <div
-        className="w-full sticky duration-500 top-0 h-[100dvh] brightness-50"
+        className="w-full sticky duration-500 top-0 h-screen brightness-50"
         style={{
           backgroundImage: `url(${
             bgImages[Math.floor(Math.random() * bgImages.length)]
@@ -25,7 +25,7 @@ export default function StyleGuideContent({
           backgroundSize: "cover",
         }}
       />
-      <div className="w-full relative mt-[-90dvh] min-h-fit h-[100dvh] pb-20 isolate max-w-screen-lg mx-auto p-container flex flex-col items-center justify-center gap-5">
+      <div className="w-full relative mt-[-90dvh] min-h-fit h-screen pb-20 isolate max-w-screen-lg mx-auto p-container flex flex-col items-center justify-center gap-5">
         {/* LEFT / TOP on mobile */}
         <div className="space-y-4 text-white">
           <h2 className="text-center w-fit mx-auto text-2xl sm:text-3xl font-bold underline decoration-accent underline-offset-4">
@@ -38,14 +38,14 @@ export default function StyleGuideContent({
 
         {/* RIGHT */}
         <div className={`w-full h-fit flex flex-wrap gap-4 justify-center`}>
-          {items.slice(0, 4).map((item, idx) => {
+          {styleGuide.slice(0, 4).map((style, idx) => {
             // for 3 items, make the 3rd span both columns
             return (
               <Fragment key={idx}>
               <article
                 className={`grow max-w-sm basis-md flex items-center w-full justify-center`}
               >
-                <FcItem item={item} />
+                <FcItem item={style} />
               </article>
               </Fragment>
             );

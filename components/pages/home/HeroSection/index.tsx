@@ -7,6 +7,7 @@ import HeroItem from "./heroItem";
 
 export default async function HeroSection() {
     const heroData = await processHomepageHeroContent()
+  if(heroData.length <= 0) return null
 
   return (
     <section className="w-full px-container overflow-x-hidden relative isolate flex items-center justify-center h-screen max-h-[500px]">

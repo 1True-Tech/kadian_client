@@ -3,6 +3,7 @@ import FtLookBookItem from "./ftLookBookItem";
 
 export default async function LookBookFeats() {
   const lookBookData = await processLookBook();
+  if(lookBookData.length <= 0) return null
 
   return (
     <div className="w-full h-fit px-container relative mt-10">
