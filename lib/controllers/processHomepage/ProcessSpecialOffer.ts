@@ -5,7 +5,7 @@ import { imageAssetWithAlt } from "@/types";
 import { SpecialOffers } from "@/types/home";
 
 export const processSpecialOffersHome = async (): Promise<SpecialOffers> => {
-  const items = await client.fetch<SpecialOffers>(queries.HomePageSpecialOffer);
+  const items = (await client.fetch<SpecialOffers>(queries.HomePageSpecialOffer))|| ([] as SpecialOffers);
 
   return items.map((item) => {
     const { alt, ...image } = (item.displayImages as imageAssetWithAlt[])[0];

@@ -1,0 +1,7 @@
+.left-nav .left-nav-item{
+    @apply w-full bg-foreground/10 p-peers flex flex-col gap-peers;
+}
+
+.left-nav .left-nav-item h3{
+    @apply text-lg font-bold;
+}

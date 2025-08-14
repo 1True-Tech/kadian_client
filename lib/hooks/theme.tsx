@@ -37,7 +37,6 @@ const useTheme = () => {
 };
 
 const updateTheme = (theme: themes, cookieKey: string = "theme") => {
-  cookies.set(cookieKey, theme);
   switch (theme) {
     case "dark":
       if (!document.querySelector("html")?.classList.contains("dark")) {

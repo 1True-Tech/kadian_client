@@ -3,6 +3,7 @@ import React from "react";
 export interface HasSlot {
   children: React.ReactNode;
 }
+export type HasNoSlot<T> = Omit<T, "children">
 export type FalsyValue = false | "" | 0 | 0n | null | undefined;
 export type TruthyValue<T> = Exclude<T, FalsyValue>;
 export type DotNestedKeys<T> = T extends object
@@ -36,6 +37,7 @@ export interface NavItemChildrenBase {
 export interface NavItemChildrenWithLabel extends NavItemChildrenBase {
   hasLabel: true;
   label: string;
+  url?:string
 }
 export interface NavItem {
   label: string;
