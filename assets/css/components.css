@@ -6,3 +6,9 @@
 [data-radix-popper-content-wrapper]:has([data-position="center"]){
     @apply !left-1/2 !-translate-x-1/2;
 }
+.outline-none,
+.outline-none:focus,
+.outline-none:focus-visible,
+.outline-none:focus-within{
+    outline-style: none !important;
+}

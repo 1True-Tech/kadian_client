@@ -67,12 +67,42 @@
   transform-origin: center;
 }
 
-.product-card:hover{
+.product-card:hover {
   @apply shadow-md;
 }
-.product-card:hover .product-card-image{
+.product-card:hover .product-card-image {
   @apply scale-105;
 }
-.product-card .product-card-link:hover{
+.product-card .product-card-link:hover {
   @apply text-primary;
+}
+
+.input-box-external {
+  --color-hover: var(--color-accent);
+  --color: var(--color-primary);
+  --border-width: 1px;
+  --border-width-hover: 2px;
+  border-width: var(--border-width);
+  @apply border-[var(--color)] my-[calc(var(--border-width-hover)*2)];
+}
+
+.input-box-external:hover{
+  border-width: var(--border-width);
+  @apply border-[var(--color)];
+}
+.input-box-external:has(input:focus-visible) {
+  border-width: var(--border-width-hover);
+  @apply !border-[var(--color)];
+}
+.input-box-external button{
+  transition-duration: 500ms;
+}
+.input-box-external button:hover{
+  @apply !bg-[var(--color)] !text-white;
+}
+.input-box-external:has(input:focus-visible) button {
+  @apply !bg-[var(--color)] !text-white;
+}
+.link:hover{
+    @apply underline;
 }

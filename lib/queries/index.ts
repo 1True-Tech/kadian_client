@@ -1,6 +1,7 @@
 import { categoryForShopList } from "./Category";
 import { homepageHero, homePageLookBook, HomePageSpecialOffer, homePageStyleGuide } from "./HomepageContent";
 import { shopCategory, shopCollection } from "./shop";
+import {colors} from './Colors'
 
 const queries = {
     categoryForShopList,
@@ -9,7 +10,8 @@ const queries = {
     homePageStyleGuide,
     HomePageSpecialOffer,
     shopCategory,
-    shopCollection
+    shopCollection,
+    colors
 }
 
 export default queries;
