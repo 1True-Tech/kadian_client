@@ -156,20 +156,43 @@ function CarouselContent({
     </div>
   );
 }
-
 function CarouselIndicators({
   className,
   slotProps,
   ...props
 }: React.ComponentProps<"div"> & {
-  slotProps?: { item: React.HTMLAttributes<HTMLButtonElement> };
+  slotProps?: {
+  item: React.HTMLAttributes<HTMLButtonElement> & {
+    getBackgroundImage?: (index: number) => `url(${string})`;
+  };
+};
 }) {
   const { api, currentIndex } = useCarousel();
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const activeChild = container.children[currentIndex] as HTMLElement;
+    if (!activeChild) return;
+
+    const containerWidth = container.offsetWidth;
+    const childOffset = activeChild.offsetLeft;
+    const childWidth = activeChild.offsetWidth;
+
+    const scrollTo = childOffset - containerWidth / 2 + childWidth / 2;
+    container.scrollTo({
+      left: scrollTo,
+      behavior: 'smooth',
+    });
+  }, [currentIndex]);
 
   return (
     <div
+      ref={containerRef}
       className={cn(
-        "flex items-center justify-center gap-2 py-4 pointer-events-none",
+        "flex items-center justify-start gap-2 py-4 overflow-x-auto scrollbar-hide pointer-events-none", // allow scroll
         className
       )}
       {...props}
@@ -179,13 +202,18 @@ function CarouselIndicators({
           key={idx}
           {...slotProps?.item}
           className={cn(
-            "h-2 rounded-full pointer-events-auto duration-300",
+            "h-2 rounded-full pointer-events-auto duration-300 shrink-0", // prevent wrapping
             idx === currentIndex ? "bg-primary w-4" : "bg-secondary/40 w-2",
-            slotProps?.item.className
+            slotProps?.item?.className
           )}
+          style={{
+            ...slotProps?.item.style,
+            "--index": idx,
+            backgroundImage: slotProps?.item.getBackgroundImage?slotProps?.item.getBackgroundImage(idx):undefined
+          } as React.CSSProperties}
           onClick={(e) => {
             api?.scrollTo(idx);
-            slotProps?.item.onClick?.(e);
+            slotProps?.item?.onClick?.(e);
           }}
           aria-label={`Go to slide ${idx + 1}`}
         />
@@ -193,6 +221,7 @@ function CarouselIndicators({
     </div>
   );
 }
+
 
 function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   const { orientation } = useCarousel();

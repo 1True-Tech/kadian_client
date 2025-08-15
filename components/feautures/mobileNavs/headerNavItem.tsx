@@ -28,7 +28,9 @@ export default function HeaderNavListItem({ label, children, url }: NavItem) {
         <Collapsible>
           <CollapsibleTrigger className="cursor-pointer data-[state=closed]:[--rotate:0deg] data-[state=open]:[--rotate:45deg] flex items-center justify-between gap-2 w-full">
             {LabelComp}
-            {!url && <PlusIcon className="size-4 rotate-[var(--rotate)] duration-300" />}
+            {!url && (
+              <PlusIcon className="size-4 rotate-[var(--rotate)] duration-300" />
+            )}
           </CollapsibleTrigger>
           <CollapsibleContent className="!w-full">
             <Accordion
@@ -62,9 +64,18 @@ export default function HeaderNavListItem({ label, children, url }: NavItem) {
                       icon={null}
                       className="flex cursor-pointer items-center justify-between w-full data-[state=closed]:[--rotate:0deg] data-[state=open]:[--rotate:45deg]"
                     >
-                      <h4 className="w-full text-foreground/70 font-bold capitalize">
-                        {child.label}
-                      </h4>
+                      {child.url ? (
+                        <Link
+                          href={`${child.url}`}
+                          className="header-nav-list-item-link w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize"
+                        >
+                          {child.label}
+                        </Link>
+                      ) : (
+                        <h4 className="w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize">
+                          {child.label}
+                        </h4>
+                      )}
                       <PlusIcon className="size-4 !rotate-[var(--rotate)] duration-300" />
                     </AccordionTrigger>
                     <AccordionContent>{itemsMap}</AccordionContent>

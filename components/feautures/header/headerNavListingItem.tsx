@@ -36,7 +36,7 @@ export default function HeaderNavListItem({ label, children, url }: NavItem) {
           >
             {children.map((child, idx) => {
               const LabelComp2 = child.url ? (
-                <Link href={`/shop/${child.url}`} className="header-nav-list-item-link w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize">
+                <Link href={`${child.url}`} className="header-nav-list-item-link w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize">
                   {child.label}
                 </Link>
               ) : (

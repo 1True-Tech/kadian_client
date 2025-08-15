@@ -1,15 +1,9 @@
 import { dummyProducts } from "@/assets/dummy-data/products";
 import ProductGrid from "@/components/feautures/ProductCard/preview";
-import { ShopSorting } from "@/store/shopFilters/types";
-import { HasNoSlot } from "@/types";
-import { ShopLayoutPropWithParams } from "./layout";
 import { ShopSort } from "@/components/pages/shop/shopNav";
+import { ShopSorting } from "@/store/shopFilters/types";
 
-export default async function ShopPages({
-  params,
-}: HasNoSlot<ShopLayoutPropWithParams>) {
-  const { shop_items } = await params;
-  const shopItems = shop_items || [];
+export default async function ShopPages() {
   const sortFilters: {
     label: string;
     sort: ShopSorting;
@@ -32,21 +26,19 @@ export default async function ShopPages({
     },
   ];
 
-
   return (
     <main className="w-full">
-      <div className="w-full bg-background px-container py-container sticky top-40 md:top-30 z-10 flex items-center justify-between">
+      <div className="w-full bg-background px-container pt-container pb-xtrasmall sticky top-40 md:top-30 z-10 flex items-center justify-between">
         <span>showing 1-10 out of 20 results</span>
 
         <div className="w-fit flex items-center justify-between gap-3">
-          Sort by:{" "}
-          <ShopSort sortFilters={sortFilters} />
+          Sort by: <ShopSort sortFilters={sortFilters} />
         </div>
         <div className="md:hidden flex items-center justify-center gap-peers">
-            <span id="mobile-filter"></span>
-          </div>
+          <span id="mobile-filter"></span>
+        </div>
       </div>
-      <div className="w-full py-peers relative z-0">
+      <div className="w-full px-container md:px-0 py-peers relative z-0">
         <ProductGrid
           products={[
             ...dummyProducts.map((i) => ({

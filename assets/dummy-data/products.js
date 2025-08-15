@@ -10,7 +10,7 @@ export const dummyProducts = [
       name: "Urban Edge",
       slug: "urban-edge",
       logo: {
-        src: "/brands/urban-edge-logo.png",
+        src: "/icon.jpg",
         alt: "Urban Edge Logo",
       }
     },
@@ -19,12 +19,12 @@ export const dummyProducts = [
       slug: "outerwear"
     },
     mainImage: {
-      src: "/products/leather-jacket-main.jpg",
+      src: "/images/content/image (1).jpg",
       alt: "Classic Leather Jacket Front View"
     },
     gallery: [
-      { src: "/products/leather-jacket-side.jpg", alt: "Side View" },
-      { src: "/products/leather-jacket-back.jpg", alt: "Back View" }
+      { src: "/images/content/image (1).jpg", alt: "Side View" },
+      { src: "/images/content/image (2).jpg", alt: "Back View" }
     ],
     variants: [
       {
@@ -36,7 +36,7 @@ export const dummyProducts = [
         isBase: true,
         images: [
           {
-            url: "/products/leather-jacket-black-m.jpg",
+            url: "/images/content/image (1).jpg",
             alt: "Black Medium Jacket",
             isPrimary: true
           }
@@ -83,7 +83,7 @@ export const dummyProducts = [
       name: "EcoWear",
       slug: "ecowear",
       logo: {
-        src: "/brands/ecowear-logo.png",
+        src: "/icon.jpg",
         alt: "EcoWear Logo"
       }
     },
@@ -92,10 +92,13 @@ export const dummyProducts = [
       slug: "t-shirts"
     },
     mainImage: {
-      src: "/products/cotton-tshirt-main.jpg",
+      src: "/images/content/image (3).jpg",
       alt: "White Organic T-Shirt"
     },
-    gallery: [],
+    gallery: [
+      { src: "/images/content/image (3).jpg", alt: "Side View" },
+      { src: "/images/content/image (4).jpg", alt: "Back View" }
+    ],
     variants: [
       {
         sku: "OCT-WHITE-L",
@@ -105,7 +108,7 @@ export const dummyProducts = [
         price: 35,
         images: [
           {
-            src: "/products/cotton-tshirt-white-l.jpg",
+            src: "/images/content/image (3).jpg",
             alt: "White T-shirt Large",
             isPrimary: true
           }
@@ -152,7 +155,7 @@ export const dummyProducts = [
       name: "StreetFlex",
       slug: "streetflex",
       logo: {
-        src: "/brands/streetflex-logo.png",
+        src: "/icon.jpg",
         alt: "StreetFlex Logo"
       }
     },
@@ -161,10 +164,13 @@ export const dummyProducts = [
       slug: "jeans"
     },
     mainImage: {
-      src: "/products/denim-jeans-main.jpg",
+      src: "/images/content/image (5).jpg",
       alt: "Slim Fit Jeans"
     },
-    gallery: [],
+    gallery: [
+      { src: "/images/content/image (5).jpg", alt: "Side View" },
+      { src: "/images/content/image (6).jpg", alt: "Back View" }
+    ],
     variants: [
       {
         sku: "DJ-BLUE-32",
@@ -174,7 +180,7 @@ export const dummyProducts = [
         price: 60,
         images: [
           {
-            src: "/products/denim-jeans-blue.jpg",
+            src: "/images/content/image (5).jpg",
             alt: "Blue Slim Jeans",
             isPrimary: true
           }
@@ -222,7 +228,7 @@ export const dummyProducts = [
       name: "WarmThreads",
       slug: "warmthreads",
       logo: {
-        src: "/brands/warmthreads-logo.png",
+        src: "/icon.jpg",
         alt: "WarmThreads Logo"
       }
     },
@@ -231,10 +237,13 @@ export const dummyProducts = [
       slug: "accessories"
     },
     mainImage: {
-      src: "/products/wool-scarf-main.jpg",
+      src: "/images/content/image (7).jpg",
       alt: "Gray Wool Scarf"
     },
-    gallery: [],
+    gallery: [
+      { src: "/images/content/image (7).jpg", alt: "Side View" },
+      { src: "/images/content/image (8).jpg", alt: "Back View" }
+    ],
     variants: [
       {
         sku: "WWS-GRAY-ONE",
@@ -244,7 +253,7 @@ export const dummyProducts = [
         price: 45,
         images: [
           {
-            src: "/products/wool-scarf-gray.jpg",
+            src: "/images/content/image (7).jpg",
             alt: "Gray Wool Scarf",
             isPrimary: true
           }
