@@ -30,10 +30,10 @@ export interface BrandSummaryBase {
   slug: string
   logo?: ProductImage
 }
-export interface BrandSummaryRaw {
+export interface BrandSummaryRaw extends BrandSummaryBase {
   logo?: ProductImageRaw
 }
-export interface BrandSummaryReady {
+export interface BrandSummaryReady extends BrandSummaryBase {
   logo?: ProductImageReady
 }
 
