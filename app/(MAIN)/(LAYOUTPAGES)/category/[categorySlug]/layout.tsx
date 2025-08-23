@@ -1,7 +1,7 @@
 import PagesLayout from "@/components/layout/PagesLayout";
 import { HasSlot, ParamsProps } from "@/types";
 
-export default async function layout({ children, params }: HasSlot & ParamsProps<{categorySlug:string|null}>) {
+export default async function Layout({ children, params }: HasSlot & ParamsProps<{categorySlug:string|null}>) {
   const {categorySlug} = await params
   const breadcrumbItems = [
     { label: "Shop", href: "/shop" },
