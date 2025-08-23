@@ -5,7 +5,7 @@ import { HasSlot } from "@/types";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-export default function layout({ children }: HasSlot) {
+export default function Layout({ children }: HasSlot) {
   const path = usePathname()
   const { load, items } = useNavItems();
   useEffect(() => {

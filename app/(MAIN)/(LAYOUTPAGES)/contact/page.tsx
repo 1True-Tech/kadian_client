@@ -33,7 +33,7 @@ const Contact = () => {
         <div className="text-center mb-12">
           <h1 className="heading-section mb-4">Get in Touch</h1>
           <p className="text-elegant max-w-2xl mx-auto">
-            We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </div>
 
@@ -134,7 +134,7 @@ const Contact = () => {
               <CardHeader>
                 <CardTitle>Send us a Message</CardTitle>
                 <p className="text-muted-foreground">
-                  Fill out the form below and we'll get back to you within 24 hours.
+                  Fill out the form below and we&apos;ll get back to you within 24 hours.
                 </p>
               </CardHeader>
               <CardContent>
@@ -235,7 +235,7 @@ const Contact = () => {
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-2">How do I track my order?</h3>
                 <p className="text-muted-foreground text-sm">
-                  Once your order ships, you'll receive a tracking number via email to monitor your package.
+                  Once your order ships, you&apos;ll receive a tracking number via email to monitor your package.
                 </p>
               </CardContent>
             </Card>

@@ -2,7 +2,7 @@ import BackButton from "@/components/feautures/backButton";
 import BgMask from "@/components/layout/bg-mask";
 import { HasSlot } from "@/types";
 
-export default function layout({ children }: HasSlot) {
+export default function Layout({ children }: HasSlot) {
   return (
     <div className="w-full min-h-screen grid md:grid-cols-2 bg-gradient-to-b from-accent/50 to-secondary isolate relative">
       <BgMask position="bottom-right" image="/images/content/image (5).jpg" />
