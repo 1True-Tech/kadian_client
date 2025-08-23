@@ -5,6 +5,7 @@
 @import "../assets/css/hoverStyles.css";
 @import "../assets/css/pages/home.css";
 @import "../assets/css/pages/shop.css";
+@import "../assets/css/loaders.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -18,37 +19,37 @@
   --spacing-xtrasmall: calc(var(--spacing) * 2);
   --spacing-container: calc(var(--spacing) * 4);
 
-  /* Core Brand Colors */
-  --primary: #111111;
-  --secondary: #1e1e1e;
-  --accent: #c49e45;
-  --accent-100: #e2d1a3;
-  --accent-200: #dbc07a;
-  --accent-300: #d3ae51;
-  --accent-400: #cda13e;
+  --background: hsl(0 0% 98%);
+  --foreground: hsl(0 0% 10%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(0 0% 10%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(0 0% 10%);
 
-  /* Foregrounds for those colors (e.g. text on a primary-colored bg) */
-  --primary-foreground: #ffffff;
-  --secondary-foreground: #ffffff;
-  --accent-foreground: #111111;
+  /* Brand Colors */
+  --primary: hsl(0 0% 10%);
+  --primary-foreground: hsl(0 0% 98%);
+  
+  /* Rose Gold as Main Accent */
+  --accent: hsl(10 30% 70%);
+  --accent-foreground: hsl(0 0% 10%);
+  
+  --secondary: hsl(10 20% 80%);
+  --secondary-foreground: hsl(0 0% 20%);
+  --muted: hsl(10 20% 60%);
+  --muted-foreground: hsl(0 0% 40%);
 
-  /* Backgrounds */
-  --background: #ffffff;
-  --card: #f9f9f9;
-  --popover: #ffffff;
+  /* Status Colors */
+  --success: hsl(142 55% 50%);
+  --success-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 65% 50%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --warning: hsl(45 90% 60%);
+  --warning-foreground: hsl(0 0% 10%);
 
-  /* Text on those surfaces */
-  --foreground: var(--primary);
-  --card-foreground: var(--primary);
-  --popover-foreground: var(--primary);
-
-  /* Muted surfaces/text */
-  --muted: #f2f2f2;
-  --muted-foreground: var(--secondary);
-
-  /* Borders, inputs, focus rings */
-  --border: #e7e5e0;
-  --input: #ffffff;
+  /* Inputs & Borders */
+  --border: hsl(0 0% 90%);
+  --input: hsl(0 0% 100%);
   --ring: var(--accent);
 
   /* Feedback colors */
@@ -91,38 +92,38 @@
 
 /* ─── DARK MODE ─────────────────────────────────────────────────────────────── */
 .dark {
-  --primary: #f2f2f2;
-  --secondary: #cccccc;
-  --accent: #c49e45;
+   --background: hsl(0 0% 10%);
+  --foreground: hsl(0 0% 95%);
+  --card: hsl(0 0% 12%);
+  --card-foreground: hsl(0 0% 95%);
+  --popover: hsl(0 0% 12%);
+  --popover-foreground: hsl(0 0% 95%);
 
-  --accent-100: #e2d1a3;
-  --accent-200: #dbc07a;
-  --accent-300: #d3ae51;
-  --accent-400: #cda13e;
-  --primary-foreground: #111111;
-  --secondary-foreground: #111111;
-  --accent-foreground: #f2f2f2;
+  --primary: hsl(0 0% 95%);
+  --primary-foreground: hsl(0 0% 10%);
+  --accent: hsl(10 30% 60%);
+  --accent-foreground: hsl(0 0% 10%);
+  
+  --secondary: hsl(10 20% 30%);
+  --secondary-foreground: hsl(0 0% 95%);
+  --muted: hsl(10 20% 40%);
+  --muted-foreground: hsl(0 0% 85%);
 
-  --background: #111111;
-  --card: #1e1e1e;
-  --popover: #1e1e1e;
+  --success: hsl(142 55% 50%);
+  --success-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 65% 50%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --warning: hsl(45 90% 60%);
+  --warning-foreground: hsl(0 0% 10%);
 
-  --foreground: var(--primary);
-  --card-foreground: var(--primary);
-  --popover-foreground: var(--primary);
-
-  --muted: #2a2a2a;
-  --muted-foreground: var(--secondary);
-
-  --border: #333333;
-  --input: #1e1e1e;
+  --border: hsl(0 0% 25%);
+  --input: hsl(0 0% 15%);
   --ring: var(--accent);
 
   --info: #3498db;
   --success: #27ae60;
   --warning: #f1c40f;
   --error: #e74c3c;
-  --destructive: var(--error);
 
   --chart-1: var(--success);
   --chart-2: var(--info);
@@ -215,7 +216,7 @@
   *::after {
     @apply border-border outline-ring/50;
   }
-  .link:hover{
+  .link:hover {
     @apply underline;
   }
   h1,
@@ -244,10 +245,10 @@
     @apply w-full;
   }
   .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-  .scrollbar-hide::-webkit-scrollbar{
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
 }

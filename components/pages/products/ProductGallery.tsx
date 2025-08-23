@@ -7,10 +7,10 @@ import Image from 'next/image';
 export default function ProductGallery({ images }: { images: ProductImageReady[] }) {
 
   return (
-    <Carousel className="overflow-hidden relative product-gallery" >
-      <CarouselContent className="flex">
+    <Carousel className="overflow-hidden relative product-gallery h-[60vh] *:data-[slot=carousel-content]:h-full" >
+      <CarouselContent className="flex h-full">
         {images.map((img, i) => (
-          <CarouselItem className="min-w-full product-gallery-items relative aspect-[4/5] !rounded-sm overflow-hidden" key={i}>
+          <CarouselItem className="min-w-full product-gallery-items relative h-full !rounded-sm overflow-hidden" key={i}>
             <Image
               src={img.src}
               alt={img.alt || 'Product image'}

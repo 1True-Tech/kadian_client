@@ -7,20 +7,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
-import { color } from "@/lib/controllers/processColors";
-import { getContrastingTextColor } from "@/lib/utils/colorsProcessors/colorProcessing";
-import useShopFiltersStore from "@/store/shopFilters";
-import {
-  filtersToQueryParams,
-  queryParamsToFilters,
-} from "@/store/shopFilters/helper";
-import { NavItem } from "@/types";
-import { MenuIcon, PlusCircleIcon, SearchIcon, XIcon } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect } from "react";
-import ShopColorPick from "./colorPick";
-import { Switch } from "@/components/ui/switch";
-import { useTheme } from "@/lib/hooks/theme";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -28,9 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ShopSorting } from "@/store/shopFilters/types";
-import { useIsMobile } from "@/lib/hooks/isMobile";
-import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetClose,
@@ -40,8 +24,23 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { color } from "@/lib/controllers/processColors";
+import { useIsMobile } from "@/lib/hooks/isMobile";
+import { useTheme } from "@/lib/hooks/theme";
+import { cn } from "@/lib/utils";
+import { getContrastingTextColor } from "@/lib/utils/colorsProcessors/colorProcessing";
+import useShopFiltersStore from "@/store/shopFilters";
+import {
+  filtersToQueryParams,
+  queryParamsToFilters,
+} from "@/store/shopFilters/helper";
+import { ShopSorting } from "@/store/shopFilters/types";
+import { NavItem } from "@/types";
+import { MenuIcon, PlusCircleIcon, SearchIcon, XIcon } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
+import ShopColorPick from "./colorPick";
 
 type Props = {
   availableColors: color[];
@@ -78,6 +77,10 @@ export default function ShopNav({ availableColors, shopNavOnly }: Props) {
         }
       )}
     >
+      <article className="left-nav-item md:!hidden">
+        <h3>Sort by:</h3>
+        {/* <ShopSort sortFilters={sortFilters} /> */}
+      </article>
       <article className="left-nav-item">
         <h3>Search</h3>
         <div className="input-box-external [--border-width:_1px] w-full flex items-center gap-xtrasmall border-1 border-foreground/40">
@@ -182,7 +185,10 @@ export default function ShopNav({ availableColors, shopNavOnly }: Props) {
                 );
               }
               return (
-                <div key={idx} className="w-full flex items-center gap-xtrasmall md:gap-peers">
+                <div
+                  key={idx}
+                  className="w-full flex items-center gap-xtrasmall md:gap-peers"
+                >
                   <Checkbox id={p.label} />
                   <label className="link" htmlFor={p.label}>
                     {p.label}
@@ -243,7 +249,7 @@ export default function ShopNav({ availableColors, shopNavOnly }: Props) {
             />
           </Button>
         </SheetTrigger>
-        <SheetContent icon={null} side="bottom" className="max-w-screen">
+        <SheetContent side="bottom" className="max-w-screen">
           <SheetHeader
             id="mobile-nav-header-sheet"
             className="w-full flex !flex-row items-center justify-between"
@@ -288,7 +294,7 @@ export function ShopSort({
         style={{
           width: `${maxWidthForSortFilters * 2}ch`,
         }}
-        className="!border-t-0 !rounded-none !border-x-0 !border-b-2 !border-b-foreground !shadow-none !ring-0"
+        className="!rounded-none border-2 !border-foreground/50 !shadow-none !ring-0"
       >
         <SelectValue placeholder="Sort filter" />
       </SelectTrigger>
