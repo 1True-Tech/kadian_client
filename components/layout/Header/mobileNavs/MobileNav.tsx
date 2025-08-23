@@ -4,7 +4,6 @@ import {
   Heart,
   Home,
   Search,
-  ShoppingBag,
   User
 } from "lucide-react";
 import Link from "next/link";

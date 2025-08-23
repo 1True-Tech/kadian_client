@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { notFound, useParams } from "next/navigation";
 import { mockProducts } from "@/assets/dummy-data/mockData";
 import PagesLayout from "@/components/layout/PagesLayout";
+import Image from "next/image";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -34,7 +35,9 @@ const ProductDetail = () => {
           {/* Product Images */}
           <div className="space-y-4">
             <div className="relative overflow-hidden rounded-lg">
-              <img
+              <Image
+                width={720}
+                height={480}
                 src={product.images[selectedImageIndex]}
                 alt={product.name}
                 className="w-full h-96 lg:h-[600px] object-cover"
@@ -50,18 +53,19 @@ const ProductDetail = () => {
                 </Badge>
               )}
             </div>
-            
+
             {/* Thumbnail Images */}
             <div className="flex gap-2 overflow-x-auto">
               {product.images.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImageIndex(index)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${
-                    selectedImageIndex === index ? 'border-primary' : 'border-border'
-                  }`}
+                  className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${selectedImageIndex === index ? 'border-primary' : 'border-border'
+                    }`}
                 >
-                  <img
+                  <Image
+                    width={720}
+                    height={480}
                     src={image}
                     alt={`${product.name} ${index + 1}`}
                     className="w-full h-full object-cover"
@@ -121,9 +125,8 @@ const ProductDetail = () => {
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
-                    className={`w-8 h-8 rounded-full border-2 ${
-                      selectedColor === color ? 'border-primary' : 'border-border'
-                    }`}
+                    className={`w-8 h-8 rounded-full border-2 ${selectedColor === color ? 'border-primary' : 'border-border'
+                      }`}
                     style={{
                       backgroundColor: color.toLowerCase() === 'beige' ? '#F5F5DC' : color.toLowerCase()
                     }}
@@ -199,7 +202,7 @@ const ProductDetail = () => {
               <TabsTrigger value="sizing">Size Guide</TabsTrigger>
               <TabsTrigger value="reviews">Reviews ({product.reviewCount})</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="description" className="mt-8">
               <Card>
                 <CardContent className="p-6">
@@ -216,7 +219,7 @@ const ProductDetail = () => {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="sizing" className="mt-8">
               <Card>
                 <CardContent className="p-6">
@@ -262,7 +265,7 @@ const ProductDetail = () => {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             <TabsContent value="reviews" className="mt-8">
               <Card>
                 <CardContent className="p-6">
@@ -280,11 +283,11 @@ const ProductDetail = () => {
                         <span className="text-sm text-muted-foreground">Verified Purchase</span>
                       </div>
                       <p className="text-muted-foreground">
-                        Absolutely love this piece! The quality is excellent and the fit is perfect. 
+                        Absolutely love this piece! The quality is excellent and the fit is perfect.
                         The fabric feels luxurious and the color is exactly as shown.
                       </p>
                     </div>
-                    
+
                     <Button variant="outline" className="w-full">
                       View All Reviews
                     </Button>

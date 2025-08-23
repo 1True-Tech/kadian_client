@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { CartItem } from "@/assets/dummy-data/mockData";
+import Image from "next/image";
 
 const Cart = () => {
   // Mock cart items
@@ -64,7 +65,7 @@ const Cart = () => {
           <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
           <h1 className="text-2xl font-light mb-4">Your cart is empty</h1>
           <p className="text-muted-foreground mb-8">
-            Looks like you haven't added anything to your cart yet.
+            Looks like you haven&apos;t added anything to your cart yet.
           </p>
           <Button asChild size="lg" className="btn-hero">
             <Link href="/shop">Continue Shopping</Link>
@@ -85,8 +86,10 @@ const Cart = () => {
             <Card key={item.id}>
               <CardContent className="p-6">
                 <div className="flex gap-4">
-                  <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                    <img
+                  <div className="w-24 h-24 rounded-lg overflow-hidden isolate flex-shrink-0">
+                    <Image
+                      width={720}
+                      height={480}
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"

@@ -1,4 +1,3 @@
-import PagesLayout from "@/components/layout/PagesLayout";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import Link from "next/link";

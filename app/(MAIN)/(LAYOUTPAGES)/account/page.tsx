@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { mockUser } from "@/assets/dummy-data/mockData";
+import Image from "next/image";
 
 const Dashboard = () => {
   const [user, setUser] = useState(mockUser);
@@ -185,7 +186,9 @@ const Dashboard = () => {
                         <div className="space-y-3">
                           {order.items.map((item) => (
                             <div key={item.id} className="flex gap-4">
-                              <img
+                              <Image
+                                width={720}
+                                height={480}
                                 src={item.image}
                                 alt={item.name}
                                 className="w-16 h-16 object-cover rounded"

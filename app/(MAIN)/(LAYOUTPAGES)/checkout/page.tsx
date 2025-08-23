@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard, Lock } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 const Checkout = () => {
@@ -30,10 +31,6 @@ const Checkout = () => {
     total: 248.38
   };
 
-  const breadcrumbItems = [
-    { label: "Cart", href: "/cart" },
-    { label: "Checkout" }
-  ];
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -241,7 +238,10 @@ const Checkout = () => {
                 <div className="space-y-4">
                   <div className="flex gap-4">
                     <div className="w-16 h-16 rounded-lg overflow-hidden">
-                      <img
+                      <Image
+                                                      width={720}
+                                                      height={480}
+
                         src="/placeholder.svg"
                         alt="Silk Wrap Dress"
                         className="w-full h-full object-cover"
@@ -257,7 +257,9 @@ const Checkout = () => {
 
                   <div className="flex gap-4">
                     <div className="w-16 h-16 rounded-lg overflow-hidden">
-                      <img
+                      <Image
+                                width={720}
+                                height={480}
                         src="/placeholder.svg"
                         alt="Knit Sweater"
                         className="w-full h-full object-cover"

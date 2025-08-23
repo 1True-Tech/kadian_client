@@ -1,11 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/lib/hooks/isMobile";
-import { HasSlot, NavItem } from "@/types";
-import {
-  BellIcon,
-  ShoppingBagIcon
-} from "lucide-react";
+import { HasSlot } from "@/types";
 import { createPortal } from "react-dom";
 import MobileNav from "./MobileNav";
 

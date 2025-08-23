@@ -105,7 +105,7 @@ const SignIn = () => {
 
               <div className="text-center md:text-left">
                 <span className="text-sm text-muted-foreground">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <Link
                     href="/auth/sign-up"
                     className="text-accent hover:text-accent/80 md:text-primary md:hover:text-primary/80 font-bold"

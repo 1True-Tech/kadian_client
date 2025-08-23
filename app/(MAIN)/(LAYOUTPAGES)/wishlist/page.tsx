@@ -12,7 +12,6 @@ const Wishlist = () => {
     wishlistItems.includes(product.id)
   );
 
-  const breadcrumbItems = [{ label: "Wishlist" }];
 
   const removeFromWishlist = (productId: string) => {
     setWishlistItems((items) => items.filter((id) => id !== productId));

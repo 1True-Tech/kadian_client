@@ -10,10 +10,8 @@ export default function Layout({ children }: HasSlot) {
   const { load, items } = useNavItems();
   useEffect(() => {
     load();
-  }, [path]);
-  useEffect(() => {
-   console.log(items)
-  }, [items])
+  }, [path, load]);
+
   
 
   return <>

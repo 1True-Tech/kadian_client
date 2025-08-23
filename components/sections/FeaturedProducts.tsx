@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, ShoppingBag } from "lucide-react";
+import Image from "next/image";
 
 const FeaturedProducts = () => {
   const products = [
@@ -10,7 +11,7 @@ const FeaturedProducts = () => {
       name: "Elegant Midi Dress",
       price: "$89.99",
       originalPrice: "$129.99",
-      image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=600&fit=crop",
+      image: "/images/content/image (3).jpg",
       category: "Women",
       isNew: true,
       isSale: true,
@@ -19,7 +20,7 @@ const FeaturedProducts = () => {
       id: 2,
       name: "Casual Summer Top",
       price: "$45.99",
-      image: "https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=400&h=600&fit=crop",
+      image: "/images/content/image (7).jpg",
       category: "Women",
       isNew: false,
       isSale: false,
@@ -28,7 +29,7 @@ const FeaturedProducts = () => {
       id: 3,
       name: "Kids Playful Outfit",
       price: "$35.99",
-      image: "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=400&h=600&fit=crop",
+      image: "/images/content/image (9).jpg",
       category: "Children",
       isNew: true,
       isSale: false,
@@ -38,7 +39,7 @@ const FeaturedProducts = () => {
       name: "Classic Blouse",
       price: "$65.99",
       originalPrice: "$85.99",
-      image: "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=400&h=600&fit=crop",
+      image: "/images/content/image (1).jpg",
       category: "Women",
       isNew: false,
       isSale: true,
@@ -60,12 +61,14 @@ const FeaturedProducts = () => {
             <Card key={product.id} className="card-product group animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
               <CardContent className="p-0">
                 <div className="relative overflow-hidden">
-                  <img
+                  <Image
+                    width={720}
+                    height={480}
                     src={product.image}
                     alt={product.name}
                     className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  
+
                   {/* Badges */}
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
                     {product.isNew && (

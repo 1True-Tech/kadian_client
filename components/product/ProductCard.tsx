@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Product } from "@/assets/dummy-data/mockData";
+import Image from "next/image";
 
 interface ProductCardProps {
   product: Product;
@@ -20,13 +21,15 @@ const ProductCard = ({ product, onAddToWishlist, onAddToCart, className = "", st
       <CardContent className="p-0">
         <div className="relative overflow-hidden">
           <Link href={`/product/${product.id}`}>
-            <img
+            <Image
+              width={720}
+              height={480}
               src={product.images[0]}
               alt={product.name}
               className="w-full h-40 min-[498px]:h-50 sm:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </Link>
-          
+
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             {product.isNew && (
@@ -74,9 +77,9 @@ const ProductCard = ({ product, onAddToWishlist, onAddToCart, className = "", st
               {product.name}
             </h3>
           </Link>
-          
+
           <p className="text-sm text-muted-foreground mt-1">{product.category}</p>
-          
+
           <div className="flex flex-wrap items-center justify-between mt-3">
             <div className="flex items-center gap-2 basis-35 grow">
               <span className="font-semibold text-foreground">
@@ -88,7 +91,7 @@ const ProductCard = ({ product, onAddToWishlist, onAddToCart, className = "", st
                 </span>
               )}
             </div>
-            
+
             <div className="flex items-center gap-1">
               <span className="text-sm text-muted-foreground">★</span>
               <span className="text-sm text-muted-foreground">

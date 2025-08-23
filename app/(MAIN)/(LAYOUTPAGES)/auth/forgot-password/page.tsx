@@ -39,7 +39,7 @@ const ForgotPassword = () => {
                   <Mail className="h-8 w-8 text-success" />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  If an account with that email exists, we've sent you a link to
+                  If an account with that email exists, we&apos;ve sent you a link to
                   reset your password. Please check your inbox and spam folder.
                 </p>
                 <div className="space-y-3">
