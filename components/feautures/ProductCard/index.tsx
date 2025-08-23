@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import calculatePercentage from "@/lib/utils/percentage";
 import { ProductCardDataReady } from "@/types/product";
 import Image from "next/image";
+import Link from "next/link";
 
 export interface ProductCardProps {
   product: ProductCardDataReady;
@@ -60,12 +61,12 @@ export default function ProductCard({
 
       {/* Info */}
       <div className="flex flex-col gap-1">
-        <a
-          href={`/shop/${product.slug}`}
+        <Link
+          href={`/product/${product.slug}`}
           className="font-medium text-base sm:text-lg product-card-link transition line-clamp-1"
         >
           {product.name}
-        </a>
+        </Link>
         <span className="text-sm text-muted-foreground">
           ${calculatedDiscount}
           {product.discount?.type === "percentage" && (

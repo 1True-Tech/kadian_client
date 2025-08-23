@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { ShopFilterData, ShopFiltersActions } from "./types";
 
 const useShopFiltersStore = create<ShopFilterData & ShopFiltersActions>(
-  (set, get) => ({
+  (set) => ({
     filters: {},
     clearFilters() {
       set(

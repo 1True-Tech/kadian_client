@@ -48,7 +48,7 @@
 .header-nav-list-item .header-nav-list-item-link,
 .header-nav-list-item-nested-link,
 .footer-nav-list-item .footer-nav-list-item-link {
-  @apply before:w-0 before:h-[1px] before:duration-300 before:left-1/2 before:bg-accent before:-translate-x-1/2 relative before:absolute before:top-[calc(100%+2px)];
+  @apply before:w-0 before:h-[1px] before:duration-300 before:left-1/2 before:bg-primary before:-translate-x-1/2 relative before:absolute before:top-[calc(100%+2px)];
 }
 .fluid_btn:hover::before {
   @apply w-full;

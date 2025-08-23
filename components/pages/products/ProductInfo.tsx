@@ -6,7 +6,7 @@ export default function ProductInfo({ product }: { product: ProductReady }) {
   const baseVariant = product.variants.find((v) => v.isBase) || product.variants[0];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 relative isolate">
       <h1 className="text-3xl font-bold">{product.name}</h1>
       <p className="text-muted-foreground">{product.description}</p>
       <p className="text-xl font-semibold text-accent">${baseVariant.price}</p>

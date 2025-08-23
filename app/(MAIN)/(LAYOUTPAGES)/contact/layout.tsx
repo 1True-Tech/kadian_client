@@ -1,0 +1,11 @@
+import PagesLayout from "@/components/layout/PagesLayout";
+import { HasSlot } from "@/types";
+
+export default function layout({ children }: HasSlot) {
+  const breadcrumbItems = [{ label: "Contact Us" }];
+  return (
+    <PagesLayout showBreadcrumbs breadcrumbItems={breadcrumbItems}>
+      {children}
+    </PagesLayout>
+  );
+}
