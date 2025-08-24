@@ -28,7 +28,7 @@ const isCurrent = currentIndex === id
 
   return (
     <CarouselItem
-      className="max-w-[90%] lg:w-md md:max-w-[calc(50%)]  first:!pl-0 first:!pr-xtrasmall sm:first:!pr-small not-last:!pr-0 not-first:pl-xtrasmall sm:not-first:pl-small h-full relative overflow-visible isolate !text-white"
+      className="max-w-full lg:w-md md:max-w-[calc(50%)] !px-0 h-full relative overflow-visible isolate !text-white"
     >
       <div className="size-full relative overflow-hidden rounded-xl">
         <Image
