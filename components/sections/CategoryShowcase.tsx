@@ -22,7 +22,7 @@ const CategoryShowcase = () => {
     <section className="py-16">
       <div className="px-container">
         <div className="text-center mb-12 animate-fade-up">
-          <h2 className="heading-section text-4xl font-cinzel mb-4 bg-clip-text bg-conic-30 via-accent via-50% from-foreground to-foreground text-transparent">Shop by Category</h2>
+          <h2 className="heading-section text-4xl font-cinzel mb-4 bg-clip-text bg-conic-30 bg-foreground via-accent via-50% from-foreground to-foreground text-transparent">Shop by Category</h2>
           <p className="text-elegant max-w-2xl mx-auto">
             Explore our thoughtfully designed collections, each crafted with attention to detail and quality.
           </p>
