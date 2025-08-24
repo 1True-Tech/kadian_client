@@ -9,6 +9,7 @@ import { useState } from "react";
 import HeaderMobileNavListItem from "./headerMobileNavItem";
 import HeaderNavListItem from "./headerNavListingItem";
 import MobileHeaderNav from "./mobileNavs/headerNav";
+import Image from "next/image";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,10 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="left" className="w-80">
               <div className="flex flex-col space-y-4 mt-8 w-full">
-                <Link href="/" className="text-2xl font-light font-cinzel tracking-wider">
+                <Link
+                  href="/"
+                  className="text-2xl font-light font-cinzel tracking-wider"
+                >
                   Kadian Fashion
                 </Link>
                 <ul className="flex flex-col gap-small w-full">
@@ -41,10 +45,20 @@ const Header = () => {
           </Sheet>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 font-cinzel">
-            <span className="text-2xl font-light tracking-wider">Kadian</span>
-            <span className="text-2xl font-thin text-accent">Fashion</span>
-          </Link>
+          <div className="w-fit hidden min-[250px]:flex items-center justify-center gap-small">
+            <Image
+              width={360}
+              height={280}
+              src={"/icon.jpg"}
+              alt="kadian logo"
+              className="size-5 -mt-[2px]"
+            />
+
+            <Link href="/" className="flex items-center space-x-2 font-cinzel">
+              <span className="text-2xl font-light tracking-wider md:hidden lg:inline">Kadian</span>
+              <span className="text-2xl font-thin text-accent hidden min-[360px]:inline md:hidden lg:inline">Fashion</span>
+            </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

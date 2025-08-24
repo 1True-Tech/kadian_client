@@ -41,8 +41,8 @@ export const processShopListNavigations = async (): Promise<NavItem[]> => {
         url: "/about",
       },
       {
-        label: "Consultation",
-        url: "/consultation",
+        label: "Contact us",
+        url: "/contact",
       },
     ];
   } catch {
@@ -60,8 +60,8 @@ export const processShopListNavigations = async (): Promise<NavItem[]> => {
         url: "/about",
       },
       {
-        label: "Consultation",
-        url: "/consultation",
+        label: "Contact us",
+        url: "/contact",
       },
     ];
   }

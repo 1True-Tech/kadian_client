@@ -8,6 +8,7 @@
 @import "../assets/css/loaders.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant hover (&:hover);
 
 /* ─── LIGHT MODE ───────────────────────────────────────────────────────────── */
 :root {

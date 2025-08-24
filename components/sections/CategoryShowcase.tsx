@@ -20,17 +20,17 @@ const CategoryShowcase = () => {
 
   return (
     <section className="py-16">
-      <div className="container mx-auto px-4">
+      <div className="px-container">
         <div className="text-center mb-12 animate-fade-up">
-          <h2 className="heading-section mb-4">Shop by Category</h2>
+          <h2 className="heading-section text-xl md:text-4xl font-cinzel mb-4 bg-clip-text bg-conic-30 via-accent via-50% from-primary to-primary text-transparent">Shop by Category</h2>
           <p className="text-elegant max-w-2xl mx-auto">
             Explore our thoughtfully designed collections, each crafted with attention to detail and quality.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {categories.map((category, index) => (
-            <Card key={category.title} className="card-premium group cursor-pointer hover-lift animate-fade-up" style={{ animationDelay: `${index * 0.2}s` }}>
+            <Card key={category.title} className="card-premium overflow-hidden group cursor-pointer hover-lift animate-fade-up" style={{ animationDelay: `${index * 0.2}s` }}>
               <CardContent className="p-0 relative overflow-hidden">
                 <div className="relative h-96">
                   <Image

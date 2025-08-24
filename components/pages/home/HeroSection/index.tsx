@@ -10,7 +10,7 @@ export default async function HeroSection() {
   if(heroData.length <= 0) return null
 
   return (
-    <section className="w-full px-container overflow-x-hidden relative isolate flex items-center justify-center h-screen max-h-[500px]">
+    <section className="w-full overflow-x-hidden relative isolate flex items-center justify-center h-screen max-h-[500px]">
       <Carousel opts={{
         align:"center",
         dragThreshold:0.2,

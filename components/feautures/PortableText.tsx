@@ -10,7 +10,7 @@ export const lBPtComponents: (
       <p
         className={cn(
           generalClass,
-          "translate-y-2 opacity-0 line-clamp-2 sm:line-clamp-3 duration-300"
+          "line-clamp-2 sm:line-clamp-3 duration-300"
         )}
       >
         {children}
