@@ -48,17 +48,17 @@ const FeaturedProducts = () => {
 
   return (
     <section className="py-16 bg-secondary/30">
-      <div className="container mx-auto px-4">
+      <div className=" px-container">
         <div className="text-center mb-12 animate-fade-up">
-          <h2 className="heading-section mb-4">Featured Collection</h2>
+          <h2 className="heading-section mb-4 text-xl md:text-4xl font-cinzel bg-clip-text bg-conic-30 via-accent via-50% from-primary to-primary text-transparent">Featured Collection</h2>
           <p className="text-elegant max-w-2xl mx-auto">
             Discover our carefully curated selection of premium pieces designed for the modern lifestyle.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-[repeat(auto-fit,_minmax(10rem,1fr))] md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
           {products.map((product, index) => (
-            <Card key={product.id} className="card-product group animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
+            <Card key={product.id} className="card-product overflow-hidden group animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
               <CardContent className="p-0">
                 <div className="relative overflow-hidden">
                   <Image
@@ -66,7 +66,7 @@ const FeaturedProducts = () => {
                     height={480}
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-45 sm:h-65 md:h-80 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
 
                   {/* Badges */}

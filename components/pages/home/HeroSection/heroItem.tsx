@@ -30,7 +30,7 @@ const isCurrent = currentIndex === id
     <CarouselItem
       className="max-w-full lg:w-md md:max-w-[calc(50%)] !px-0 h-full relative overflow-visible isolate !text-white"
     >
-      <div className="size-full relative overflow-hidden rounded-xl">
+      <div className="size-full relative overflow-hidden">
         <Image
           src={image}
           alt={data.image.alt || "image-1" + image}
@@ -62,10 +62,18 @@ const isCurrent = currentIndex === id
           </Button>
           </Link>
 
-          {isCurrent&&<div className="w-full flex items-center justify-start gap-4 relative">
+          <div className={
+            cn(
+              "w-full flex items-center justify-start gap-4 relative",
+              {
+                "opacity-0 pointer-events-none":!isCurrent,
+                "opacity-100 pointer-events-auto":isCurrent
+              }
+            )
+          }>
             <CarouselPrevious className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0" />
             <CarouselNext className="!relative data-[usable=false]:hidden !bg-primary-foreground !text-primary dark:!bg-foreground dark:!text-background !top-0 !left-0 !translate-0" />
-          </div>}
+          </div>
         </div>
       </div>
     </CarouselItem>

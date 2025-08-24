@@ -14,7 +14,7 @@ import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 export default function HeaderMobileNavListItem({ label, children, url }: NavItem) {
   const LabelComp = url ? (
-    <Link href={url} className="header-nav-list-item-link">
+    <Link href={url} className="!no-underline">
       {label}
     </Link>
   ) : (
@@ -61,17 +61,18 @@ export default function HeaderMobileNavListItem({ label, children, url }: NavIte
                     className="w-full"
                   >
                     <AccordionTrigger
+                    icon={null}
                       className="flex cursor-pointer items-center justify-between w-full data-[state=closed]:[--rotate:0deg] data-[state=open]:[--rotate:45deg]"
                     >
                       {child.url ? (
                         <Link
                           href={`${child.url}`}
-                          className="header-nav-list-item-link w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize"
+                          className=" w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize !no-underline"
                         >
                           {child.label}
                         </Link>
                       ) : (
-                        <h4 className="w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize">
+                        <h4 className="w-full text-foreground/70 font-bold border-b border-b-foreground/70 pb-[1px] capitalize !no-underline">
                           {child.label}
                         </h4>
                       )}
