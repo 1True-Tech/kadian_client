@@ -6,7 +6,7 @@ type Props = {
 
 export default function ServiceFeatures({ items }: Props) {
   return (
-    <ul className="w-full px-container z-10 relative mt-peers grid gap-4 grid-cols-1 min-[498px]:grid-cols-2 lg:grid-cols-4 text-primary">
+    <ul className="w-full px-container z-0 relative mt-peers grid gap-4 grid-cols-1 min-[498px]:grid-cols-2 lg:grid-cols-4 text-primary">
       {items.map((service, index) => (
         <li
           key={index}
