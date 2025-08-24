@@ -29,7 +29,7 @@ export default async function StyleGuideContent() {
       <section className="py-16 w-full relative mt-[-90dvh] min-h-fit h-screen pb-20 isolate max-w-screen-lg mx-auto p-container flex flex-col items-center justify-center gap-5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-up">
-            <h2 className="heading-section text-xl md:text-4xl font-cinzel mb-4 bg-clip-text bg-conic-30 via-accent via-50% from-background to-background text-transparent">
+            <h2 className="heading-section text-4xl font-cinzel mb-4 bg-clip-text bg-conic-30 via-accent via-50% from-background to-background text-transparent">
               Style Guide
             </h2>
             <p className="text-background max-w-2xl mx-auto">
