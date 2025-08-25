@@ -3,18 +3,21 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useNavItems } from "@/store/navItems";
-import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Heart, Menu, Search, ShoppingBag } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import HeaderMobileNavListItem from "./headerMobileNavItem";
 import HeaderNavListItem from "./headerNavListingItem";
+import { HeaderUserSection } from "./headerUserSection";
 import MobileHeaderNav from "./mobileNavs/headerNav";
-import Image from "next/image";
+import { useUserStore } from "@/store/user";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const cartItems = 3; // This would come from cart context
   const { items } = useNavItems();
+  const { user } = useUserStore();
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -55,8 +58,12 @@ const Header = () => {
             />
 
             <Link href="/" className="flex items-center space-x-2 font-cinzel">
-              <span className="text-2xl font-light tracking-wider md:hidden lg:inline">Kadian</span>
-              <span className="text-2xl font-thin text-accent hidden min-[360px]:inline md:hidden lg:inline">Fashion</span>
+              <span className="text-2xl font-light tracking-wider md:hidden lg:inline">
+                Kadian
+              </span>
+              <span className="text-2xl font-thin text-accent hidden min-[360px]:inline md:hidden lg:inline">
+                Fashion
+              </span>
             </Link>
           </div>
 
@@ -71,24 +78,31 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hidden sm:flex">
-              <Search className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="hidden sm:flex">
-              <Heart className="h-5 w-5" />
-            </Button>
-            <MobileHeaderNav mobileSize={640}>
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingBag className="h-5 w-5" />
-                {cartItems > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 bg-rose-gold text-rose-gold-foreground text-xs flex items-center justify-center">
-                    {cartItems}
-                  </Badge>
-                )}
-              </Button>
+            <Link href="/shop">
               <Button variant="ghost" size="icon" className="hidden sm:flex">
-                <User className="h-5 w-5" />
+                <Search className="h-5 w-5" />
               </Button>
+            </Link>
+            {user && (
+              <Link href="/account">
+                <Button variant="ghost" size="icon" className="hidden sm:flex">
+                  <Heart className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
+
+            <MobileHeaderNav mobileSize={640}>
+              <Link href="/cart">
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingBag className="h-5 w-5" />
+                  {cartItems > 0 && (
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 bg-rose-gold text-rose-gold-foreground text-xs flex items-center justify-center">
+                      {cartItems}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
+              <HeaderUserSection />
             </MobileHeaderNav>
           </div>
         </div>

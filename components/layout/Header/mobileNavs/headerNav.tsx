@@ -1,5 +1,5 @@
 import { useIsMobile } from "@/lib/hooks/isMobile";
-import { HasSlot } from "@/types";
+import { HasSlot } from "@/types/structures";
 import { createPortal } from "react-dom";
 import MobileNav from "./MobileNav";
 

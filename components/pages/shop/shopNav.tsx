@@ -35,7 +35,7 @@ import {
   queryParamsToFilters,
 } from "@/store/shopFilters/helper";
 import { ShopSorting } from "@/store/shopFilters/types";
-import { NavItem } from "@/types";
+import { NavItem } from "@/types/structures";
 import { MenuIcon, PlusCircleIcon, SearchIcon, XIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect } from "react";

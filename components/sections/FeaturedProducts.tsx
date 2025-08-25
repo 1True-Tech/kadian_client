@@ -1,8 +1,9 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import AddToCartButton from "../product/AddToCartButton";
+import WishlistButton from "../product/WishlistButton";
 
 const FeaturedProducts = () => {
   const products = [
@@ -50,15 +51,22 @@ const FeaturedProducts = () => {
     <section className="py-16 bg-secondary/30">
       <div className=" px-container">
         <div className="text-center mb-12 animate-fade-up">
-          <h2 className="heading-section  text-4xl font-cinzel mb-4 bg-clip-text bg-conic-30 bg-foreground via-accent via-50% from-foreground to-foreground text-transparent">Featured Collection</h2>
+          <h2 className="heading-section  text-4xl font-cinzel mb-4 bg-clip-text bg-conic-30 bg-foreground via-accent via-50% from-foreground to-foreground text-transparent">
+            Featured Collection
+          </h2>
           <p className="text-elegant max-w-2xl mx-auto">
-            Discover our carefully curated selection of premium pieces designed for the modern lifestyle.
+            Discover our carefully curated selection of premium pieces designed
+            for the modern lifestyle.
           </p>
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(10rem,1fr))] md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
           {products.map((product, index) => (
-            <Card key={product.id} className="card-product overflow-hidden group animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
+            <Card
+              key={product.id}
+              className="card-product overflow-hidden group animate-fade-up"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <CardContent className="p-0">
                 <div className="relative overflow-hidden">
                   <Image
@@ -72,7 +80,7 @@ const FeaturedProducts = () => {
                   {/* Badges */}
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
                     {product.isNew && (
-                      <Badge className="bg-rose-gold text-rose-gold-foreground">New</Badge>
+                      <Badge className="!bg-white !text-black">New</Badge>
                     )}
                     {product.isSale && (
                       <Badge variant="destructive">Sale</Badge>
@@ -81,27 +89,25 @@ const FeaturedProducts = () => {
 
                   {/* Action Buttons */}
                   <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Button size="icon" variant="secondary" className="h-8 w-8">
-                      <Heart className="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="secondary" className="h-8 w-8">
-                      <ShoppingBag className="h-4 w-4" />
-                    </Button>
+                    <WishlistButton productId={`${product.id}`} />
+                    <AddToCartButton productId={`${product.id}`} />
                   </div>
 
                   {/* Quick Add to Cart */}
                   <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Button className="w-full btn-rose">
-                      Quick Add
-                    </Button>
+                    <Button className="w-full btn-rose">Quick Add</Button>
                   </div>
                 </div>
 
                 <div className="p-4">
-                  <p className="text-sm text-muted-foreground mb-1">{product.category}</p>
+                  <p className="text-sm text-muted-foreground mb-1">
+                    {product.category}
+                  </p>
                   <h3 className="font-medium mb-2">{product.name}</h3>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-rose-gold">{product.price}</span>
+                    <span className="font-semibold text-rose-gold">
+                      {product.price}
+                    </span>
                     {product.originalPrice && (
                       <span className="text-sm text-muted-foreground line-through">
                         {product.originalPrice}
@@ -115,9 +121,7 @@ const FeaturedProducts = () => {
         </div>
 
         <div className="text-center">
-          <Button className="btn-hero">
-            View All Products
-          </Button>
+          <Button className="btn-hero">View All Products</Button>
         </div>
       </div>
     </section>

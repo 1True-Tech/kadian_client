@@ -2,7 +2,7 @@ import { HomeStyleGuideItem } from "@/components/pages/home/styleGuide/types";
 import queries from "@/lib/queries";
 import { client } from "@/lib/utils/NSClient";
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
-import { imageAssetWithAsset } from "@/types";
+import { imageAssetWithAsset } from "@/types/structures";
 
 export const processHomeStyleGuide = async (): Promise<
   HomeStyleGuideItem[]

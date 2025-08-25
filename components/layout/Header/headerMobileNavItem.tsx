@@ -9,7 +9,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { NavItem } from "@/types";
+import { NavItem } from "@/types/structures";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 export default function HeaderMobileNavListItem({ label, children, url }: NavItem) {

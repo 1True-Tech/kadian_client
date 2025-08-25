@@ -1,5 +1,5 @@
 "use client";
-import { HasSlot } from "@/types";
+import { HasSlot } from "@/types/structures";
 import { useParams } from "next/navigation";
 import { createContext, useContext } from "react";
 

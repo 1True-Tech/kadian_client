@@ -1,4 +1,4 @@
-import { NavItem } from "@/types";
+import { NavItem } from "@/types/structures";
 import queries from "../queries";
 import { client } from "../utils/NSClient";
 

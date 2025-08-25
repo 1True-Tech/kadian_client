@@ -7,6 +7,7 @@ import FlipTextLoader from "./flip-text-loader";
 import HrLineLoader from "./hr-line-loader";
 import RoundVtrLoader from "./round-vtr-loader";
 import VtrLinesSpinner from "./vtr-lines-spinner";
+import { HasSlot } from "@/types/structures";
 
 type ClientGuardPropsBase = {
   loaderSize: "fullscreen" | "parent";
@@ -21,7 +22,12 @@ type ClientGuardProps =
       loader: "hr-line-loader" | "round-vtr-loader" | "vtr-lines-spinner";
     });
 
-export function Loader({ loaderSize, loader, ...props }: ClientGuardProps) {
+export function Loader({
+  children,
+  loaderSize,
+  loader,
+  ...props
+}: ClientGuardProps & Partial<HasSlot>) {
   const isDomLoaded = useDomLoaded();
   const [hideLoader, setHideLoader] = useState(false);
 
@@ -55,8 +61,8 @@ export function Loader({ loaderSize, loader, ...props }: ClientGuardProps) {
   }, [isDomLoaded]);
 
   return (
-    <>
-      {!hideLoader && (
+    !hideLoader && (
+      <>
         <div
           className={cn(
             "flex items-center justify-center transition-opacity duration-300 ease-in-out",
@@ -68,7 +74,8 @@ export function Loader({ loaderSize, loader, ...props }: ClientGuardProps) {
         >
           {loaderElement}
         </div>
-      )}
-    </>
+        {children}
+      </>
+    )
   );
 }

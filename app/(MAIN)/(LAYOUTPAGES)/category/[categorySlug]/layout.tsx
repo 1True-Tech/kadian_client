@@ -1,5 +1,5 @@
 import PagesLayout from "@/components/layout/PagesLayout";
-import { HasSlot, ParamsProps } from "@/types";
+import { HasSlot, ParamsProps } from "@/types/structures";
 
 export default async function Layout({ children, params }: HasSlot & ParamsProps<{categorySlug:string|null}>) {
   const {categorySlug} = await params

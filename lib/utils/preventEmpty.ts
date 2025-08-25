@@ -1,4 +1,4 @@
-import { Booleanish } from "@/types";
+import { Booleanish } from "@/types/structures";
 
 // validateActions?: (value: T) => {
 //     valid: boolean;

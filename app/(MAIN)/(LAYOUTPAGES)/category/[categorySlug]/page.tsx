@@ -1,6 +1,6 @@
 import { mockCategories, mockProducts } from "@/assets/dummy-data/mockData";
 import ProductGrid from "@/components/product/ProductGrid";
-import { ParamsProps } from "@/types";
+import { ParamsProps } from "@/types/structures";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 

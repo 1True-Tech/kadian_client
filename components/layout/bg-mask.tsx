@@ -43,7 +43,7 @@ export default function BgMask({ position = "bottom-left", image }: Props) {
           alt="image"
           width={1024}
           height={720}
-          className="size-full object-cover object-center brightness-30 sm:brightness-100"
+          className="size-full object-cover object-center brightness-30 md:brightness-100"
         />
       </div>
     </div>

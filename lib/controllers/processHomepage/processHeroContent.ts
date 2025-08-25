@@ -1,7 +1,7 @@
 import queries from "@/lib/queries";
 import { client } from "@/lib/utils/NSClient";
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
-import { imageAssetWithAsset } from "@/types";
+import { imageAssetWithAsset } from "@/types/structures";
 import { HomePageHero } from "@/types/home";
 
 export const processHomepageHeroContent = async (): Promise<HomePageHero[]> => {

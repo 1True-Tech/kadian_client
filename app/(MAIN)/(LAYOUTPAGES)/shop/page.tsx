@@ -24,29 +24,33 @@ const Shop = () => {
   };
 
   const handleSortChange = (value: string) => {
-    setSortBy(value);
-    const sorted = [...filteredProducts];
-    
-    switch (value) {
-      case 'price-low':
-        sorted.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-high':
-        sorted.sort((a, b) => b.price - a.price);
-        break;
-      case 'newest':
-        sorted.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
-        break;
-      case 'rating':
-        sorted.sort((a, b) => b.rating - a.rating);
-        break;
-      default:
-        // Featured - keep original order
-        break;
-    }
-    
-    setFilteredProducts(sorted);
-  };
+  setSortBy(value);
+
+  const sorted = [...filteredProducts];
+
+  switch (value) {
+    case 'price-low':
+      sorted.sort((a, b) => a.basePrice - b.basePrice);
+      break;
+
+    case 'price-high':
+      sorted.sort((a, b) => b.basePrice - a.basePrice);
+      break;
+
+    case 'newest':
+      sorted.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      break;
+
+    default:
+      // 'featured' or fallback — could reset to original list if stored
+      break;
+  }
+
+  setFilteredProducts(sorted);
+};
+
 
   return (
       <div className="mx-auto py-8 isolate">
@@ -144,7 +148,6 @@ const Shop = () => {
           <div className="flex-1">
             <ProductGrid 
               products={filteredProducts}
-              onAddToWishlist={(id) => console.log('Add to wishlist:', id)}
               onAddToCart={(id) => console.log('Add to cart:', id)}
             />
           </div>

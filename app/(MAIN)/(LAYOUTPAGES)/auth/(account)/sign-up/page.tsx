@@ -52,6 +52,8 @@ const SignUp = () => {
                   <Input
                     id="firstName"
                     value={formData.firstName}
+                  className="text-black"
+
                     onChange={(e) =>
                       handleInputChange("firstName", e.target.value)
                     }
@@ -63,6 +65,8 @@ const SignUp = () => {
                   <Input
                     id="lastName"
                     value={formData.lastName}
+                  className="text-black"
+
                     onChange={(e) =>
                       handleInputChange("lastName", e.target.value)
                     }
@@ -77,6 +81,8 @@ const SignUp = () => {
                   id="email"
                   type="email"
                   value={formData.email}
+                  className="text-black"
+
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   placeholder="your@email.com"
                   required
@@ -90,6 +96,8 @@ const SignUp = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
+                  className="text-black"
+
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
