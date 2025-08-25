@@ -1,7 +1,7 @@
 "use client";
 import { processShopCategory } from "@/lib/controllers/processShop/processShopCategory";
 import { useShopParams } from "@/lib/hooks/nav/shopParams";
-import { HasSlot } from "@/types";
+import { HasSlot } from "@/types/structures";
 import { ShopCategoryReady } from "@/types/shop";
 import Image from "next/image";
 import { useEffect, useState } from "react";

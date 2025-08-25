@@ -1,4 +1,4 @@
-import { HasSlot } from "@/types";
+import { HasSlot } from "@/types/structures";
 
 export default function Layout({ children }: HasSlot) {
   return (

@@ -1,4 +1,4 @@
-import { imageAssetWithAlt } from ".";
+import { imageAssetWithAlt } from "./structures";
 import { ReadyImage } from "./home";
 
 type Currency = "JAD" | "USD";
@@ -100,7 +100,7 @@ export interface ProductRaw extends ProductBase{
   variants: ProductVariantRaw[];
 
 }
-export interface ProductReady extends ProductBase{
+export interface ProductReady extends Omit<ProductBase, "_type">{
     mainImage: ProductImageReady;
   brand: BrandSummaryReady;
   mainImage: ProductImageReady;

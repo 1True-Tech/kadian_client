@@ -1,4 +1,4 @@
-import { imageAssetWithAlt } from ".";
+import { imageAssetWithAlt } from "./structures";
 import { ReadyImage } from "./home";
 import { ProductCardDataRaw, ProductCardDataReady } from "./product";
 

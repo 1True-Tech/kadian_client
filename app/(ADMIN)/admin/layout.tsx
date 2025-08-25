@@ -1,4 +1,4 @@
-import { HasSlot } from "@/types";
+import { HasSlot } from "@/types/structures";
 
 type Props = HasSlot;
 

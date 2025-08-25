@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useIsMobile } from "@/lib/hooks/isMobile";
-import { NavItem } from "@/types";
+import { NavItem } from "@/types/structures";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 export default function HeaderNavListItem({ label, children, url }: NavItem) {

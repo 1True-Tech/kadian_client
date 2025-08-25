@@ -1,22 +1,20 @@
 "use client"
-import { Product } from "@/assets/dummy-data/mockData";
+import { ProductReady } from "@/types/product";
 import ProductCard from "./ProductCard";
 
 interface ProductGridProps {
-  products: Product[];
-  onAddToWishlist?: (productId: string) => void;
+  products: ProductReady[];
   onAddToCart?: (productId: string) => void;
   className?: string;
 }
 
-const ProductGrid = ({ products, onAddToWishlist, onAddToCart, className = "" }: ProductGridProps) => {
+const ProductGrid = ({ products, onAddToCart, className = "" }: ProductGridProps) => {
   return (
-    <div className={`grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 ${className}`}>
+    <div className={`grid grid-cols-2 md:grid-cols-[repeat(auto-fill,_minmax(12rem,1fr))] ld:grid-cols-[repeat(auto-fill,_minmax(15rem,1fr))] gap-6 ${className}`}>
       {products.map((product, index) => (
         <ProductCard
-          key={product.id}
+          key={product._id}
           product={product}
-          onAddToWishlist={onAddToWishlist}
           onAddToCart={onAddToCart}
           className="animate-fade-up"
           style={{ animationDelay: `${index * 0.1}s` } as any}

@@ -1,5 +1,5 @@
 "use client";
-import { HasSlot } from "@/types";
+import { HasSlot } from "@/types/structures";
 import { createContext, useCallback, useContext, useState } from "react";
 import cookies from "../utils/cookies";
 

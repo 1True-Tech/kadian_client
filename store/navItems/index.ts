@@ -1,5 +1,5 @@
 import { processShopListNavigations } from "@/lib/controllers/processShopListNavigations";
-import { NavItem } from "@/types";
+import { NavItem } from "@/types/structures";
 import { produce } from "immer";
 import { create } from "zustand";
 

@@ -1,5 +1,8 @@
 // Mock data for Kadian Fashion eCommerce
 
+import { ProductReady } from "@/types/product";
+import { User } from "@/types/user";
+
 export interface Product {
   id: string;
   name: string;
@@ -38,127 +41,649 @@ export interface CartItem {
   quantity: number;
 }
 
-export interface Order {
-  id: string;
-  date: string;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  total: number;
-  items: CartItem[];
-  shippingAddress: Address;
-}
-
-export interface Address {
-  id: string;
-  name: string;
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-  isDefault?: boolean;
-}
-
-export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  addresses: Address[];
-  orders: Order[];
-  wishlist: string[];
-}
-
-// Mock Products
-export const mockProducts: Product[] = [
+export const mockProducts: ProductReady[] = [
   {
-    id: "1",
+    _id: "prod-001",
     name: "Silk Wrap Dress",
-    price: 149.99,
-    originalPrice: 199.99,
-    category: "dresses",
-    subcategory: "evening",
-    images: ["/images/content/image (1).jpg", "/images/content/image (2).jpg"],
-    description: "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
-    sizes: ["XS", "S", "M", "L", "XL"],
-    colors: ["Black", "Navy", "Burgundy"],
-    inStock: true,
-    isOnSale: true,
-    rating: 4.8,
-    reviewCount: 124
+    slug: "silk-wrap-dress",
+    basePrice: 149.99,
+    description:
+      "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+    brand: {
+      name: "Maison Luxe",
+      slug: "maison-luxe",
+      logo: {
+        src: "/images/brands/maison-luxe.png",
+        alt: "Maison Luxe Logo",
+      },
+    },
+    category: {
+      name: "Dresses",
+      slug: "dresses",
+    },
+    mainImage: {
+      src: "/images/content/image (1).jpg",
+      alt: "Front view of Silk Wrap Dress",
+      isPrimary: true,
+    },
+    gallery: [
+      {
+        src: "/images/content/image (1).jpg",
+        alt: "Front view of Silk Wrap Dress",
+        isPrimary: true,
+      },
+      {
+        src: "/images/content/image (2).jpg",
+        alt: "Back view of Silk Wrap Dress",
+      },
+    ],
+    variants: [
+      {
+        sku: "SWD-BLK-M",
+        size: "M",
+        color: "Black",
+        stock: 12,
+        price: 149.99,
+        isBase: true,
+        images: [
+          {
+            src: "/images/content/image (1).jpg",
+            alt: "Black Silk Wrap Dress",
+            isPrimary: true,
+          },
+        ],
+      },
+      {
+        sku: "SWD-NAV-M",
+        size: "M",
+        color: "Navy",
+        stock: 7,
+        price: 149.99,
+        images: [
+          {
+            src: "/images/content/image (11).jpg",
+            alt: "Navy Silk Wrap Dress",
+          },
+        ],
+      },
+    ],
+    materials: [
+      {
+        material: "Silk",
+        percentage: 100,
+      },
+    ],
+    sizeGuide: {
+      measurements: {
+        bust: 88,
+        waist: 68,
+        hips: 94,
+      },
+      instructions: "Measurements are in cm. Choose your usual size.",
+    },
+    careInstructions: "Dry clean only. Do not tumble dry. Iron on low heat.",
+    sustainabilityInfo: "Made with 100% organic silk and fair labor practices.",
+    seo: {
+      title: "Silk Wrap Dress - Maison Luxe",
+      description:
+        "Shop the Silk Wrap Dress from Maison Luxe. Luxurious design and comfort.",
+      keywords: ["silk", "wrap", "dress", "luxury", "fashion"],
+      structuredData: {
+        "@type": "Product",
+        name: "Silk Wrap Dress",
+        description:
+          "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+        brand: {
+          "@type": "Brand",
+          name: "Maison Luxe",
+        },
+        offers: {
+          "@type": "Offer",
+          price: 149.99,
+          priceCurrency: "USD",
+          availability: "InStock",
+        },
+      },
+    },
+    isActive: true,
+    createdAt: "2024-01-01T10:00:00Z",
+    updatedAt: "2024-03-01T15:30:00Z",
   },
   {
-    id: "2",
+    _id: "prod-002",
     name: "Cotton Maxi Dress",
-    price: 89.99,
-    category: "dresses",
-    subcategory: "casual",
-    images: ["/images/content/image (3).jpg", "/images/content/image (4).jpg"],
-    description: "Comfortable cotton maxi dress for everyday elegance.",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["White", "Beige", "Olive"],
-    inStock: true,
-    isNew: true,
-    rating: 4.6,
-    reviewCount: 89
+    slug: "cotton-maxi-dress",
+    basePrice: 149.99,
+    description:
+      "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+    brand: {
+      name: "Maison Luxe",
+      slug: "maison-luxe",
+      logo: {
+        src: "/images/brands/maison-luxe.png",
+        alt: "Maison Luxe Logo",
+      },
+    },
+    category: {
+      name: "Dresses",
+      slug: "dresses",
+    },
+    mainImage: {
+      src: "/images/content/image (1).jpg",
+      alt: "Front view of Silk Wrap Dress",
+      isPrimary: true,
+    },
+    gallery: [
+      {
+        src: "/images/content/image (1).jpg",
+        alt: "Front view of Silk Wrap Dress",
+        isPrimary: true,
+      },
+      {
+        src: "/images/content/image (2).jpg",
+        alt: "Back view of Silk Wrap Dress",
+      },
+    ],
+    variants: [
+      {
+        sku: "SWD-BLK-M",
+        size: "M",
+        color: "Black",
+        stock: 12,
+        price: 149.99,
+        isBase: true,
+        images: [
+          {
+            src: "/images/content/image (1).jpg",
+            alt: "Black Silk Wrap Dress",
+            isPrimary: true,
+          },
+        ],
+      },
+      {
+        sku: "SWD-NAV-M",
+        size: "M",
+        color: "Navy",
+        stock: 7,
+        price: 149.99,
+        images: [
+          {
+            src: "/images/content/image (11).jpg",
+            alt: "Navy Silk Wrap Dress",
+          },
+        ],
+      },
+    ],
+    materials: [
+      {
+        material: "Silk",
+        percentage: 100,
+      },
+    ],
+    sizeGuide: {
+      measurements: {
+        bust: 88,
+        waist: 68,
+        hips: 94,
+      },
+      instructions: "Measurements are in cm. Choose your usual size.",
+    },
+    careInstructions: "Dry clean only. Do not tumble dry. Iron on low heat.",
+    sustainabilityInfo: "Made with 100% organic silk and fair labor practices.",
+    seo: {
+      title: "Cotton Maxi Dress - Maison Luxe",
+      description:
+        "Shop the Cotton Maxi Dress from Maison Luxe. Luxurious design and comfort.",
+      keywords: ["cotton", "maxi", "dress", "luxury", "fashion"],
+      structuredData: {
+        "@type": "Product",
+        name: "Cotton Maxi Dress",
+        description:
+          "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+        brand: {
+          "@type": "Brand",
+          name: "Maison Luxe",
+        },
+        offers: {
+          "@type": "Offer",
+          price: 149.99,
+          priceCurrency: "USD",
+          availability: "InStock",
+        },
+      },
+    },
+    isActive: true,
+    createdAt: "2024-01-01T10:00:00Z",
+    updatedAt: "2024-03-01T15:30:00Z",
   },
   {
-    id: "3",
+    _id: "prod-003",
     name: "Knit Sweater",
-    price: 79.99,
-    category: "tops",
-    subcategory: "sweaters",
-    images: ["/images/content/image (5).jpg", "/images/content/image (6).jpg"],
-    description: "Cozy knit sweater with premium wool blend.",
-    sizes: ["XS", "S", "M", "L"],
-    colors: ["Cream", "Gray", "Rose"],
-    inStock: true,
-    rating: 4.7,
-    reviewCount: 156
+    slug: "knit-sweater",
+    basePrice: 149.99,
+    description:
+      "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+    brand: {
+      name: "Maison Luxe",
+      slug: "maison-luxe",
+      logo: {
+        src: "/images/brands/maison-luxe.png",
+        alt: "Maison Luxe Logo",
+      },
+    },
+    category: {
+      name: "Dresses",
+      slug: "dresses",
+    },
+    mainImage: {
+      src: "/images/content/image (1).jpg",
+      alt: "Front view of Silk Wrap Dress",
+      isPrimary: true,
+    },
+    gallery: [
+      {
+        src: "/images/content/image (1).jpg",
+        alt: "Front view of Silk Wrap Dress",
+        isPrimary: true,
+      },
+      {
+        src: "/images/content/image (2).jpg",
+        alt: "Back view of Silk Wrap Dress",
+      },
+    ],
+    variants: [
+      {
+        sku: "SWD-BLK-M",
+        size: "M",
+        color: "Black",
+        stock: 12,
+        price: 149.99,
+        isBase: true,
+        images: [
+          {
+            src: "/images/content/image (1).jpg",
+            alt: "Black Silk Wrap Dress",
+            isPrimary: true,
+          },
+        ],
+      },
+      {
+        sku: "SWD-NAV-M",
+        size: "M",
+        color: "Navy",
+        stock: 7,
+        price: 149.99,
+        images: [
+          {
+            src: "/images/content/image (11).jpg",
+            alt: "Navy Silk Wrap Dress",
+          },
+        ],
+      },
+    ],
+    materials: [
+      {
+        material: "Silk",
+        percentage: 100,
+      },
+    ],
+    sizeGuide: {
+      measurements: {
+        bust: 88,
+        waist: 68,
+        hips: 94,
+      },
+      instructions: "Measurements are in cm. Choose your usual size.",
+    },
+    careInstructions: "Dry clean only. Do not tumble dry. Iron on low heat.",
+    sustainabilityInfo: "Made with 100% organic silk and fair labor practices.",
+    seo: {
+      title: "Knit Sweater - Maison Luxe",
+      description:
+        "Shop the Knit Sweater from Maison Luxe. Luxurious design and comfort.",
+      keywords: ["knit", "sweater", "luxury", "fashion"],
+      structuredData: {
+        "@type": "Product",
+        name: "Knit Sweater",
+        description:
+          "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+        brand: {
+          "@type": "Brand",
+          name: "Maison Luxe",
+        },
+        offers: {
+          "@type": "Offer",
+          price: 149.99,
+          priceCurrency: "USD",
+          availability: "InStock",
+        },
+      },
+    },
+    isActive: true,
+    createdAt: "2024-01-01T10:00:00Z",
+    updatedAt: "2024-03-01T15:30:00Z",
   },
   {
-    id: "4",
+    _id: "prod-004",
     name: "Wide Leg Trousers",
-    price: 119.99,
-    category: "bottoms",
-    subcategory: "pants",
-    images: ["/images/content/image (7).jpg", "/images/content/image (8).jpg"],
-    description: "High-waisted wide leg trousers for sophisticated style.",
-    sizes: ["XS", "S", "M", "L", "XL"],
-    colors: ["Black", "Navy", "Camel"],
-    inStock: true,
-    rating: 4.5,
-    reviewCount: 67
+    slug: "wide-leg-trousers",
+    basePrice: 149.99,
+    description:
+      "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+    brand: {
+      name: "Maison Luxe",
+      slug: "maison-luxe",
+      logo: {
+        src: "/images/brands/maison-luxe.png",
+        alt: "Maison Luxe Logo",
+      },
+    },
+    category: {
+      name: "Dresses",
+      slug: "dresses",
+    },
+    mainImage: {
+      src: "/images/content/image (1).jpg",
+      alt: "Front view of Silk Wrap Dress",
+      isPrimary: true,
+    },
+    gallery: [
+      {
+        src: "/images/content/image (1).jpg",
+        alt: "Front view of Silk Wrap Dress",
+        isPrimary: true,
+      },
+      {
+        src: "/images/content/image (2).jpg",
+        alt: "Back view of Silk Wrap Dress",
+      },
+    ],
+    variants: [
+      {
+        sku: "SWD-BLK-M",
+        size: "M",
+        color: "Black",
+        stock: 12,
+        price: 149.99,
+        isBase: true,
+        images: [
+          {
+            src: "/images/content/image (1).jpg",
+            alt: "Black Silk Wrap Dress",
+            isPrimary: true,
+          },
+        ],
+      },
+      {
+        sku: "SWD-NAV-M",
+        size: "M",
+        color: "Navy",
+        stock: 7,
+        price: 149.99,
+        images: [
+          {
+            src: "/images/content/image (11).jpg",
+            alt: "Navy Silk Wrap Dress",
+          },
+        ],
+      },
+    ],
+    materials: [
+      {
+        material: "Silk",
+        percentage: 100,
+      },
+    ],
+    sizeGuide: {
+      measurements: {
+        bust: 88,
+        waist: 68,
+        hips: 94,
+      },
+      instructions: "Measurements are in cm. Choose your usual size.",
+    },
+    careInstructions: "Dry clean only. Do not tumble dry. Iron on low heat.",
+    sustainabilityInfo: "Made with 100% organic silk and fair labor practices.",
+    seo: {
+      title: "Wide Leg Trousers - Maison Luxe",
+      description:
+        "Shop the Wide Leg Trousers from Maison Luxe. Luxurious design and comfort.",
+      keywords: ["wide", "leg", "trousers", "luxury", "fashion"],
+      structuredData: {
+        "@type": "Product",
+        name: "Wide Leg Trousers",
+        description:
+          "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+        brand: {
+          "@type": "Brand",
+          name: "Maison Luxe",
+        },
+        offers: {
+          "@type": "Offer",
+          price: 149.99,
+          priceCurrency: "USD",
+          availability: "InStock",
+        },
+      },
+    },
+    isActive: true,
+    createdAt: "2024-01-01T10:00:00Z",
+    updatedAt: "2024-03-01T15:30:00Z",
   },
   {
-    id: "5",
-    name: "Kids Floral Dress",
-    price: 45.99,
-    category: "kids",
-    subcategory: "dresses",
-    images: ["/images/content/image (9).jpg", "/images/content/image (10).jpg"],
-    description: "Beautiful floral dress for little ones.",
-    sizes: ["2T", "3T", "4T", "5T", "6T"],
-    colors: ["Pink", "Blue", "Yellow"],
-    inStock: true,
-    isNew: true,
-    rating: 4.9,
-    reviewCount: 34
-  },
-  {
-    id: "6",
+    _id: "prod-005",
     name: "Blazer Jacket",
-    price: 159.99,
-    category: "outerwear",
-    subcategory: "blazers",
-    images: ["/images/content/image (1).jpg", "/images/content/image (2).jpg"],
-    description: "Tailored blazer perfect for professional and casual wear.",
-    sizes: ["XS", "S", "M", "L", "XL"],
-    colors: ["Black", "Navy", "Camel"],
-    inStock: true,
-    rating: 4.8,
-    reviewCount: 92
-  }
+    slug: "blazer-jacket",
+    basePrice: 149.99,
+    description:
+      "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+    brand: {
+      name: "Maison Luxe",
+      slug: "maison-luxe",
+      logo: {
+        src: "/images/brands/maison-luxe.png",
+        alt: "Maison Luxe Logo",
+      },
+    },
+    category: {
+      name: "Dresses",
+      slug: "dresses",
+    },
+    mainImage: {
+      src: "/images/content/image (1).jpg",
+      alt: "Front view of Silk Wrap Dress",
+      isPrimary: true,
+    },
+    gallery: [
+      {
+        src: "/images/content/image (1).jpg",
+        alt: "Front view of Silk Wrap Dress",
+        isPrimary: true,
+      },
+      {
+        src: "/images/content/image (2).jpg",
+        alt: "Back view of Silk Wrap Dress",
+      },
+    ],
+    variants: [
+      {
+        sku: "SWD-BLK-M",
+        size: "M",
+        color: "Black",
+        stock: 12,
+        price: 149.99,
+        isBase: true,
+        images: [
+          {
+            src: "/images/content/image (1).jpg",
+            alt: "Black Silk Wrap Dress",
+            isPrimary: true,
+          },
+        ],
+      },
+      {
+        sku: "SWD-NAV-M",
+        size: "M",
+        color: "Navy",
+        stock: 7,
+        price: 149.99,
+        images: [
+          {
+            src: "/images/content/image (11).jpg",
+            alt: "Navy Silk Wrap Dress",
+          },
+        ],
+      },
+    ],
+    materials: [
+      {
+        material: "Silk",
+        percentage: 100,
+      },
+    ],
+    sizeGuide: {
+      measurements: {
+        bust: 88,
+        waist: 68,
+        hips: 94,
+      },
+      instructions: "Measurements are in cm. Choose your usual size.",
+    },
+    careInstructions: "Dry clean only. Do not tumble dry. Iron on low heat.",
+    sustainabilityInfo: "Made with 100% organic silk and fair labor practices.",
+    seo: {
+      title: "Blazer Jacket - Maison Luxe",
+      description:
+        "Shop the Blazer Jacket from Maison Luxe. Luxurious design and comfort.",
+      keywords: ["blazer", "jacket", "luxury", "fashion"],
+      structuredData: {
+        "@type": "Product",
+        name: "Blazer Jacket",
+        description:
+          "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+        brand: {
+          "@type": "Brand",
+          name: "Maison Luxe",
+        },
+        offers: {
+          "@type": "Offer",
+          price: 149.99,
+          priceCurrency: "USD",
+          availability: "InStock",
+        },
+      },
+    },
+    isActive: true,
+    createdAt: "2024-01-01T10:00:00Z",
+    updatedAt: "2024-03-01T15:30:00Z",
+  },
+  {
+    _id: "prod-006",
+    name: "Floral Kids Dress",
+    slug: "floral-kids-dress",
+    basePrice: 149.99,
+    description:
+      "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+    brand: {
+      name: "Maison Luxe",
+      slug: "maison-luxe",
+      logo: {
+        src: "/images/brands/maison-luxe.png",
+        alt: "Maison Luxe Logo",
+      },
+    },
+    category: {
+      name: "Dresses",
+      slug: "dresses",
+    },
+    mainImage: {
+      src: "/images/content/image (1).jpg",
+      alt: "Front view of Silk Wrap Dress",
+      isPrimary: true,
+    },
+    gallery: [
+      {
+        src: "/images/content/image (1).jpg",
+        alt: "Front view of Silk Wrap Dress",
+        isPrimary: true,
+      },
+      {
+        src: "/images/content/image (2).jpg",
+        alt: "Back view of Silk Wrap Dress",
+      },
+    ],
+    variants: [
+      {
+        sku: "SWD-BLK-M",
+        size: "M",
+        color: "Black",
+        stock: 12,
+        price: 149.99,
+        isBase: true,
+        images: [
+          {
+            src: "/images/content/image (1).jpg",
+            alt: "Black Silk Wrap Dress",
+            isPrimary: true,
+          },
+        ],
+      },
+      {
+        sku: "SWD-NAV-M",
+        size: "M",
+        color: "Navy",
+        stock: 7,
+        price: 149.99,
+        images: [
+          {
+            src: "/images/content/image (11).jpg",
+            alt: "Navy Silk Wrap Dress",
+          },
+        ],
+      },
+    ],
+    materials: [
+      {
+        material: "Silk",
+        percentage: 100,
+      },
+    ],
+    sizeGuide: {
+      measurements: {
+        bust: 88,
+        waist: 68,
+        hips: 94,
+      },
+      instructions: "Measurements are in cm. Choose your usual size.",
+    },
+    careInstructions: "Dry clean only. Do not tumble dry. Iron on low heat.",
+    sustainabilityInfo: "Made with 100% organic silk and fair labor practices.",
+    seo: {
+      title: "Floral Kids Dress - Maison Luxe",
+      description:
+        "Shop the Floral Kids Dress from Maison Luxe. Luxurious design and comfort.",
+      keywords: ["floral", "kids", "dress", "luxury", "fashion"],
+      structuredData: {
+        "@type": "Product",
+        name: "Floral Kids Dress",
+        description:
+          "Elegant silk wrap dress perfect for any occasion. Features a flattering silhouette and luxurious feel.",
+        brand: {
+          "@type": "Brand",
+          name: "Maison Luxe",
+        },
+        offers: {
+          "@type": "Offer",
+          price: 149.99,
+          priceCurrency: "USD",
+          availability: "InStock",
+        },
+      },
+    },
+    isActive: true,
+    createdAt: "2024-01-01T10:00:00Z",
+    updatedAt: "2024-03-01T15:30:00Z",
+  },
 ];
 
 // Mock Categories
@@ -169,7 +694,7 @@ export const mockCategories: Category[] = [
     slug: "dresses",
     image: "/images/content/image (1).jpg",
     description: "Elegant dresses for every occasion",
-    productCount: 45
+    productCount: 45,
   },
   {
     id: "tops",
@@ -177,7 +702,7 @@ export const mockCategories: Category[] = [
     slug: "tops",
     image: "/images/content/image (2).jpg",
     description: "Stylish tops and blouses",
-    productCount: 62
+    productCount: 62,
   },
   {
     id: "bottoms",
@@ -185,7 +710,7 @@ export const mockCategories: Category[] = [
     slug: "bottoms",
     image: "/images/content/image (3).jpg",
     description: "Pants, skirts and shorts",
-    productCount: 38
+    productCount: 38,
   },
   {
     id: "outerwear",
@@ -193,7 +718,7 @@ export const mockCategories: Category[] = [
     slug: "outerwear",
     image: "/images/content/image (4).jpg",
     description: "Coats, jackets and blazers",
-    productCount: 24
+    productCount: 24,
   },
   {
     id: "kids",
@@ -201,57 +726,78 @@ export const mockCategories: Category[] = [
     slug: "kids",
     image: "/images/content/image (5).jpg",
     description: "Fashion for little ones",
-    productCount: 56
-  }
+    productCount: 56,
+  },
 ];
 
 // Mock User Data
-export const mockUser: User = {
-  id: "user-1",
-  firstName: "Sarah",
-  lastName: "Johnson",
-  email: "sarah.johnson@email.com",
-  phone: "+1 (555) 123-4567",
-  addresses: [
-    {
-      id: "addr-1",
-      name: "Home",
-      street: "123 Fashion Ave",
-      city: "New York",
-      state: "NY",
-      zipCode: "10001",
-      country: "United States",
-      isDefault: true
-    }
-  ],
-  orders: [
-    {
-      id: "order-1",
-      date: "2024-01-15",
-      status: "delivered",
-      total: 239.98,
-      items: [
-        {
-          id: "item-1",
-          productId: "1",
-          name: "Silk Wrap Dress",
-          price: 149.99,
-          image: "/images/content/image (2).jpg",
-          size: "M",
-          color: "Black",
-          quantity: 1
-        }
-      ],
-      shippingAddress: {
-        id: "addr-1",
-        name: "Home",
-        street: "123 Fashion Ave",
-        city: "New York",
-        state: "NY",
-        zipCode: "10001",
-        country: "United States"
-      }
-    }
-  ],
-  wishlist: ["2", "3"]
+
+const sharedAddress = {
+  id: "addr-001",
+  name: "Home",
+  street: "123 Fashion Ave",
+  city: "New York",
+  state: "NY",
+  zipCode: "10001",
+  country: "United States",
+  isDefault: true,
 };
+
+export const mockUsers: User[] = [
+  {
+    id: "admin-001",
+    firstName: "Kadian",
+    lastName: "Fashion",
+    email: "admin@kadian.com",
+    phone: "+1 (555) 987-6543",
+    test_password: "admin123",
+    role: "admin",
+    addresses: [
+      {
+        ...sharedAddress,
+        id: "addr-999",
+        name: "HQ",
+        street: "1 Admin Plaza",
+        city: "San Francisco",
+        state: "CA",
+        zipCode: "94105",
+      },
+    ],
+    orders: [],
+    wishlist: [],
+  },
+  {
+    id: "user-001",
+    firstName: "Sarah",
+    lastName: "Johnson",
+    email: "sarah.johnson@email.com",
+    phone: "+1 (555) 123-4567",
+    test_password: "user123",
+    role: "user",
+    addresses: [sharedAddress],
+    orders: [
+      {
+        id: "order-001",
+        date: "2024-01-15",
+        status: "delivered",
+        total: 239.98,
+        items: [
+          {
+            id: "prod-001",
+            variantSku:"SWD-BLK-M",
+            quantity: 1,
+            price: 149.99,
+          },
+          {
+            id: "prod-004",
+            variantSku:"SWD-BLK-M",
+            quantity: 1,
+            price: 89.99,
+          },
+        ],
+        shippingAddress: sharedAddress,
+      },
+    ],
+    wishlist: ["prod-003", "prod-004"],
+  },
+];

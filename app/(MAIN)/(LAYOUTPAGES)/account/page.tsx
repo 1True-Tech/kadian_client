@@ -1,6 +1,16 @@
-"use client"
-import { useState } from "react";
-import { User, Package, MapPin, Heart, Settings, LogOut } from "lucide-react";
+"use client";
+import { useEffect, useState } from "react";
+import {
+  User,
+  Package,
+  MapPin,
+  Heart,
+  Settings,
+  LogOut,
+  LogInIcon,
+  UserPlusIcon,
+  Settings2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,12 +18,17 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { mockUser } from "@/assets/dummy-data/mockData";
 import Image from "next/image";
+import { useUserStore } from "@/store/user";
+import Link from "next/link";
+import { ProductReady } from "@/types/product";
+import { CartItemReady, OrderPreviewReady } from "@/types/user";
+import { mockProducts } from "@/assets/dummy-data/mockData";
 
 const Dashboard = () => {
-  const [user, setUser] = useState(mockUser);
+  const { user, actions } = useUserStore();
   const [isEditing, setIsEditing] = useState(false);
+  const [orders, setOrders] = useState<OrderPreviewReady[]>([]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -38,6 +53,60 @@ const Dashboard = () => {
     // Handle profile update
   };
 
+  useEffect(() => {
+    if (user) {
+      const ordersPreview = user.orders.map((o) => {
+        const items = o.items.map((oi) => {
+          const product = mockProducts.find((mp) => mp._id === oi.id);
+          const productVariant = product?.variants.find(
+            (pv) => pv.sku === oi.variantSku
+          );
+          return {
+            ...oi,
+            product: {
+              id: product?._id,
+              name: product?.name,
+              slug: product?.slug,
+              basePrice: product?.basePrice,
+              variant: productVariant,
+            },
+          };
+        });
+        return {
+          ...o,
+          items,
+        };
+      }) as OrderPreviewReady[];
+
+      setOrders(ordersPreview);
+    }
+  }, [user]);
+
+  if (!user)
+    return (
+      <section className="w-full max-w-md mx-auto text-center py-16 px-6">
+        <h2 className="text-2xl font-semibold mb-4">Access Your Account</h2>
+        <p className="text-muted-foreground mb-8">
+          You need to be signed in to view this page.
+        </p>
+
+        <div className="flex justify-center gap-4">
+          <Link href="/auth/sign-in">
+            <Button variant="secondary">
+              <LogInIcon className="h-4 w-4 mr-2" />
+              Log In
+            </Button>
+          </Link>
+          <Link href="/auth/sign-up">
+            <Button variant={"glow"}>
+              <UserPlusIcon className="h-4 w-4 mr-2" />
+              Sign Up
+            </Button>
+          </Link>
+        </div>
+      </section>
+    );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -55,30 +124,48 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <Button variant="ghost" className="w-full justify-start">
-                  <User className="h-4 w-4 mr-3" />
-                  Profile Settings
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <Package className="h-4 w-4 mr-3" />
-                  Order History
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <MapPin className="h-4 w-4 mr-3" />
-                  Addresses
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <Heart className="h-4 w-4 mr-3" />
-                  Wishlist
-                </Button>
-                <Button variant="ghost" className="w-full justify-start">
-                  <Settings className="h-4 w-4 mr-3" />
-                  Account Settings
-                </Button>
+                <Link href={"/account"} className="w-full flex">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <User className="h-4 w-4 mr-3" />
+                    Profile
+                  </Button>
+                </Link>
+                <Link href={"/account/order-history"} className="w-full flex">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Package className="h-4 w-4 mr-3" />
+                    Order History
+                  </Button>
+                </Link>
+                <Link href={"/account/addresses"} className="w-full flex">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <MapPin className="h-4 w-4 mr-3" />
+                    Addresses
+                  </Button>
+                </Link>
+                <Link href={"/account/wishlist"} className="w-full flex">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Heart className="h-4 w-4 mr-3" />
+                    Wishlist
+                  </Button>
+                </Link>
+                <Link href={"/account/settings"} className="w-full flex">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Settings className="h-4 w-4 mr-3" />
+                    Account Settings
+                  </Button>
+                </Link>
+                {user.role==="admin"&&<Link href={"/admin"} className="w-full flex">
+                  <Button variant="ghost" className="w-full justify-start">
+                    <Settings2 className="h-4 w-4 mr-3" />
+                    Admin management
+                  </Button>
+                </Link>}
+
                 <Separator className="my-4" />
                 <Button
                   variant="ghost"
                   className="w-full justify-start text-destructive"
+                  onClick={() => actions.logout()}
                 >
                   <LogOut className="h-4 w-4 mr-3" />
                   Sign Out
@@ -169,7 +256,7 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
-                    {user.orders.map((order) => (
+                    {orders.map((order) => (
                       <div key={order.id} className="border rounded-lg p-6">
                         <div className="flex justify-between items-start mb-4">
                           <div>
@@ -184,27 +271,41 @@ const Dashboard = () => {
                         </div>
 
                         <div className="space-y-3">
-                          {order.items.map((item) => (
-                            <div key={item.id} className="flex gap-4">
-                              <Image
-                                width={720}
-                                height={480}
-                                src={item.image}
-                                alt={item.name}
-                                className="w-16 h-16 object-cover rounded"
-                              />
-                              <div className="flex-1">
-                                <h4 className="font-medium">{item.name}</h4>
-                                <p className="text-sm text-muted-foreground">
-                                  {item.size} • {item.color} • Qty:{" "}
-                                  {item.quantity}
-                                </p>
-                                <p className="text-sm font-medium">
-                                  ${item.price}
-                                </p>
+                          {order.items.map((item) => {
+                            console.log(item);
+                            return (
+                              <div key={item.product.id} className="flex gap-4">
+                                <Image
+                                  width={720}
+                                  height={480}
+                                  src={
+                                    item.product.variant
+                                      ? item.product.variant.images[0].src
+                                      : ""
+                                  }
+                                  alt={
+                                    item.product.variant
+                                      ? item.product.variant.images[0].alt
+                                      : item.product.variant
+                                  }
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                                <Link href={`/product/${item.product.slug}`}>
+                                  <div className="flex-1">
+                                    <h4 className="font-medium">
+                                      {item.product.name}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground">
+                                      Qty: {item.quantity}
+                                    </p>
+                                    <p className="text-sm font-medium">
+                                      ${item.price}
+                                    </p>
+                                  </div>
+                                </Link>
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
 
                         <div className="flex justify-between items-center mt-4 pt-4 border-t">
@@ -242,9 +343,9 @@ const Dashboard = () => {
                           id="firstName"
                           value={user.firstName}
                           disabled={!isEditing}
-                          onChange={(e) =>
-                            setUser({ ...user, firstName: e.target.value })
-                          }
+                          // onChange={(e) =>
+                          //   setUser({ ...user, firstName: e.target.value })
+                          // }
                         />
                       </div>
                       <div>
@@ -253,9 +354,9 @@ const Dashboard = () => {
                           id="lastName"
                           value={user.lastName}
                           disabled={!isEditing}
-                          onChange={(e) =>
-                            setUser({ ...user, lastName: e.target.value })
-                          }
+                          // onChange={(e) =>
+                          //   setUser({ ...user, lastName: e.target.value })
+                          // }
                         />
                       </div>
                     </div>
@@ -267,9 +368,9 @@ const Dashboard = () => {
                         type="email"
                         value={user.email}
                         disabled={!isEditing}
-                        onChange={(e) =>
-                          setUser({ ...user, email: e.target.value })
-                        }
+                        // onChange={(e) =>
+                        //   setUser({ ...user, email: e.target.value })
+                        // }
                       />
                     </div>
 
@@ -279,9 +380,9 @@ const Dashboard = () => {
                         id="phone"
                         value={user.phone || ""}
                         disabled={!isEditing}
-                        onChange={(e) =>
-                          setUser({ ...user, phone: e.target.value })
-                        }
+                        // onChange={(e) =>
+                        //   setUser({ ...user, phone: e.target.value })
+                        // }
                       />
                     </div>
 

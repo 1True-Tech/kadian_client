@@ -5,7 +5,7 @@ import {
   imageAssetWithAlt,
   MarkDef,
   sanityImageAsset,
-} from ".";
+} from "./structures";
 
 export interface HomePageHero {
   title: string;

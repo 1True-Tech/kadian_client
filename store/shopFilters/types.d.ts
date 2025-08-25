@@ -12,8 +12,10 @@ export interface ShopFilters {
 }
 export interface ShopFilterData{
     filters:Partial<ShopFilters>
+    savedFilters:boolean
 }
 export interface ShopFiltersActions {
     updateFilter: (val:Partial<ShopFilters>, action?:"ADD"|"REMOVE")=> void;
     clearFilters: ()=> void;
+    saveFilter(): void
 }

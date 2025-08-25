@@ -1,11 +1,15 @@
 "use client";
+import { mockUsers } from "@/assets/dummy-data/mockData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import cookies from "@/lib/utils/cookies";
+import { useUserStore } from "@/store/user";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const SignIn = () => {
@@ -16,13 +20,22 @@ const SignIn = () => {
     rememberMe: false,
   });
 
+  const { actions } = useUserStore();
+  const { push } = useRouter();
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Sign in:", formData);
+    const user = mockUsers.find(
+      (i) => i.email === formData.email && i.test_password === formData.password
+    );
+    cookies.set("user-id", user?.id || "");
+    if (user) {
+      actions.setUser(user);
+      push("/")
+    }
     // Handle sign in
   };
 
@@ -31,16 +44,34 @@ const SignIn = () => {
       <div className="max-w-md mx-auto">
         <Card className="bg-transparent backdrop-blur-md md:!border-0 md:!shadow-none">
           <CardHeader className="text-center md:text-left">
-            <CardTitle className="text-2xl text-background md:text-foreground font-light font-cinzel">Welcome Back</CardTitle>
-            <p className="text-primary-foreground md:text-foreground/70">Sign in to your account</p>
+            <CardTitle className="text-2xl text-background md:text-foreground font-light font-cinzel">
+              Welcome Back
+            </CardTitle>
+            <p className="text-primary-foreground md:text-foreground/70">
+              Sign in to your account
+            </p>
+            {/* demo section */}
+            <div className="w-full flex flex-col gap-small text-xs text-white md:text-foreground">
+              <div className="w-full">
+                <b>Admin</b>: email=&ldquo;admin@kadian.com&ldquo; & password=&ldquo;admin123&ldquo;
+              </div>
+              <div className="w-full">
+                <b>Admin</b>: email=&ldquo;sarah.johnson@email.com&ldquo; &
+                password=&ldquo;user123&ldquo;
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6 text-background md:text-foreground">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6 text-background md:text-foreground"
+            >
               <div>
                 <Label htmlFor="email">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
+                  className="text-black"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   placeholder="your@email.com"
@@ -55,6 +86,8 @@ const SignIn = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
+                  className="text-black"
+
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
@@ -99,7 +132,12 @@ const SignIn = () => {
                 </Link>
               </div>
 
-              <Button type="submit" size="lg" variant={"ghost"} className="w-full btn-hero bg-accent text-accent-foreground">
+              <Button
+                type="submit"
+                size="lg"
+                variant={"ghost"}
+                className="w-full btn-hero bg-accent text-accent-foreground"
+              >
                 Sign In
               </Button>
 
