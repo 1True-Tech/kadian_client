@@ -50,7 +50,7 @@ export function queryParamsToFilters(searchString: string): Partial<ShopFilters>
     colors: parseArray('colors'),
     price: {
       from: parseNumber(query.get('price_from'))||0,
-      to: parseNumber(query.get('price_to'))||0,
+      to: parseNumber(query.get('price_to'))||1000,
     },
     sorting: query.get('sorting') as ShopFilters['sorting'] | undefined,
     search: query.get('search')|| ""

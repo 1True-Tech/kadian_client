@@ -1,54 +1,53 @@
-import { useState } from "react";
-import { ChevronDown, X } from "lucide-react";
+"use client";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import processColors, { color } from "@/lib/controllers/processColors";
+import { getContrastingTextColor } from "@/lib/utils/colorsProcessors/colorProcessing";
+import { useNavItems } from "@/store/navItems";
+import useShopFiltersStore from "@/store/shopFilters";
+import { queryParamsToFilters } from "@/store/shopFilters/helper";
+import { ChevronDown, PlusCircleIcon, SearchIcon, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import ShopColorPick from "../pages/shop/colorPick";
+import { Input } from "../ui/input";
 
 interface FiltersProps {
-  onFiltersChange?: (filters: any) => void;
   className?: string;
 }
 
-const FiltersSidebar = ({ onFiltersChange, className = "" }: FiltersProps) => {
-  const [priceRange, setPriceRange] = useState([0, 500]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+const FiltersSidebar = ({ className = "" }: FiltersProps) => {
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [colors, setColors] = useState<color[]>([]);
+  const { filters, updateFilter, clearFilters } = useShopFiltersStore();
+  const { items } = useNavItems();
+  const shopNavOnly = items.find((i) => i.label === "Shop");
+  const queryParams = useSearchParams();
 
-  const categories = ["Dresses", "Tops", "Bottoms", "Outerwear", "Kids"];
+  useEffect(() => {
+    const loadedFilters = queryParamsToFilters(queryParams.toString());
+    async function loadColors() {
+      const loadColors = await processColors();
+      setColors(loadColors);
+    }
+    loadColors();
+    updateFilter(loadedFilters);
+  }, []);
+
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-  const colors = ["Black", "White", "Navy", "Gray", "Beige", "Red", "Blue", "Green"];
-
-  const clearFilters = () => {
-    setPriceRange([0, 500]);
-    setSelectedCategories([]);
-    setSelectedSizes([]);
-    setSelectedColors([]);
-    onFiltersChange?.({
-      priceRange: [0, 500],
-      categories: [],
-      sizes: [],
-      colors: []
-    });
-  };
-
-  const handleCategoryChange = (category: string, checked: boolean) => {
-    const updated = checked 
-      ? [...selectedCategories, category]
-      : selectedCategories.filter(c => c !== category);
-    setSelectedCategories(updated);
-    onFiltersChange?.({ categories: updated, sizes: selectedSizes, colors: selectedColors, priceRange });
-  };
 
   return (
-    <Card className={`w-full ${className} !border-0 !bg-transparent !shadow-none`}>
+    <Card
+      className={`w-full ${className} !border-0 !bg-transparent !shadow-none`}
+    >
       <CardHeader className="flex flex-row items-center justify-between sticky top-0 bg-background md:bg-card z-10">
         <CardTitle className="text-lg">Filters</CardTitle>
         <Button variant="ghost" size="sm" onClick={clearFilters}>
@@ -56,8 +55,35 @@ const FiltersSidebar = ({ onFiltersChange, className = "" }: FiltersProps) => {
           Clear
         </Button>
       </CardHeader>
-      
-      <CardContent className="space-y-6">
+
+      <CardContent className="space-y-6 px-small">
+        <article className="left-nav-item">
+          <div className="input-box-external [--border-width:_1px] w-full flex items-center gap-xtrasmall border-1 border-foreground/40">
+            <Input
+              id="search-content"
+              name="search-content"
+              type="search"
+              defaultValue={filters.search}
+              className="w-full !shadow-none !rounded-none !outline-none !ring-0 !border-0 !px-0 !pl-2"
+            />
+            <Button
+              variant={"outline"}
+              className="bg-transparent !border-transparent !rounded-none text-sm w-fit px-small"
+              onClick={(e) => {
+                const inputElement =
+                  e.currentTarget.parentElement?.querySelector(
+                    "#search-content"
+                  ) as HTMLInputElement;
+                updateFilter({
+                  search: inputElement.value,
+                });
+              }}
+            >
+              <SearchIcon />
+              Search
+            </Button>
+          </div>
+        </article>
         {/* Price Range */}
         <Collapsible defaultOpen>
           <CollapsibleTrigger className="flex items-center justify-between w-full p-0 hover:no-underline">
@@ -67,44 +93,120 @@ const FiltersSidebar = ({ onFiltersChange, className = "" }: FiltersProps) => {
           <CollapsibleContent className="mt-4">
             <div className="space-y-4">
               <Slider
-                value={priceRange}
-                onValueChange={setPriceRange}
-                max={500}
-                min={0}
+                defaultValue={[0, 5000]}
+                value={[filters.price?.from || 0, filters.price?.to || 500]}
+                onValueChange={(val) => {
+                  const [from, to] = val;
+                  updateFilter({
+                    price: {
+                      from,
+                      to,
+                    },
+                  });
+                }}
                 step={10}
+                max={500}
                 className="w-full"
               />
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span>${priceRange[0]}</span>
-                <span>${priceRange[1]}</span>
+                <span>${filters.price?.from}</span>
+                <span>${filters.price?.to}</span>
               </div>
             </div>
           </CollapsibleContent>
         </Collapsible>
 
         {/* Categories */}
-        <Collapsible defaultOpen>
-          <CollapsibleTrigger className="flex items-center justify-between w-full p-0 hover:no-underline">
-            <h3 className="font-medium">Categories</h3>
-            <ChevronDown className="h-4 w-4" />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4">
-            <div className="space-y-3">
-              {categories.map((category) => (
-                <div key={category} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={category}
-                    checked={selectedCategories.includes(category)}
-                    onCheckedChange={(checked) => handleCategoryChange(category, !!checked)}
-                  />
-                  <Label htmlFor={category} className="text-sm font-normal">
-                    {category}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+        {shopNavOnly && (shopNavOnly.children || []).length > 0 && (
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-0 hover:no-underline">
+              <h3 className="font-medium">Categories</h3>
+              <ChevronDown className="h-4 w-4" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4">
+              <ul className="w-full flex gap-small flex-col">
+                {(shopNavOnly.children || []).map((p, idx) => {
+                  const hasCollections = p.items.length;
+                  if (hasCollections) {
+                    return (
+                      <li key={idx}>
+                        <Collapsible>
+                          <div className="w-full flex items-center justify-between">
+                            <div className="w-full flex items-center gap-xtrasmall md:gap-peers">
+                              <Checkbox
+                                id={`/shop/${p.url || ""}`}
+                                checked={filters.categories?.includes(
+                                  p.url || ""
+                                )}
+                                onCheckedChange={(state) => {
+                                  updateFilter(
+                                    {
+                                      categories: [p.url || ""],
+                                      collections: p.items.map((i) => i.url),
+                                    },
+                                    state ? "ADD" : "REMOVE"
+                                  );
+                                }}
+                              />
+                              <label
+                                className="link"
+                                htmlFor={`/shop/${p.url || ""}`}
+                              >
+                                {p.label || "item"}
+                              </label>
+                            </div>
+                            <CollapsibleTrigger className="[--rotation:0] data-[state=open]:[--rotation:45deg]">
+                              <PlusCircleIcon className="cursor-pointer rotate-[var(--rotation)]  duration-300" />
+                            </CollapsibleTrigger>
+                          </div>
+                          <CollapsibleContent>
+                            <div className="w-full flex flex-col gap-small pl-2">
+                              {p.items.map((i, dx) => (
+                                <div
+                                  key={dx}
+                                  className="w-full flex items-center gap-xtrasmall md:gap-peers"
+                                >
+                                  <Checkbox
+                                    id={i.url}
+                                    checked={
+                                      filters.categories?.includes(
+                                        p.url || ""
+                                      ) || filters.collections?.includes(i.url)
+                                    }
+                                    onCheckedChange={(state) => {
+                                      updateFilter(
+                                        { collections: [i.url || ""] },
+                                        state ? "ADD" : "REMOVE"
+                                      );
+                                    }}
+                                  />
+                                  <label className="link" htmlFor={i.url}>
+                                    {i.name}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </li>
+                    );
+                  }
+                  return (
+                    <div
+                      key={idx}
+                      className="w-full flex items-center gap-xtrasmall md:gap-peers"
+                    >
+                      <Checkbox id={p.label} />
+                      <label className="link" htmlFor={p.label}>
+                        {p.label}
+                      </label>
+                    </div>
+                  );
+                })}
+              </ul>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
 
         {/* Sizes */}
         <Collapsible defaultOpen>
@@ -119,8 +221,8 @@ const FiltersSidebar = ({ onFiltersChange, className = "" }: FiltersProps) => {
                   key={size}
                   className={`border rounded-md p-2 text-center cursor-pointer transition-colors ${
                     selectedSizes.includes(size)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'hover:bg-muted'
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted"
                   }`}
                 >
                   <input
@@ -128,9 +230,9 @@ const FiltersSidebar = ({ onFiltersChange, className = "" }: FiltersProps) => {
                     className="sr-only"
                     checked={selectedSizes.includes(size)}
                     onChange={(e) => {
-                      const updated = e.target.checked 
+                      const updated = e.target.checked
                         ? [...selectedSizes, size]
-                        : selectedSizes.filter(s => s !== size);
+                        : selectedSizes.filter((s) => s !== size);
                       setSelectedSizes(updated);
                     }}
                   />
@@ -142,34 +244,44 @@ const FiltersSidebar = ({ onFiltersChange, className = "" }: FiltersProps) => {
         </Collapsible>
 
         {/* Colors */}
-        <Collapsible defaultOpen>
-          <CollapsibleTrigger className="flex items-center justify-between w-full p-0 hover:no-underline">
-            <h3 className="font-medium">Color</h3>
-            <ChevronDown className="h-4 w-4" />
-          </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4">
-            <div className="grid grid-cols-4 gap-2">
-              {colors.map((color) => (
-                <div
-                  key={color}
-                  className={`w-8 h-8 rounded-full border-2 cursor-pointer ${
-                    selectedColors.includes(color) ? 'border-primary' : 'border-border'
-                  }`}
-                  style={{
-                    backgroundColor: color.toLowerCase() === 'beige' ? '#F5F5DC' : color.toLowerCase()
-                  }}
-                  onClick={() => {
-                    const updated = selectedColors.includes(color)
-                      ? selectedColors.filter(c => c !== color)
-                      : [...selectedColors, color];
-                    setSelectedColors(updated);
-                  }}
-                  title={color}
-                />
-              ))}
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+        {colors.length > 0 && (
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="flex items-center justify-between w-full p-0 hover:no-underline">
+              <h3 className="font-medium">Color</h3>
+              <ChevronDown className="h-4 w-4" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4">
+              <div className="grid grid-cols-4 gap-2">
+                {colors.map((c, idx) => {
+                  const color = c.hex || c.rgba || "#fff";
+                  const text = getContrastingTextColor(color);
+                  return (
+                    <li
+                      key={idx}
+                      title={c.name}
+                      className="size-7 relative isolate overflow-hidden cursor-pointer rounded-full border"
+                      style={{
+                        background: color,
+                        color: text,
+                        borderColor: text,
+                      }}
+                    >
+                      <ShopColorPick
+                        onSelect={(selected) => {
+                          updateFilter(
+                            { colors: [color] },
+                            selected ? "ADD" : "REMOVE"
+                          );
+                        }}
+                        select={filters.colors?.includes(color)}
+                      />
+                    </li>
+                  );
+                })}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
       </CardContent>
     </Card>
   );

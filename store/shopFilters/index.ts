@@ -5,6 +5,7 @@ import { ShopFilterData, ShopFiltersActions } from "./types";
 const useShopFiltersStore = create<ShopFilterData & ShopFiltersActions>(
   (set) => ({
     filters: {},
+    savedFilters: true,
     clearFilters() {
       set(
         produce<ShopFilterData>((fill) => {
@@ -38,11 +39,19 @@ const useShopFiltersStore = create<ShopFilterData & ShopFiltersActions>(
             colors: updateArray(currentFilters.colors || [], val.colors || []),
             price: {
               from: val.price?.from ?? currentFilters.price?.from ?? 0,
-              to: val.price?.to ?? currentFilters.price?.to ?? 0,
+              to: val.price?.to ?? currentFilters.price?.to ?? 1000,
             },
             sorting: val.sorting ?? currentFilters.sorting,
-            search: val.search ?? currentFilters.search
+            search: val.search ?? currentFilters.search,
           };
+          fill.savedFilters = false
+        })
+      );
+    },
+    saveFilter() {
+      set(
+        produce<ShopFilterData>((fill) => {
+          fill.savedFilters = true;
         })
       );
     },

@@ -36,7 +36,7 @@ const ProductCard = ({
               height={480}
               src={primaryImage}
               alt={primaryAlt}
-              className="w-full h-40 min-[498px]:h-50 sm:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-40 min-[498px]:h-50 sm:h-55 md:h-60 ld:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </Link>
 
