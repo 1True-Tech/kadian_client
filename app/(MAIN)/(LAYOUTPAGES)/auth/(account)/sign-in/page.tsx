@@ -53,11 +53,11 @@ const SignIn = () => {
             {/* demo section */}
             <div className="w-full flex flex-col gap-small text-xs text-white md:text-foreground">
               <div className="w-full">
-                <b>Admin</b>: email="admin@kadian.com" & password="admin123"
+                <b>Admin</b>: email=&ldquo;admin@kadian.com&ldquo; & password=&ldquo;admin123&ldquo;
               </div>
               <div className="w-full">
-                <b>Admin</b>: email="sarah.johnson@email.com" &
-                password="user123"
+                <b>Admin</b>: email=&ldquo;sarah.johnson@email.com&ldquo; &
+                password=&ldquo;user123&ldquo;
               </div>
             </div>
           </CardHeader>

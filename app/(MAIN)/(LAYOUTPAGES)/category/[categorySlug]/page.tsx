@@ -8,7 +8,7 @@ async function Category({ params }: ParamsProps<{ categorySlug: string | null }>
   const { categorySlug } = await params
   const category = mockCategories.find(c => c.slug === categorySlug);
   const categoryProducts = mockProducts.filter(p =>
-    p.category.toLowerCase() === categorySlug?.toLowerCase()
+    p.category.slug.toLowerCase() === categorySlug?.toLowerCase()
   );
 
   if (!category) {

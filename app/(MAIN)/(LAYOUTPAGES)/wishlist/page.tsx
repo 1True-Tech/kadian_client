@@ -1,21 +1,18 @@
 "use client";
-import { mockProducts, mockUser } from "@/assets/dummy-data/mockData";
+import { mockProducts } from "@/assets/dummy-data/mockData";
 import ProductGrid from "@/components/product/ProductGrid";
 import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store/user";
 import { notFound } from "next/navigation";
 import { useState } from "react";
 
 const Wishlist = () => {
-  const [wishlistItems, setWishlistItems] = useState(mockUser.wishlist);
+  const { user } = useUserStore();
+  const [wishlistItems, setWishlistItems] = useState(user?.wishlist);
 
   const wishlistProducts = mockProducts.filter((product) =>
-    wishlistItems.includes(product.id)
+    wishlistItems?.includes(product._id)
   );
-
-
-  const removeFromWishlist = (productId: string) => {
-    setWishlistItems((items) => items.filter((id) => id !== productId));
-  };
 
   const addToCart = (productId: string) => {
     console.log("Add to cart:", productId);
@@ -49,11 +46,7 @@ const Wishlist = () => {
         </div>
       </div>
 
-      <ProductGrid
-        products={wishlistProducts}
-        onAddToWishlist={removeFromWishlist}
-        onAddToCart={addToCart}
-      />
+      <ProductGrid products={wishlistProducts} onAddToCart={addToCart} />
     </div>
   );
 };
