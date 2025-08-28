@@ -1,5 +1,6 @@
 "use client";
 import { mockProducts } from "@/assets/dummy-data/mockData";
+import AddressItem from "@/components/pages/account/AddressItem";
 import OrderHistoryItem from "@/components/pages/account/OrderHistoryItem";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -230,42 +231,17 @@ const Dashboard = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Saved Addresses</CardTitle>
-              <Button variant="outline">Add New Address</Button>
+              <div className="flex gap-4 items-center">
+                <Link href="/account/addresses" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2">
+                  See all addresses <MoveRightIcon className="h-4 w-4" />
+                </Link>
+                <Button variant="outline">Add New Address</Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {user.addresses.map((address) => (
-                  <div key={address.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-medium">{address.name}</h3>
-                          {address.isDefault && (
-                            <Badge variant="secondary">Default</Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {address.street}
-                          <br />
-                          {address.city}, {address.state} {address.zipCode}
-                          <br />
-                          {address.country}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" size="sm">
-                          Edit
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-destructive"
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                {user.addresses.slice(0, 3).map((address) => (
+                  <AddressItem key={address.id} address={address}/>
                 ))}
               </div>
             </CardContent>

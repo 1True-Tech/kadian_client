@@ -1,0 +1,92 @@
+"use client";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { Lookbook } from "@/types/guides";
+import { ImageIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+
+interface LookbookListProps {
+  initialLookbooks: Lookbook[];
+}
+
+export default function LookbookList({ initialLookbooks }: LookbookListProps) {
+  // Group lookbooks by year
+  const lookbooksByYear = initialLookbooks.reduce((acc, lookbook) => {
+    const year = lookbook.season.year;
+    if (!acc[year]) {
+      acc[year] = [];
+    }
+    acc[year].push(lookbook);
+    return acc;
+  }, {} as Record<number, Lookbook[]>);
+
+  const years = Object.keys(lookbooksByYear).sort((a, b) => Number(b) - Number(a));
+
+  return (
+    <section className="py-16">
+      <div className="px-container">
+        <div className="text-center mb-12 animate-fade-up">
+          <h1 className="heading-section text-4xl font-cinzel mb-4">Lookbook</h1>
+          <p className="text-elegant max-w-2xl mx-auto">
+            Explore our seasonal collections and get inspired by the latest fashion trends.
+          </p>
+        </div>
+
+        <Tabs defaultValue={years[0]} className="w-full">
+          <TabsList className="w-full flex flex-wrap justify-center gap-2 h-auto bg-transparent mb-8">
+            {years.map((year) => (
+              <TabsTrigger
+                key={year}
+                value={year}
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              >
+                {year}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          {years.map((year) => (
+            <TabsContent key={year} value={year}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {lookbooksByYear[Number(year)].map((lookbook) => (
+                  <Link
+                    key={lookbook._id}
+                    href={`/lookbook/${lookbook.slug.current}`}
+                  >
+                    <Card className="card-premium overflow-hidden group cursor-pointer hover-lift">
+                      <CardContent className="p-0 relative">
+                        {lookbook.looks[0]?.image ? (
+                          <div className="relative aspect-[2/3]">
+                            <Image
+                              src={lookbook.looks[0].image.src}
+                              alt={lookbook.looks[0].image.alt}
+                              fill
+                              className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                          </div>
+                        ) : (
+                          <div className="aspect-[2/3] bg-muted flex items-center justify-center">
+                            <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
+                          </div>
+                        )}
+                        <div className="absolute bottom-6 left-6 right-6 text-white">
+                          <div className="text-sm font-medium mb-2">
+                            {lookbook.season.name} {lookbook.season.year}
+                          </div>
+                          <h2 className="text-xl font-light">{lookbook.title}</h2>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
+    </section>
+  );
+}

@@ -21,11 +21,11 @@ export const processShopListNavigations = async (): Promise<NavItem[]> => {
             }) => ({
               hasLabel: category.label ? true : false,
               label: category.label ? category.label : undefined,
-              url: `/product?categories=${category.url}`,
+              url: `/category/${category.url}`,
               items: category.items.map(
                 (item: { name: string; url: string }) => ({
                   name: item.name,
-                  url: `/product?categories=${category.url}&collections=${item.url}`,
+                  url: `/collection/${item.url}`,
                 })
               ),
             })
