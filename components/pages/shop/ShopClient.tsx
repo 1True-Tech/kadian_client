@@ -1,5 +1,5 @@
 "use client";
-import { mockProducts } from "@/assets/dummy-data/mockData";
+
 import ProductGrid from "@/components/product/ProductGrid";
 import FiltersSidebar from "@/components/shop/FiltersSidebar";
 import { Button } from "@/components/ui/button";
@@ -19,92 +19,62 @@ import {
 } from "@/components/ui/sheet";
 import { useIsMobile } from "@/lib/hooks/isMobile";
 import useShopFiltersStore from "@/store/shopFilters";
-import {
-  filtersToQueryParams,
-  queryParamsToFilters,
-} from "@/store/shopFilters/helper";
-import { Filter, Grid3X3, List, SearchIcon } from "lucide-react";
+import { filtersToQueryParams } from "@/store/shopFilters/helper";
+import { Filter, Grid3X3, List } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { filterProducts, sortProducts } from "@/lib/controllers/processShop/processProducts";
 import { useCallback, useEffect, useState } from "react";
+import { type ShopFilters } from "@/store/shopFilters/types";
+import { ProductReady } from "@/types/product";
 
-const Shop = () => {
+interface ShopClientProps {
+  initialProducts: ProductReady[];
+  initialFilteredProducts: ProductReady[];
+  initialFilters: ShopFilters;
+}
+
+const ShopClient = ({ 
+  initialProducts,
+  initialFilteredProducts,
+  initialFilters
+}: ShopClientProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState("featured");
-  const [filteredProducts, setFilteredProducts] = useState(mockProducts);
+  const [sortBy, setSortBy] = useState(initialFilters.sorting || "featured");
+  const [allProducts] = useState(initialProducts);
+  const [filteredProducts, setFilteredProducts] = useState(initialFilteredProducts);
   const { push } = useRouter();
   const queryParams = useSearchParams();
   const isMobile = useIsMobile(768);
-  const { filters, saveFilter, savedFilters, updateFilter } =
-    useShopFiltersStore();
+  const { filters, saveFilter, savedFilters, updateFilter, setFilters } = useShopFiltersStore();
+
+  // Initialize filters from URL on mount
+  useEffect(() => {
+    setFilters(initialFilters);
+  }, []);
 
   const handleRedirectFilter = useCallback(() => {
     const query = filtersToQueryParams(filters);
-
     push(`?${query}`);
     saveFilter();
-  }, [filters]);
+  }, [filters, push, saveFilter]);
 
+  // Update filtered products when URL params change
   useEffect(() => {
+    if (!queryParams.toString()) return;
+    
     const timer = setTimeout(() => {
-      const loadedFilters = queryParamsToFilters(queryParams.toString());
-
-      const filteredProduct = mockProducts.filter((product) => {
-        const price = Math.max(
-          product.basePrice,
-          ...product.variants.map((variant) => variant.price)
-        );
-
-        const matchesPrice =
-          price >= (loadedFilters.price?.from || 0) &&
-          price <= (loadedFilters.price?.to || Infinity);
-
-        const matchesCategory =
-          !loadedFilters.categories?.length ||
-          loadedFilters.categories.includes(product.category.name);
-
-        const search = loadedFilters.search?.toLowerCase() || "";
-        const matchesSearch =
-          product.name.toLowerCase().includes(search) ||
-          product.brand.name.toLowerCase().includes(search) ||
-          product.slug.toLowerCase().includes(search);
-
-        return matchesPrice && matchesCategory && matchesSearch;
-      });
-
-      setFilteredProducts(filteredProduct);
-    }, 250); // throttle delay
+      const filtered = filterProducts(allProducts, {...filters, colors:filters.colors});
+      // const sorted = sortProducts(filtered, filters.sorting);
+      setFilteredProducts(filtered);
+    }, 250);
 
     return () => clearTimeout(timer);
-  }, [queryParams]);
+  }, [queryParams, allProducts, filters]);
 
-  const handleSortChange = (value: string) => {
+  const handleSortChange = (value: 'featured' | 'newest' | 'price-low' | 'price-high' | 'rating') => {
     setSortBy(value);
-
-    const sorted = [...filteredProducts];
-
-    switch (value) {
-      case "price-low":
-        sorted.sort((a, b) => a.basePrice - b.basePrice);
-        break;
-
-      case "price-high":
-        sorted.sort((a, b) => b.basePrice - a.basePrice);
-        break;
-
-      case "newest":
-        sorted.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        break;
-
-      default:
-        // 'featured' or fallback — could reset to original list if stored
-        break;
-    }
-
-    setFilteredProducts(sorted);
+    updateFilter({ sorting: value as 'featured' | 'newest' | 'price-low' | 'price-high' | 'rating' });
   };
 
   return (
@@ -113,9 +83,6 @@ const Shop = () => {
       <div className="flex flex-col px-container py-xtrasmall sticky top-6 sm:top-8 md:top-16 bg-background z-20 md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
           <h1 className="heading-section">Shop All</h1>
-          {/* <p className="text-muted-foreground mt-2">
-              Discover our complete collection of premium fashion
-            </p> */}
         </div>
 
         {/* Controls */}
@@ -137,13 +104,6 @@ const Shop = () => {
                   </SheetFooter>
                 )}
               </SheetContent>
-              {!isMobile && !savedFilters && (
-                <>
-                  <SheetFooter>
-                    <Button onClick={handleRedirectFilter}>Save filters</Button>
-                  </SheetFooter>
-                </>
-              )}
             </Sheet>
 
             {/* Desktop Filters Toggle */}
@@ -196,7 +156,7 @@ const Shop = () => {
       {/* Results Count */}
       <div className="mb-6 px-container">
         <p className="text-muted-foreground">
-          Showing {filteredProducts.length} of {mockProducts.length} products
+          Showing {filteredProducts.length} of {allProducts.length} products
         </p>
       </div>
 
@@ -223,4 +183,4 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default ShopClient;

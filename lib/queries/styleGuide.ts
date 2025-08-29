@@ -10,7 +10,7 @@ export const styleGuideQuery = `*[_type == "styleGuide"] | order(_createdAt desc
     styleImages[] {
       alt,
       caption,
-      "src": asset->url
+      asset
     }
   }
 }`
@@ -27,7 +27,7 @@ export const styleGuideBySlugQuery = `*[_type == "styleGuide" && slug.current ==
     styleImages[] {
       alt,
       caption,
-      "src": asset->url
+      asset
     }
   }
 }`

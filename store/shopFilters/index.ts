@@ -1,6 +1,6 @@
 import { produce } from "immer";
 import { create } from "zustand";
-import { ShopFilterData, ShopFiltersActions } from "./types";
+import { ShopFilterData, ShopFilters, ShopFiltersActions } from "./types";
 
 const useShopFiltersStore = create<ShopFilterData & ShopFiltersActions>(
   (set) => ({
@@ -52,6 +52,13 @@ const useShopFiltersStore = create<ShopFilterData & ShopFiltersActions>(
       set(
         produce<ShopFilterData>((fill) => {
           fill.savedFilters = true;
+        })
+      );
+    },
+     setFilters(ShopFilterData:Partial<ShopFilters>) {
+      set(
+        produce<ShopFilterData>((fill) => {
+          fill.filters = ShopFilterData;
         })
       );
     },

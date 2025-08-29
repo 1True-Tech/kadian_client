@@ -1,4 +1,4 @@
-export type ShopSorting = "a-z" | "z-a" | "expensive-first" | "expensive-last";
+export type ShopSorting = 'featured' | 'newest' | 'price-low' | 'price-high' | 'rating';
 export interface ShopFilters {
   collections: string[];
   categories: string[];
@@ -17,5 +17,6 @@ export interface ShopFilterData{
 export interface ShopFiltersActions {
     updateFilter: (val:Partial<ShopFilters>, action?:"ADD"|"REMOVE")=> void;
     clearFilters: ()=> void;
-    saveFilter(): void
+    saveFilter(): void;
+    setFilters(ShopFilterData: Partial<ShopFilters>): void
 }

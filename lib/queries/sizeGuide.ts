@@ -19,7 +19,7 @@ export const sizeGuideQuery = `*[_type == "sizeGuide"] {
   images[] {
     alt,
     caption,
-    "src": asset->url
+    asset
   }
 }`
 
@@ -44,6 +44,6 @@ export const sizeGuideBySlugQuery = `*[_type == "sizeGuide" && category->slug.cu
   images[] {
     alt,
     caption,
-    "src": asset->url
+    asset
   }
 }`
