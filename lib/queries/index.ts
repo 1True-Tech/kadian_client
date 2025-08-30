@@ -4,6 +4,7 @@ import { shopCategory, shopCollection } from "./shop";
 import { colors } from './Colors';
 import { allCategories, categoryBySlug, searchCategories, homepageCategories } from './Categories';
 import { allCollections, collectionBySlug, searchCollections } from './Collections';
+import { productBySlugQuery, productFiltersQuery, productListQuery, productSearchQuery,allProductExtraFiltersQuery } from "./products";
 
 const queries = {
     categoryForShopList,
@@ -22,7 +23,14 @@ const queries = {
     // Collection queries
     allCollections,
     collectionBySlug,
-    searchCollections
+    searchCollections,
+
+    // products
+    productBySlugQuery,
+    productListQuery,
+    productFiltersQuery,
+    productSearchQuery,
+    allProductExtraFiltersQuery
 }
 
 export default queries;

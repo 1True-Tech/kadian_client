@@ -25,7 +25,6 @@ const ProductCard = ({
     product.mainImage?.src ?? product.gallery?.[0]?.src ?? undefined;
   const primaryAlt =
     product.mainImage?.alt ?? product.gallery?.[0]?.alt ?? product.name;
-
   return (
     <Card
       className={`card-product overflow-hidden group ${className}`}

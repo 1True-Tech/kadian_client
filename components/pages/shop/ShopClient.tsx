@@ -22,31 +22,40 @@ import useShopFiltersStore from "@/store/shopFilters";
 import { filtersToQueryParams } from "@/store/shopFilters/helper";
 import { Filter, Grid3X3, List } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { filterProducts, sortProducts } from "@/lib/controllers/processShop/processProducts";
+import {
+  filterProducts,
+  sortProducts,
+} from "@/lib/controllers/processShop/processProducts";
 import { useCallback, useEffect, useState } from "react";
 import { type ShopFilters } from "@/store/shopFilters/types";
 import { ProductReady } from "@/types/product";
+import { FiltersReady } from "@/types/structures/filters";
 
 interface ShopClientProps {
   initialProducts: ProductReady[];
   initialFilteredProducts: ProductReady[];
   initialFilters: ShopFilters;
+  availableFilters: FiltersReady;
 }
 
-const ShopClient = ({ 
+const ShopClient = ({
   initialProducts,
   initialFilteredProducts,
-  initialFilters
+  initialFilters,
+  availableFilters
 }: ShopClientProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState(initialFilters.sorting || "featured");
   const [allProducts] = useState(initialProducts);
-  const [filteredProducts, setFilteredProducts] = useState(initialFilteredProducts);
+  const [filteredProducts, setFilteredProducts] = useState(
+    initialFilteredProducts
+  );
   const { push } = useRouter();
   const queryParams = useSearchParams();
   const isMobile = useIsMobile(768);
-  const { filters, saveFilter, savedFilters, updateFilter, setFilters } = useShopFiltersStore();
+  const { filters, saveFilter, savedFilters, updateFilter, setFilters } =
+    useShopFiltersStore();
 
   // Initialize filters from URL on mount
   useEffect(() => {
@@ -62,9 +71,12 @@ const ShopClient = ({
   // Update filtered products when URL params change
   useEffect(() => {
     if (!queryParams.toString()) return;
-    
+
     const timer = setTimeout(() => {
-      const filtered = filterProducts(allProducts, {...filters, colors:filters.colors});
+      const filtered = filterProducts(allProducts, {
+        ...filters,
+        colors: filters.colors,
+      });
       // const sorted = sortProducts(filtered, filters.sorting);
       setFilteredProducts(filtered);
     }, 250);
@@ -72,9 +84,18 @@ const ShopClient = ({
     return () => clearTimeout(timer);
   }, [queryParams, allProducts, filters]);
 
-  const handleSortChange = (value: 'featured' | 'newest' | 'price-low' | 'price-high' | 'rating') => {
+  const handleSortChange = (
+    value: "featured" | "newest" | "price-low" | "price-high" | "rating"
+  ) => {
     setSortBy(value);
-    updateFilter({ sorting: value as 'featured' | 'newest' | 'price-low' | 'price-high' | 'rating' });
+    updateFilter({
+      sorting: value as
+        | "featured"
+        | "newest"
+        | "price-low"
+        | "price-high"
+        | "rating",
+    });
   };
 
   return (
@@ -96,8 +117,12 @@ const ShopClient = ({
                   Filters
                 </Button>
               </SheetTrigger>
-              <SheetContent hasDefaultClose={false} side="left" className="w-80 px-small h-full overflow-y-auto">
-                <FiltersSidebar />
+              <SheetContent
+                hasDefaultClose={false}
+                side="left"
+                className="w-80 px-small h-full overflow-y-auto"
+              >
+                <FiltersSidebar availableFilters={availableFilters} saveFilter={handleRedirectFilter} />
                 {!savedFilters && (
                   <SheetFooter>
                     <Button onClick={handleRedirectFilter}>Save filters</Button>
@@ -106,6 +131,11 @@ const ShopClient = ({
               </SheetContent>
             </Sheet>
 
+            {!savedFilters && (
+              <Button className="hidden md:flex" onClick={handleRedirectFilter}>
+                Save filters
+              </Button>
+            )}
             {/* Desktop Filters Toggle */}
             <Button
               variant="outline"
@@ -166,7 +196,7 @@ const ShopClient = ({
         {showFilters && (
           <div className="hidden md:block w-80 sticky top-28 flex-shrink-0 h-fit bg-card rounded-lg border !py-small">
             <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto">
-              <FiltersSidebar />
+              <FiltersSidebar availableFilters={availableFilters} saveFilter={handleRedirectFilter}/>
             </div>
           </div>
         )}

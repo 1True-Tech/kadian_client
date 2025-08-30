@@ -1,5 +1,7 @@
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { ProductRaw, ProductReady } from "@/types/product";
+import { ShopFilters } from "@/store/shopFilters/types";
+
 import { Color } from "@/types/structures";
 
 export type ProductFilters = {
@@ -18,14 +20,11 @@ export type ProductFilters = {
 export const processProducts = (products: ProductRaw[]): ProductReady[] => {
   return products.map(product => {
     // Find primary image from main images or first variant's images
-    const mainImage = product.images?.find(m => m.primary) || 
-                     product.variants[0]?.images?.find(m => m.primary) ||
-                     product.images?.[0] ||
-                     product.variants[0]?.images?.[0];
+    const mainImage = product.mainImage
 
     // Collect all images from main and variant images
     const allImages = [
-      ...(product.images || []),
+      ...(product.gallery || []),
       ...(product.variants.flatMap(v => v.images || []))
     ];
 
@@ -61,7 +60,7 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
         })[0]
       } : null,
       gallery: allImages
-        .filter(img => img.asset && !img.primary)
+        .filter(img => img.asset)
         .map(img => ({
           alt: img.alt,
           src: fashionImageBuilder([img.asset], {
@@ -76,20 +75,52 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
         name: m.material.name,
         percentage: m.percentage
       })) || [],
-      slug: product.slug.current
+      slug: product.slug
     };
   });
 };
 
-export const filterProducts = (products: ProductReady[], filters: ProductFilters): ProductReady[] => {
+
+export const filterProducts = (products: ProductReady[], filters: Partial<ShopFilters>): ProductReady[] => {
   return products.filter(product => {
+    // Category filter
+    if (product.category&&filters.categories?.length && !filters.categories.includes(product.category.slug)) {
+      return false;
+    }
+
+    // Brand filter
+    if (product.brand&&filters.brands?.length && !filters.brands.includes(product.brand.slug)) {
+      return false;
+    }
+
+    // Color filter
+    if (filters.colors?.length) {
+      const productColors = product.variants.map(v => v.color);
+      if (!filters.colors.some(color => productColors.includes(color))) {
+        return false;
+      }
+    }
+
+    // Size filter
+    if (filters.sizes?.length) {
+      const productSizes = product.variants.map(v => v.size.label);
+      if (!filters.sizes.some(size => productSizes.includes(size))) {
+        return false;
+      }
+    }
+
+    // Materials filter
+    if (filters.materials?.length) {
+      const productMaterials = product.materials.map(m => m.name);
+      if (!filters.materials.some(material => productMaterials.includes(material))) {
+        return false;
+      }
+    }
+
     // Price filter
     if (filters.price) {
-      const productPrice = product.basePrice;
-      if (
-        (filters.price.from && productPrice < filters.price.from) ||
-        (filters.price.to && productPrice > filters.price.to)
-      ) {
+      const minVariantPrice = Math.min(...product.variants.map(v => v.price));
+      if (minVariantPrice < filters.price.from || minVariantPrice > filters.price.to) {
         return false;
       }
     }

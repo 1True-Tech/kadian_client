@@ -4,13 +4,13 @@ import { processProducts } from "@/lib/controllers/processShop/processProducts";
 import PagesLayout from "@/components/layout/PagesLayout";
 import { ParamsProps } from "@/types/structures";
 import ProductDetailClient from "./ProductDetailClient";
+import queries from "@/lib/queries";
 
 const ProductDetail = async ({ params }: ParamsProps<{ id: string }>) => {
   const { id } = await params;
   
   // Fetch product from Sanity using the slug (id)
-  const query = `*[_type == "product" && slug.current == $slug][0]`;
-  const rawProduct = await client.fetch(query, { slug: id });
+  const rawProduct = await client.fetch(queries.productBySlugQuery, { slug: id });
   
   if (!rawProduct) {
     notFound();
@@ -19,6 +19,7 @@ const ProductDetail = async ({ params }: ParamsProps<{ id: string }>) => {
   // Process the product data
   const [product] = processProducts([rawProduct]);
   // Create breadcrumb items
+
 
   const breadcrumbItems = [
     { label: "Shop", href: "/shop" },

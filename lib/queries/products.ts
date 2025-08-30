@@ -1,43 +1,293 @@
-export const productListQuery = `*[_type == "product"] {
-  _id,
-  name,
-  "slug": slug.current,
-  description,
-  basePrice,
-  rating,
-  tags,
-  createdAt,
-  isOnSale,
-  salePrice,
-  mainImage {
-    asset,
-    alt
-  },
-  gallery[] {
-    asset,
-    alt
-  },
-  brand->{
+import { groq } from "next-sanity";
+
+// Base fragment for common image fields
+const imageFragment = groq`
+  asset,
+  alt,
+  "primary": coalesce(primary, false),
+  crop,
+  hotspot
+`;
+
+// SEO fields fragment
+const seoFragment = groq`
+  "title": coalesce(seo.title, name),
+  "description": coalesce(seo.description, description),
+  "keywords": seo.keywords
+`;
+
+// Material fragment with reference expansion
+const materialFragment = groq`
+  material->{
     name,
-    "slug": slug.current,
-    logo {
-      asset,
-      alt
-    }
+    description,
+    careInstructions
   },
+  percentage
+`;
+
+// Size guide fragment
+const sizeGuideFragment = groq`
+  title,
   category->{
     name,
-    "slug": slug.current
+    slug
   },
-  variants[]{
-    size,
-    color,
-    price,
-    stock,
-    sku,
-    images[] {
-      asset,
-      alt
+  measurementInstructions,
+  sizeChart{
+    units,
+    measurements[]{
+      sizeName,
+      chest,
+      waist,
+      hips,
+      inseam
+    }
+  },
+  images[]{
+    ${imageFragment}
+  }
+`;
+
+// Brand fragment
+const brandFragment = groq`
+  name,
+  slug,
+  "logo": logo{
+    ${imageFragment}
+  },
+  description
+`;
+
+// Variant fragment
+const variantFragment = groq`
+  _key,
+  color->{
+    name,
+    hex,
+    rgba
+  },
+  images[]{
+    ${imageFragment}
+  },
+  isBase,
+  price,
+  size{
+    label,
+    description,
+    measurements{
+      chest,
+      waist,
+      hips,
+      length
+    }
+  },
+  sku,
+  stock,
+  stockThreshold,
+  weight
+`;
+
+// Query for getting a single product by slug
+export const productBySlugQuery = groq`
+  *[_type == "product" && slug.current == $slug][0]{
+    _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    name,
+    "slug": slug.current,
+    description,
+    details,
+    basePrice,
+    
+    // Brand reference
+    "brand": brand->{
+      ${brandFragment}
+    },
+    
+    // Category with parent reference
+    "category": *[_type == "category" && references(^._id)][0]{
+      name,
+      "slug": slug.current,
+      description,
+      "parent": parent->{
+        name,
+        "slug": slug.current
+      },
+      "images": images[]{
+        ${imageFragment}
+      }
+    },
+    
+    // Size guide reference
+    "sizeGuide": sizeGuide->{
+      ${sizeGuideFragment}
+    },
+    
+    // Materials array with references
+    "materials": materials[]{
+      ${materialFragment}
+    },
+    
+    // Product images
+    "mainImage": images[primary == true][0]{
+      ${imageFragment}
+    },
+    "gallery":images[]{
+    ${imageFragment}
+    },
+    
+    // Product variants
+    "variants": variants[]{
+      ${variantFragment}
+    },
+    
+    // Care instructions (portable text)
+    careInstructions,
+    
+    // Features array
+    features,
+    
+    // Gender array
+    gender,
+    
+    // Product rating
+    rating,
+    
+    // Tags array
+    tags,
+    
+    // SEO fields
+    ${seoFragment},
+    
+    // Additional fields
+    sustainabilityInfo,
+    isActive,
+  }
+`;
+
+export const allProductExtraFiltersQuery = groq`
+  *[_type == "product" && defined(slug.current)]{
+    "colors": variants[].color->{
+      name,
+      hex,
+      rgba
+    },
+    "sizes": variants[].size -> {label},
+    "materials": materials[].material->{
+      name
+    },
+    "brand": brand->{
+      name,
+      "slug": slug.current,
+    },
+    category->{
+      name,
+      "slug": slug.current,
+    },
+    "prices": {
+      basePrice,
+      "prices": variants[].price,
+    }
+}
+`
+// Query for product list/grid views
+export const productListQuery = groq`
+  *[_type == "product" && defined(slug.current)] {
+    _id,
+    _type,
+    _createdAt,
+    name,
+    "slug": slug.current,
+    description,
+    basePrice,
+    
+    "brand": brand->{
+      name,
+      "slug": slug.current
+    },
+    
+    category->{
+      name,
+      "slug": slug.current,
+      "parent": parent->{
+        name,
+        "slug": slug.current
+      }
+    },
+    
+    "mainImage": images[primary == true][0]{
+      ${imageFragment}
+    },
+    "gallery":images[]{
+    ${imageFragment}
+    },
+    
+    "variants": variants[]{
+      _key,
+      price,
+      stock,
+      "color": color->{
+        name,
+        hex,
+        rgba
+      },
+      "size": size.label
+    },
+    
+    rating,
+    tags,
+    isActive
+  }
+`;
+
+// Query to get all unique filter options
+export const productFiltersQuery = groq`{
+  "categories": *[_type == "category"]{
+    name,
+    "slug": slug.current,
+    "count": count(*[_type == "product" && references(^._id)])
+  },
+  "brands": *[_type == "brand"]{
+    name,
+    "slug": slug.current,
+    "count": count(*[_type == "product" && references(^._id)])
+  },
+  "materials": *[_type == "material"]{
+    name,
+    "count": count(*[_type == "product" && references(^._id)])
+  },
+  "colors": *[_type == "color"]{
+    name,
+    hex,
+    rgba,
+    "count": count(*[_type == "product" && references(^._id)])
+  },
+  "sizes": *[_type == "product"].variants[].size.label
+}`;
+
+// Product search query
+export const productSearchQuery = groq`
+  *[_type == "product" && (
+    name match $searchTerm ||
+    description match $searchTerm ||
+    brand->name match $searchTerm ||
+    category->name match $searchTerm ||
+    $searchTerm in tags
+  )]{
+    _id,
+    name,
+    "slug": slug.current,
+    description,
+    basePrice,
+    "mainImage": images[primary == true][0]{
+      ${imageFragment}
+    },
+    "brand": brand->{
+      name,
+      "slug": slug.current
     }
   }
-}`;
+`;
+

@@ -15,6 +15,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { ProductReady, Size } from "@/types/product";
+import { PortableText } from "next-sanity";
+import { lBPtComponents } from "@/components/feautures/PortableText";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductDetailClientProps {
   product: ProductReady;
@@ -22,14 +25,18 @@ interface ProductDetailClientProps {
 
 const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedSize, setSelectedSize] = useState<Size>(product.variants[0].size);
-  const [selectedColor, setSelectedColor] = useState<string>(product.variants[0].color);
+  const [selectedSize, setSelectedSize] = useState<Size>(
+    product.variants[0].size
+  );
+  const [selectedColor, setSelectedColor] = useState<string>(
+    product.variants[0].color
+  );
   const [quantity, setQuantity] = useState(1);
 
-  const allImages = [
+  const allImages = [...new Set([
     ...product.variants.flatMap((v) => v.images),
-    product.mainImage,
-  ];
+    ...product.gallery,
+  ])];
   const sizes = [...new Set(product.variants.map((v) => v.size))];
   const colors = [...new Set(product.variants.map((v) => v.color))];
   const selectedVariant =
@@ -203,6 +210,16 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {product.description}
                 </p>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {product.details}
+                </p>
+
+                <div className="w-full flex flex-col gap-small">
+                <h4>Features</h4>
+                <ul className="w-full grid grid-cols-[repeat(auto-fill,_minmax(10rem,1fr))] gap-small">
+                  {product.features.map((f, idx) => <Badge key={idx} className="px-4 py-small">{f}</Badge>)}
+                </ul>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -215,7 +232,11 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                   <div>
                     <h4 className="font-medium mb-2">Measurement Guide</h4>
                     <div className="prose prose-sm text-muted-foreground">
-                      {product.sizeGuide.measurementInstructions}
+                      {}
+                      <PortableText
+                        value={product.sizeGuide.measurementInstructions}
+                        components={lBPtComponents("")}
+                      />
                     </div>
                     {product.sizeGuide.images?.map((image, index) => (
                       <Image
@@ -238,23 +259,38 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                             <th className="text-left py-2">Chest</th>
                             <th className="text-left py-2">Waist</th>
                             <th className="text-left py-2">Hips</th>
-                            {product.sizeGuide.sizeChart.measurements[0].inseam !== undefined && (
+                            {product.sizeGuide.sizeChart.measurements[0]
+                              .inseam !== undefined && (
                               <th className="text-left py-2">Inseam</th>
                             )}
                           </tr>
                         </thead>
                         <tbody>
-                          {product.sizeGuide.sizeChart.measurements.map((measurement, index) => (
-                            <tr key={index} className="border-b">
-                              <td className="py-2">{measurement.sizeName}</td>
-                              <td className="py-2">{measurement.chest} {product.sizeGuide.sizeChart.units}</td>
-                              <td className="py-2">{measurement.waist} {product.sizeGuide.sizeChart.units}</td>
-                              <td className="py-2">{measurement.hips} {product.sizeGuide.sizeChart.units}</td>
-                              {measurement.inseam !== undefined && (
-                                <td className="py-2">{measurement.inseam} {product.sizeGuide.sizeChart.units}</td>
-                              )}
-                            </tr>
-                          ))}
+                          {product.sizeGuide.sizeChart.measurements.map(
+                            (measurement, index) => (
+                              <tr key={index} className="border-b">
+                                <td className="py-2">{measurement.sizeName}</td>
+                                <td className="py-2">
+                                  {measurement.chest}{" "}
+                                  {product.sizeGuide.sizeChart.units}
+                                </td>
+                                <td className="py-2">
+                                  {measurement.waist}{" "}
+                                  {product.sizeGuide.sizeChart.units}
+                                </td>
+                                <td className="py-2">
+                                  {measurement.hips}{" "}
+                                  {product.sizeGuide.sizeChart.units}
+                                </td>
+                                {measurement.inseam !== undefined && (
+                                  <td className="py-2">
+                                    {measurement.inseam}{" "}
+                                    {product.sizeGuide.sizeChart.units}
+                                  </td>
+                                )}
+                              </tr>
+                            )
+                          )}
                         </tbody>
                       </table>
                     </div>
@@ -268,9 +304,14 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-medium mb-4">Care Instructions</h3>
-                <p className="text-sm text-muted-foreground">
-                  {product.careInstructions}
-                </p>
+
+                <ul className="flex flex-col gap-small list-disc">
+                  {product.careInstructions.map((c, idx) => (
+                    <li key={idx} className="text-sm text-muted-foreground">
+                      {c}
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
             </Card>
           </TabsContent>

@@ -85,7 +85,7 @@ export interface ProductRaw {
   _createdAt: string;
   _updatedAt: string;
   name: string;
-  slug: { current: string };
+  slug: string;
   description: string;
   details: string;
   basePrice: number;
@@ -94,7 +94,8 @@ export interface ProductRaw {
   careInstructions: string[];
   features: string[];
   materials: MaterialRaw[];
-  images: ProductImageRaw[];
+  mainImage: ProductImageRaw;
+  gallery: ProductImageRaw[];
   variants: SanityVariant[];
   sizeGuide: SizeGuide;
   tags: string[];
