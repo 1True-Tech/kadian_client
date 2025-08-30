@@ -142,6 +142,13 @@ export const productType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "category",
+      title: "Category",
+      type: "reference",
+      to: [{ type: "category" }],
+      fieldset: "general",
+    }),
+    defineField({
       name: "sizeGuide",
       title: "Size Guide",
       type: "reference",
