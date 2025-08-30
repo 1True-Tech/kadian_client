@@ -38,7 +38,7 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
         <DialogHeader>
           <DialogTitle>Edit Address</DialogTitle>
           <DialogDescription>
-            Make changes to your address here. Click save when you're done.
+            Make changes to your address here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>

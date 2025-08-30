@@ -35,7 +35,7 @@ const CategoryShowcase = ({ categories }: { categories: Category[] }) => {
                     <div className="absolute bottom-8 left-8 right-8 text-white">
                       <h3 className="text-2xl font-light mb-2">{category.name}</h3>
                       <p className="text-white/90 mb-4">{category.description}</p>
-                      <Button variant="outline" className="btn-ghost-elegant bg-white/10 border-white/30 text-white hover:bg-white/20">
+                     <Button variant="outline" className="btn-ghost-elegant bg-white/10 border-white/30 text-white hover:bg-white/20">
                         Explore Category
                       </Button>
                     </div>

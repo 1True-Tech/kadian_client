@@ -5,12 +5,13 @@ import CategoryShowcase from "@/components/sections/CategoryShowcase";
 import HeroSection from "@/components/pages/home/HeroSection";
 import ServiceFeatures from "@/components/pages/home/features";
 import FeaturedContent from "@/components/pages/home/styleGuide";
-
+import {getAllCategories} from '@/lib/controllers/processCategories'
 import { CreditCardIcon, PhoneIcon, Truck, UndoDotIcon } from "lucide-react";
 import LookBookFeats from "@/components/pages/home/LookBookFeats";
 
 
-const Index = () => {
+const Index = async () => {
+  const category = await getAllCategories()
   return (
     <div className="min-h-screen">
       <Header />
@@ -19,7 +20,7 @@ const Index = () => {
         <FeaturedProducts />
         <LookBookFeats />
         <FeaturedContent />
-        <CategoryShowcase />
+        <CategoryShowcase categories={category}/>
         
         <ServiceFeatures
         items={[

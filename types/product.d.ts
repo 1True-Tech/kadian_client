@@ -1,5 +1,5 @@
 import { Color } from "@/types/structures";
-import { imageAssetWithAlt, ReadyImage } from "./structures/image";
+import { imageAssetWithAlt, imageAssetWithAsset, ReadyImage } from "./structures/image";
 
 type Currency = "JAD" | "USD";
 
@@ -188,13 +188,13 @@ export interface ProductBase {
   slug: string
   basePrice: number
   description: string
-  brand: BrandSummary
+  brand: BrandSummaryBase
   category: {
     name: string
     slug: string
   }
-  mainImage: ProductImage
-  gallery: ProductImage[]
+  mainImage: ReadyImage
+  gallery: ReadyImage[]
   variants: ProductVariant[]
   materials: MaterialInfo[]
   sizeGuide?: {
@@ -208,6 +208,19 @@ export interface ProductBase {
   createdAt: string
   updatedAt: string
 }
+export interface BrandSummaryBase{
+  name:string;
+  slug:string;
+  description?: string;
+  website?: string;
+}
+export interface BrandSummaryRaw extends  BrandSummaryBase{
+  logo?: imageAssetWithAlt | null;
+}
+export interface BrandSummaryReady extends  BrandSummaryBase{
+  logo?: ReadyImage | null;
+}
+
 export interface ProductRaw extends ProductBase{
     mainImage: ProductImageRaw;
   brand: BrandSummaryRaw;

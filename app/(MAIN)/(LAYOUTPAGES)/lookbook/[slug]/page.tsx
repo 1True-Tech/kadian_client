@@ -3,6 +3,7 @@ import { client } from "@/lib/utils/NSClient";
 import { processLookbook } from "@/lib/controllers/processGuides/processLookbook";
 import { notFound } from "next/navigation";
 import LookbookDetails from "@/components/pages/lookbook/LookbookDetails";
+import { ParamsProps } from "@/types/structures";
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -12,9 +13,10 @@ interface LookbookPageProps {
   };
 }
 
-export default async function LookbookPage({ params }: LookbookPageProps) {
+export default async function LookbookPage({ params }: ParamsProps<{ slug: string }>) {
+  const {slug} = await params
   const lookbookRaw = await client.fetch(lookbookBySlugQuery, {
-    slug: params.slug,
+    slug,
   });
 
   if (!lookbookRaw) {

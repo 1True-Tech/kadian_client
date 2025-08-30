@@ -51,6 +51,17 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
 
     return {
       ...product,
+      brand:{
+        ...product.brand,
+        logo: product.brand.logo && {
+          alt: product.brand.logo.alt,
+          src: fashionImageBuilder([product.brand.logo.asset], {
+            treatment: "thumbnail",
+            quality: 85,
+            format: "webp"
+          })[0]
+        }
+      },
       mainImage: mainImage ? {
         alt: mainImage.alt,
         src: fashionImageBuilder([mainImage.asset], {

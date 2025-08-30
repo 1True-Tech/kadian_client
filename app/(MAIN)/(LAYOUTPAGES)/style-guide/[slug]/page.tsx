@@ -3,6 +3,8 @@ import { client } from "@/lib/utils/NSClient";
 import { processStyleGuide } from "@/lib/controllers/processGuides/processStyleGuide";
 import StyleGuideDetails from "@/components/pages/styleGuide/StyleGuideDetails";
 import { notFound } from "next/navigation";
+import { ParamsProps } from "@/types/structures";
+
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -12,9 +14,11 @@ interface StyleGuidePageProps {
   };
 }
 
-export default async function StyleGuidePage({ params }: StyleGuidePageProps) {
+export default async function StyleGuidePage({ params }: ParamsProps<{slug:string}>) {
+    const {slug} = await params
+
   const styleGuideRaw = await client.fetch(styleGuideBySlugQuery, {
-    slug: params.slug,
+    slug
   });
 
   if (!styleGuideRaw) {

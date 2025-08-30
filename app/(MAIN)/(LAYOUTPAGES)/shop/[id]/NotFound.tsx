@@ -1,5 +1,6 @@
 import PagesLayout from "@/components/layout/PagesLayout";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const NotFound = () => {
   return (
@@ -10,7 +11,7 @@ const NotFound = () => {
           The product you&apos;re looking for doesn&apos;t exist.
         </p>
         <Button asChild>
-          <a href="/shop">Continue Shopping</a>
+          <Link href="/shop">Continue Shopping</Link>
         </Button>
       </div>
     </PagesLayout>

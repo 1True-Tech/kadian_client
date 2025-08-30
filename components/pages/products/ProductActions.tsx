@@ -2,14 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ProductVariantReady } from "@/types/product";
+import { ProductVariant } from "@/types/product";
 import { MinusIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 export default function ProductActions({
   variant,
 }: {
-  variant: ProductVariantReady;
+  variant: ProductVariant;
 }) {
   const [quantity, setQuantity] = useState(0); // 0 = not in cart
 
