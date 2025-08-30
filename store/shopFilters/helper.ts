@@ -9,7 +9,6 @@ export function filtersToQueryParams(filters: Partial<ShopFilters>): string {
     }
   };
 
-  appendArrayAsCSV('collections', filters.collections);
   appendArrayAsCSV('categories', filters.categories);
   appendArrayAsCSV('colors', filters.colors);
 
@@ -45,7 +44,6 @@ export function queryParamsToFilters(searchString: string): Partial<ShopFilters>
   };
 
   return {
-    collections: parseArray('collections'),
     categories: parseArray('categories'),
     colors: parseArray('colors'),
     price: {

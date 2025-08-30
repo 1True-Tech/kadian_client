@@ -1,10 +1,11 @@
 'use client';
 
 import { Carousel, CarouselContent, CarouselIndicators, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { ProductImageReady } from '@/types/product';
+import { ReadyImage } from "@/types/structures";
+
 import Image from 'next/image';
 
-export default function ProductGallery({ images }: { images: ProductImageReady[] }) {
+export default function ProductGallery({ images }: { images: ReadyImage[] }) {
 
   return (
     <Carousel className="overflow-hidden relative product-gallery h-[60vh] *:data-[slot=carousel-content]:h-full" >

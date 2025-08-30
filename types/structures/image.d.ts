@@ -9,7 +9,10 @@ export interface imageAssetWithAsset {
     asset: sanityImageAsset;
   };
 }
-
+export interface ReadyImage {
+  src: string;
+  alt: string;
+}
 export interface imageAssetWithAlt extends imageAssetWithAsset {
   alt: string;
 }

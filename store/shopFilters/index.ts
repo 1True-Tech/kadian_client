@@ -1,6 +1,6 @@
 import { produce } from "immer";
 import { create } from "zustand";
-import { ShopFilterData, ShopFiltersActions } from "./types";
+import { ShopFilterData, ShopFilters, ShopFiltersActions } from "./types";
 
 const useShopFiltersStore = create<ShopFilterData & ShopFiltersActions>(
   (set) => ({
@@ -32,14 +32,25 @@ const useShopFiltersStore = create<ShopFilterData & ShopFiltersActions>(
               currentFilters.categories || [],
               val.categories || []
             ),
-            collections: updateArray(
-              currentFilters.collections || [],
-              val.collections || []
+            brands: updateArray(
+              currentFilters.brands || [],
+              val.brands || []
             ),
-            colors: updateArray(currentFilters.colors || [], val.colors || []),
+            colors: updateArray(
+              currentFilters.colors || [], 
+              val.colors || []
+            ),
+            sizes: updateArray(
+              currentFilters.sizes || [],
+              val.sizes || []
+            ),
+            materials: updateArray(
+              currentFilters.materials || [],
+              val.materials || []
+            ),
             price: {
               from: val.price?.from ?? currentFilters.price?.from ?? 0,
-              to: val.price?.to ?? currentFilters.price?.to ?? 1000,
+              to: val.price?.to ?? currentFilters.price?.to ?? 10000,
             },
             sorting: val.sorting ?? currentFilters.sorting,
             search: val.search ?? currentFilters.search,
@@ -52,6 +63,13 @@ const useShopFiltersStore = create<ShopFilterData & ShopFiltersActions>(
       set(
         produce<ShopFilterData>((fill) => {
           fill.savedFilters = true;
+        })
+      );
+    },
+     setFilters(ShopFilterData:Partial<ShopFilters>) {
+      set(
+        produce<ShopFilterData>((fill) => {
+          fill.filters = ShopFilterData;
         })
       );
     },

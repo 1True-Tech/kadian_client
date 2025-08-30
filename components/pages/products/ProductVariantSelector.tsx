@@ -1,12 +1,12 @@
 'use client';
 
-import { ProductVariantReady } from "@/types/product";
+import { ProductVariant } from "@/types/product";
 
 
 export default function ProductVariantSelector({
   variants,
 }: {
-  variants: ProductVariantReady[];
+  variants: ProductVariant[];
 }) {
   return (
     <div className="space-y-2">
@@ -14,8 +14,8 @@ export default function ProductVariantSelector({
         <label className="font-medium">Size:</label>
         <div className="flex gap-2 mt-1">
           {variants.map((v) => (
-            <button key={v.size} className="border px-3 py-1 rounded hover:bg-gray-100">
-              {v.size}
+            <button key={v.size.label} className="border px-3 py-1 rounded hover:bg-gray-100">
+              {v.size.label}
             </button>
           ))}
         </div>

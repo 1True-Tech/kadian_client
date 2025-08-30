@@ -2,6 +2,8 @@ import { ProductReady, ProductVariantReady } from "./product";
 
 export type UserRole = "admin" | "user";
 
+import { AccountSettings } from './settings';
+
 export interface User {
   id: string;
   firstName: string;
@@ -10,10 +12,11 @@ export interface User {
   phone?: string;
   // password remove this in real data
   test_password: string;
-  role: UserRole; // ← added
+  role: UserRole;
   addresses: Address[];
   orders: Order[];
   wishlist: string[];
+  settings?: AccountSettings;
 }
 
 export interface Address {

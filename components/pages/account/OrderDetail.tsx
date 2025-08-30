@@ -16,7 +16,7 @@ function OrderItemDetail({ item }: { item: CartItemReady }) {
   const total = ((unit * quantity)||0).toFixed(2);
 
   const image =
-    variant.images.find((img) => img.isPrimary) || variant.images[0];
+    variant.images.find((img: {isPrimary:boolean}) => img.isPrimary) || variant.images[0];
 
   return (
     <div className="flex items-center gap-4 py-4 border-b">

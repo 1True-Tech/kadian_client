@@ -123,67 +123,7 @@ export default function ShopNav({ availableColors, shopNavOnly }: Props) {
           <ul className="w-full flex gap-small flex-col">
             {(shopNavOnly.children || []).map((p, idx) => {
               const hasCollections = p.items.length;
-              if (hasCollections) {
-                return (
-                  <li key={idx}>
-                    <Collapsible>
-                      <div className="w-full flex items-center justify-between">
-                        <div className="w-full flex items-center gap-xtrasmall md:gap-peers">
-                          <Checkbox
-                            id={`/shop/${p.url || ""}`}
-                            checked={filters.categories?.includes(p.url || "")}
-                            onCheckedChange={(state) => {
-                              updateFilter(
-                                {
-                                  categories: [p.url || ""],
-                                  collections: p.items.map((i) => i.url),
-                                },
-                                state ? "ADD" : "REMOVE"
-                              );
-                            }}
-                          />
-                          <label
-                            className="link"
-                            htmlFor={`/shop/${p.url || ""}`}
-                          >
-                            {p.label || "item"}
-                          </label>
-                        </div>
-                        <CollapsibleTrigger className="[--rotation:0] data-[state=open]:[--rotation:45deg]">
-                          <PlusCircleIcon className="cursor-pointer rotate-[var(--rotation)]  duration-300" />
-                        </CollapsibleTrigger>
-                      </div>
-                      <CollapsibleContent>
-                        <div className="w-full flex flex-col gap-small pl-2">
-                          {p.items.map((i, dx) => (
-                            <div
-                              key={dx}
-                              className="w-full flex items-center gap-xtrasmall md:gap-peers"
-                            >
-                              <Checkbox
-                                id={i.url}
-                                checked={
-                                  filters.categories?.includes(p.url || "") ||
-                                  filters.collections?.includes(i.url)
-                                }
-                                onCheckedChange={(state) => {
-                                  updateFilter(
-                                    { collections: [i.url || ""] },
-                                    state ? "ADD" : "REMOVE"
-                                  );
-                                }}
-                              />
-                              <label className="link" htmlFor={i.url}>
-                                {i.name}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </li>
-                );
-              }
+              
               return (
                 <div
                   key={idx}

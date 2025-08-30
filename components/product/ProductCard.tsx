@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProductReady } from "@/types/product";
-import { ShoppingBag } from "lucide-react";
+import { ImageIcon, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import WishlistButton from "./WishlistButton";
@@ -22,22 +22,30 @@ const ProductCard = ({
   style,
 }: ProductCardProps) => {
   const primaryImage =
-    product.mainImage?.src ?? product.gallery?.[0]?.src ?? "/images/placeholder.jpg";
+    product.mainImage?.src ?? product.gallery?.[0]?.src ?? undefined;
   const primaryAlt =
     product.mainImage?.alt ?? product.gallery?.[0]?.alt ?? product.name;
-
   return (
-    <Card className={`card-product overflow-hidden group ${className}`} style={style}>
+    <Card
+      className={`card-product overflow-hidden group ${className}`}
+      style={style}
+    >
       <CardContent className="p-0">
         <div className="relative overflow-hidden">
-          <Link href={`/product/${product.slug}`}>
-            <Image
-              width={720}
-              height={480}
-              src={primaryImage}
-              alt={primaryAlt}
-              className="w-full h-40 min-[498px]:h-50 sm:h-55 md:h-60 ld:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+          <Link href={`/shop/${product.slug}`}>
+            {primaryImage ? (
+              <Image
+                width={720}
+                height={480}
+                src={primaryImage}
+                alt={primaryAlt}
+                className="w-full h-40 min-[498px]:h-50 sm:h-55 md:h-60 ld:h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <span className="w-full h-40 min-[498px]:h-50 sm:h-55 md:h-60 ld:h-72 transition-transform duration-500 group-hover:scale-105 bg-muted flex items-center justify-center">
+                <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
+              </span>
+            )}
           </Link>
 
           {/* Badges */}
@@ -73,7 +81,7 @@ const ProductCard = ({
         </div>
 
         <div className="p-4">
-          <Link href={`/product/${product.slug}`}>
+          <Link href={`/shop/${product.slug}`}>
             <h3 className="font-medium text-foreground group-hover:text-accent transition-colors duration-200">
               {product.name}
             </h3>
@@ -93,7 +101,7 @@ const ProductCard = ({
                   <span className="text-sm text-muted-foreground line-through">
                     ${product.basePrice.toFixed(2)}
                   </span>
-              )}
+                )}
             </div>
 
             {/* <div className="flex items-center gap-1">

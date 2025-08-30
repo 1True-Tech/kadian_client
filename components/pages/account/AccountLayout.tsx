@@ -83,12 +83,6 @@ export default function AccountSidebar({
                     Addresses
                   </Button>
                 </Link>
-                <Link href={"/account/wishlist"} className="w-full flex">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <HeartIcon className="h-4 w-4 mr-3" />
-                    Wishlist
-                  </Button>
-                </Link>
                 <Link href={"/account/settings"} className="w-full flex">
                   <Button variant="ghost" className="w-full justify-start">
                     <SettingsIcon className="h-4 w-4 mr-3" />

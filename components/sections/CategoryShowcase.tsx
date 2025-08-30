@@ -2,21 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 
-const CategoryShowcase = () => {
-  const categories = [
-    {
-      title: "Women's Collection",
-      description: "Elegant pieces for the modern woman",
-      image: "/images/content/image (6).jpg",
-      href: "/women",
-    },
-    {
-      title: "Children's Line",
-      description: "Comfortable and stylish for little ones",
-      image: "/images/content/image (9).jpg",
-      href: "/children",
-    },
-  ];
+import { Category } from "@/types/shop";
+import Link from "next/link";
+
+const CategoryShowcase = ({ categories }: { categories: Category[] }) => {
 
   return (
     <section className="py-16">
@@ -30,28 +19,30 @@ const CategoryShowcase = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {categories.map((category, index) => (
-            <Card key={category.title} className="card-premium overflow-hidden group cursor-pointer hover-lift animate-fade-up" style={{ animationDelay: `${index * 0.2}s` }}>
-              <CardContent className="p-0 relative overflow-hidden">
-                <div className="relative h-96">
-                  <Image
-                    width={720}
-                    height={480}
-                    src={category.image}
-                    alt={category.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+            <Link href={`/category/${category.slug.current}`} key={category._id}>
+              <Card className="card-premium overflow-hidden group cursor-pointer hover-lift animate-fade-up" style={{ animationDelay: `${index * 0.2}s` }}>
+                <CardContent className="p-0 relative overflow-hidden">
+                  <div className="relative h-96">
+                    <Image
+                      width={720}
+                      height={480}
+                      src={category.category_images[0]?.src || "/images/placeholder.jpg"}
+                      alt={category.category_images[0]?.alt || category.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
-                  <div className="absolute bottom-8 left-8 right-8 text-white">
-                    <h3 className="text-2xl font-light mb-2">{category.title}</h3>
-                    <p className="text-white/90 mb-4">{category.description}</p>
-                    <Button variant="outline" className="btn-ghost-elegant bg-white/10 border-white/30 text-white hover:bg-white/20">
-                      Explore Collection
-                    </Button>
+                    <div className="absolute bottom-8 left-8 right-8 text-white">
+                      <h3 className="text-2xl font-light mb-2">{category.name}</h3>
+                      <p className="text-white/90 mb-4">{category.description}</p>
+                     <Button variant="outline" className="btn-ghost-elegant bg-white/10 border-white/30 text-white hover:bg-white/20">
+                        Explore Category
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>

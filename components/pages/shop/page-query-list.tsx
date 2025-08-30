@@ -13,13 +13,6 @@ export default function PageQueryList() {
     <div className="w-full flex items-center flex-wrap gap-2 overflow-x-auto py-4">
       <span className="font-medium text-gray-700">Active Filter</span>
 
-      {filters.collections?.map((name) => (
-        <Tag
-          key={`col-${name}`}
-          label={name}
-          onRemove={() => updateFilter({ collections: [] })}
-        />
-      ))}
 
       {filters.categories?.map((name) => (
         <Tag

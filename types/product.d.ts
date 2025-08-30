@@ -1,52 +1,168 @@
-import { imageAssetWithAlt } from "./structures";
-import { ReadyImage } from "./home";
+import { Color } from "@/types/structures";
+import { imageAssetWithAlt, imageAssetWithAsset, ReadyImage } from "./structures/image";
 
 type Currency = "JAD" | "USD";
-export interface ProductVariantBase{
-  sku: string
-  size: string
-  color: string
-  stock: number
-  price: number
-  images: ProductImage[],
-  isBase?: boolean
-}
-export interface ProductVariantRaw extends ProductVariantBase{
-  images: ProductImageRaw[],
-}
-export interface ProductVariantReady extends ProductVariantBase{
-  images: ProductImageReady[],
+
+// Raw types (from Sanity)
+export interface SizeMeasurement {
+  sizeName: string;
+  chest: number;
+  waist: number;
+  hips: number;
+  inseam?: number;
 }
 
-export interface ProductImageRaw extends imageAssetWithAlt{
-  isPrimary?: boolean
-}
-export interface ProductImageReady extends ReadyImage{
-  isPrimary?: boolean
-}
-
-export interface BrandSummaryBase {
-  name: string
-  slug: string
-  logo?: ProductImage
-}
-export interface BrandSummaryRaw extends BrandSummaryBase {
-  logo?: ProductImageRaw
-}
-export interface BrandSummaryReady extends BrandSummaryBase {
-  logo?: ProductImageReady
+export interface SizeGuide {
+  title: string;
+  category: {
+    name: string;
+    slug: string;
+  };
+  measurementInstructions: any[]; // Portable Text Block
+  sizeChart: {
+    units: "cm" | "in";
+    measurements: SizeMeasurement[];
+  };
+  images?: ReadyImage[];
 }
 
-export type MaterialInfo = {
-  material: string
-  percentage: number
+export interface Category {
+  name: string;
+  slug: string;
+  parent?: Category;
+  description?: string;
+  images?: ReadyImage[];
 }
 
-export type ProductSEO = {
-  title: string
-  description: string
-  keywords: string[]
-  structuredData: ProductJsonLd
+export interface BrandRaw {
+  name: string;
+  slug: string;
+  logo?: imageAssetWithAlt;
+  description?: string;
+}
+
+export interface ProductImageRaw extends imageAssetWithAlt {
+  primary?: boolean;
+}
+
+export interface MaterialRaw {
+  material: {
+    name: string;
+    description: string;
+    careInstructions: string[];
+  };
+  percentage: number;
+}
+
+export interface SanityVariant {
+  _key: string;
+  color: Color | null;
+  images: ProductImageRaw[];
+  isBase: boolean;
+  price: number;
+  size: {
+    label: string;
+    description?: string;
+    measurements: {
+      chest: number;
+      waist: number;
+      hips: number;
+      length?: number;
+    };
+  };
+  sku: string;
+  stock: number;
+  stockThreshold?: number;
+  weight?: {
+    unit: string;
+    value: number;
+  };
+}
+
+export interface ProductRaw {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  name: string;
+  slug: string;
+  description: string;
+  details: string;
+  basePrice: number;
+  brand: BrandRaw;
+  category: Category;
+  careInstructions: string[];
+  features: string[];
+  materials: MaterialRaw[];
+  mainImage: ProductImageRaw;
+  gallery: ProductImageRaw[];
+  variants: SanityVariant[];
+  sizeGuide: SizeGuide;
+  tags: string[];
+  isActive: boolean;
+}
+
+// Processed types (after transformation)
+export interface Material {
+  name: string;
+  percentage: number;
+}
+
+export interface Size {
+  label: string;
+  description?: string;
+  measurements: {
+    chest: number;
+    waist: number;
+    hips: number;
+    length?: number;
+  };
+}
+
+export interface Brand {
+  name: string;
+  slug: string;
+  logo?: ReadyImage;
+  description?: string;
+}
+
+export interface ProductVariant {
+  _key: string;
+  color: string;
+  size: Size;
+  images: ReadyImage[];
+  isBase: boolean;
+  price: number;
+  sku: string;
+  stock: number;
+  stockThreshold?: number;
+  weight?: {
+    unit: string;
+    value: number;
+  };
+}
+
+export interface ProductReady {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  name: string;
+  slug: string;
+  description: string;
+  details: string;
+  basePrice: number;
+  brand: Brand;
+  category: Category;
+  careInstructions: string[];
+  features: string[];
+  materials: Material[];
+  mainImage: ReadyImage | null;
+  gallery: ReadyImage[];
+  variants: ProductVariant[];
+  sizeGuide: SizeGuide;
+  tags: string[];
+  isActive: boolean;
 }
 
 export type ProductJsonLd = {
@@ -72,13 +188,13 @@ export interface ProductBase {
   slug: string
   basePrice: number
   description: string
-  brand: BrandSummary
+  brand: BrandSummaryBase
   category: {
     name: string
     slug: string
   }
-  mainImage: ProductImage
-  gallery: ProductImage[]
+  mainImage: ReadyImage
+  gallery: ReadyImage[]
   variants: ProductVariant[]
   materials: MaterialInfo[]
   sizeGuide?: {
@@ -92,6 +208,19 @@ export interface ProductBase {
   createdAt: string
   updatedAt: string
 }
+export interface BrandSummaryBase{
+  name:string;
+  slug:string;
+  description?: string;
+  website?: string;
+}
+export interface BrandSummaryRaw extends  BrandSummaryBase{
+  logo?: imageAssetWithAlt | null;
+}
+export interface BrandSummaryReady extends  BrandSummaryBase{
+  logo?: ReadyImage | null;
+}
+
 export interface ProductRaw extends ProductBase{
     mainImage: ProductImageRaw;
   brand: BrandSummaryRaw;
@@ -101,9 +230,8 @@ export interface ProductRaw extends ProductBase{
 
 }
 export interface ProductReady extends Omit<ProductBase, "_type">{
-    mainImage: ProductImageReady;
   brand: BrandSummaryReady;
-  mainImage: ProductImageReady;
+  mainImage: Partial<ProductImageReady>;
   gallery: ProductImageReady[];
   variants: ProductVariantReady[];
 
