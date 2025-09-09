@@ -71,7 +71,7 @@ const variantFragment = groq`
     ${imageFragment}
   },
   isBase,
-  size{
+  size->{
     label,
     description,
     measurements{
@@ -249,7 +249,7 @@ export const productListQuery = groq`
         hex,
         rgba
       },
-      "size": size.label
+      "size": size->{label}
     },
     
     rating,

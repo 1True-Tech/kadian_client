@@ -105,6 +105,7 @@ const ProductCard = ({
               size="sm"
               variant="outline"
               className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm pointer-events-auto"
+              quantityChangerPositionClassName="w-11/12 absolute pointer-events-auto bottom-2 left-1/2 -translate-x-1/2"
               onClick={(e) => {
                 e.preventDefault();
                 handleAddToCart();

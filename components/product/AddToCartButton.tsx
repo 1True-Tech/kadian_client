@@ -5,12 +5,14 @@ import { ProductReady, ProductVariant } from "@/types/product";
 import { useUserStore } from "@/store/user";
 import { useQuery } from "@/lib/server/client-hook";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 export default function AddToCartButton({
   product,
   productVariant,
+  quantityChangerPositionClassName,
   ...props
-}: ButtonProps & { product: ProductReady;productVariant:ProductVariant }) {
+}: ButtonProps & { product: ProductReady;productVariant:ProductVariant; quantityChangerPositionClassName?:string }) {
   const { user, actions } = useUserStore();
   const { run } = useQuery("updateCart");
   const removeFromCart = useQuery("deleteCartItem");
@@ -101,13 +103,13 @@ export default function AddToCartButton({
         {...props}
         onClick={handleAddToCart}
       >
-        <ShoppingBagIcon className="h-4 w-4" />
+        {props.children||<ShoppingBagIcon className="h-4 w-4" />}
       </Button>
     );
   }
 
   return (
-    <div className="w-11/12 absolute pointer-events-auto bottom-2 left-1/2 -translate-x-1/2 bg-white p-small rounded-full flex items-center justify-between">
+    <div className={cn("w-full bg-white p-small rounded-full flex items-center justify-between", quantityChangerPositionClassName)}>
       <Button onClick={() => changeStock("REMOVE")}>
         <MinusIcon />
       </Button>

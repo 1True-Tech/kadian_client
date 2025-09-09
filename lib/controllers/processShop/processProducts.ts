@@ -25,7 +25,7 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
     // Collect all images from main and variant images
     const allImages = [
       ...(product.gallery || []),
-      ...((product.variants)?.flatMap(v => v.images || []))
+      ...((product.variants||[])?.flatMap(v => v.images || []))
     ];
 
     // Process all care instructions from materials and product level
@@ -37,7 +37,7 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
     // Process variants to ensure they have color and size
     const processedVariants = product.variants?.map(variant => ({
       ...variant,
-      color: variant.color?.name || "Default",
+      color: variant.color,
       size: variant.size || "One Size",
       images: variant.images?.map(img => ({
         alt: img.alt,
@@ -48,14 +48,13 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
         })[0]
       })) || []
     }));
-
     return {
       ...product,
       brand:{
         ...product.brand,
         logo: product.brand.logo && {
           alt: product.brand.logo.alt,
-          src: fashionImageBuilder([product.brand.logo.asset], {
+          src: fashionImageBuilder([product.brand.logo], {
             treatment: "thumbnail",
             quality: 85,
             format: "webp"
@@ -108,7 +107,7 @@ export const filterProducts = (products: ProductReady[], filters: Partial<ShopFi
     // Color filter
     if (filters.colors?.length) {
       const productColors = product.variants.map(v => v.color);
-      if (!filters.colors.some(color => productColors.includes(color))) {
+      if (!filters.colors.some(color => productColors.map(i=>i?.rgba||i?.hex).includes(color))) {
         return false;
       }
     }
@@ -159,7 +158,7 @@ export const filterProducts = (products: ProductReady[], filters: Partial<ShopFi
       const productColors = product.variants
         .map(variant => variant.color)
         .filter(Boolean);
-      if (!filters.colors.some(color => productColors.includes(color))) {
+      if (!filters.colors.some(color => productColors.map(i=>i?.rgba||i?.hex).includes(color))) {
         return false;
       }
     }

@@ -128,7 +128,7 @@ export interface Brand {
 
 export interface ProductVariant {
   _key: string;
-  color: string;
+  color: Color | null;
   size: Size;
   images: ReadyImage[];
   isBase: boolean;
