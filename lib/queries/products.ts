@@ -71,7 +71,6 @@ const variantFragment = groq`
     ${imageFragment}
   },
   isBase,
-  price,
   size{
     label,
     description,
@@ -82,6 +81,7 @@ const variantFragment = groq`
       length
     }
   },
+  price,
   sku,
   stock,
   stockThreshold,
@@ -100,7 +100,12 @@ export const productBySlugQuery = groq`
     description,
     details,
     basePrice,
-    
+    "firstVariant": variants[0]{
+    price,
+  sku,
+  stock,
+  stockThreshold,
+    },
     // Brand reference
     "brand": brand->{
       ${brandFragment}
@@ -189,9 +194,15 @@ export const allProductExtraFiltersQuery = groq`
     "prices": {
       basePrice,
       "prices": variants[].price,
+    },
+      "firstVariant": variants[0]{
+    price,
+  sku,
+  stock,
+  stockThreshold,
     }
 }
-`
+`;
 // Query for product list/grid views
 export const productListQuery = groq`
   *[_type == "product" && defined(slug.current)] {
@@ -223,7 +234,12 @@ export const productListQuery = groq`
     "gallery":images[]{
     ${imageFragment}
     },
-    
+    "firstVariant": variants[0]{
+    price,
+  sku,
+  stock,
+  stockThreshold,
+    },
     "variants": variants[]{
       _key,
       price,
@@ -274,7 +290,8 @@ export const productSearchQuery = groq`
     description match $searchTerm ||
     brand->name match $searchTerm ||
     category->name match $searchTerm ||
-    $searchTerm in tags
+    $searchTerm in tags ||
+   _id in $ids
   )]{
     _id,
     name,
@@ -287,7 +304,84 @@ export const productSearchQuery = groq`
     "brand": brand->{
       name,
       "slug": slug.current
+    },
+      "firstVariant": variants[0]{
+    price,
+  sku,
+  stock,
+  stockThreshold,
     }
   }
 `;
 
+export const productsByIdsQuery = groq`
+  *[_type == "product" && _id in $ids]{
+    _id,
+    _type,
+    _createdAt,
+    name,
+    "slug": slug.current,
+    description,
+    basePrice,
+
+    "brand": brand->{
+      name,
+      "slug": slug.current
+    },
+
+    category->{
+      name,
+      "slug": slug.current,
+      "parent": parent->{
+        name,
+        "slug": slug.current
+      }
+    },
+
+    "mainImage": images[primary == true][0]{
+      ${imageFragment}
+    },
+    "gallery": images[]{
+      ${imageFragment}
+    },
+
+    "firstVariant": variants[0]{
+      price,
+      sku,
+      stock,
+      stockThreshold
+    },
+
+    "variants": variants[] {
+      ${variantFragment}
+    },
+
+    rating,
+    tags,
+    isActive
+  }
+`;
+export const productsByIdsQueryMini = groq`
+  *[_type == "product" && (
+   _id in $ids
+  )]{
+    _id,
+    name,
+    "slug": slug.current,
+    description,
+    basePrice,
+    "mainImage": images[primary == true][0]{
+      ${imageFragment}
+    },
+    "brand": brand->{
+      name,
+      "slug": slug.current
+    },
+      "firstVariant": variants[0]{
+    price,
+  sku,
+  stock,
+  stockThreshold,
+    }
+  }
+`;

@@ -1,11 +1,11 @@
 "use client";
-import { mockUsers } from "@/assets/dummy-data/mockData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import cookies from "@/lib/utils/cookies";
+import { toast } from "@/lib/hooks/use-toast";
+import { useQuery } from "@/lib/server/client-hook";
 import { useUserStore } from "@/store/user";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +14,8 @@ import { useState } from "react";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const loginUser = useQuery("login");
+  const getUser = useQuery("getMe");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,15 +28,30 @@ const SignIn = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const user = mockUsers.find(
-      (i) => i.email === formData.email && i.test_password === formData.password
-    );
-    cookies.set("user-id", user?.id || "");
-    if (user) {
-      actions.setUser(user);
-      push("/")
+    const successfulSignIn = await loginUser.run({
+      body: formData,
+    });
+
+    if (successfulSignIn.status === "good" && successfulSignIn.success) {
+      const userData = await getUser.run();
+      if (userData.success && userData.data) {
+        actions.setUser(userData.data);
+        push("/");
+      }
+      {
+        toast({
+          title: "User information failed to load",
+          description: userData.message,
+        });
+      }
+    } else {
+      toast({
+        title: "Sign In Failed",
+        description: successfulSignIn.message,
+        variant: "destructive",
+      });
     }
     // Handle sign in
   };
@@ -50,16 +67,6 @@ const SignIn = () => {
             <p className="text-primary-foreground md:text-foreground/70">
               Sign in to your account
             </p>
-            {/* demo section */}
-            <div className="w-full flex flex-col gap-small text-xs text-white md:text-foreground">
-              <div className="w-full">
-                <b>Admin</b>: email=&ldquo;admin@kadian.com&ldquo; & password=&ldquo;admin123&ldquo;
-              </div>
-              <div className="w-full">
-                <b>Admin</b>: email=&ldquo;sarah.johnson@email.com&ldquo; &
-                password=&ldquo;user123&ldquo;
-              </div>
-            </div>
           </CardHeader>
           <CardContent>
             <form
@@ -86,8 +93,7 @@ const SignIn = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
-                  className="text-black"
-
+                    className="text-black"
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
@@ -136,9 +142,12 @@ const SignIn = () => {
                 type="submit"
                 size="lg"
                 variant={"ghost"}
+                disabled={loginUser.status === "loading" || getUser.status === "loading"}
                 className="w-full btn-hero bg-accent text-accent-foreground"
               >
-                Sign In
+                {
+                  loginUser.status==="loading"?"Signing In...":getUser.status ==="loading"?"Loading User...":"Sign In"
+                }
               </Button>
 
               <div className="text-center md:text-left">

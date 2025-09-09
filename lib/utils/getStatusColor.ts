@@ -1,13 +1,15 @@
-export const getStatusColor = (status: string) => {
+import { OrderStatus } from "@/types/order";
+
+export const getStatusColor = (status: OrderStatus) => {
   switch (status) {
-    case "delivered":
+    case "completed":
+      return "success";
+    case "paid":
       return "success";
     case "shipped":
-      return "default";
-    case "processing":
       return "warning";
     case "pending":
-      return "secondary";
+      return "default";
     case "cancelled":
       return "destructive";
     default:

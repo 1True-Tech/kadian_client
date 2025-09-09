@@ -84,7 +84,7 @@ const Header = () => {
               </Button>
             </Link>
             {user && (
-              <Link href="/account">
+              <Link href="/wishlist">
                 <Button variant="ghost" size="icon" className="hidden sm:flex">
                   <Heart className="h-5 w-5" />
                 </Button>

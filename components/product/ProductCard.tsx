@@ -2,11 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ProductReady } from "@/types/product";
+import { ProductReady, ProductVariant } from "@/types/product";
 import { ImageIcon, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import WishlistButton from "./WishlistButton";
+import { useUserStore } from "@/store/user";
+import { useQuery } from "@/lib/server/client-hook";
+import AddToCartButton from "./AddToCartButton";
 
 interface ProductCardProps {
   product: ProductReady;
@@ -21,6 +24,38 @@ const ProductCard = ({
   className = "",
   style,
 }: ProductCardProps) => {
+  const { actions, user } = useUserStore();
+  const { run } = useQuery("updateCart");
+  async function handleAddToCart() {
+    run({
+      body: {
+        updateData: [
+          {
+            price: product.firstVariant.price,
+            quantity: 1,
+            productId: product._id,
+            variantSku: product.firstVariant.sku,
+          },
+        ],
+      },
+    });
+    if (user) {
+      actions.setUser({
+        ...user,
+        cart: [
+          ...user.cart,
+          {
+            price: product.firstVariant.price,
+            quantity: 1,
+            productId: product._id,
+            variantSku: product.firstVariant.sku,
+            addedAt: new Date(),
+            updatedAt: new Date()
+          },
+        ],
+      });
+    }
+  }
   const primaryImage =
     product.mainImage?.src ?? product.gallery?.[0]?.src ?? undefined;
   const primaryAlt =
@@ -59,24 +94,25 @@ const ProductCard = ({
           </div> */}
 
           {/* Quick Actions */}
-          <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute size-full top-0 left-0 items-end pt-3 pr-3 justify-start pointer-events-none flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <WishlistButton
               size="sm"
               variant="outline"
-              className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm"
+              className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm pointer-events-auto"
               productId={product._id}
             />
-            <Button
+            <AddToCartButton
               size="sm"
               variant="outline"
-              className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm"
+              className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm pointer-events-auto"
               onClick={(e) => {
                 e.preventDefault();
-                onAddToCart?.(product._id);
+                handleAddToCart();
               }}
+              productVariant={product.firstVariant as ProductVariant}
+              product={product}
             >
-              <ShoppingBag className="h-4 w-4" />
-            </Button>
+            </AddToCartButton>
           </div>
         </div>
 
@@ -103,6 +139,7 @@ const ProductCard = ({
                   </span>
                 )}
             </div>
+            
 
             {/* <div className="flex items-center gap-1">
               <span className="text-sm text-muted-foreground">★</span>

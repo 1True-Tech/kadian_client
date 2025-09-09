@@ -19,45 +19,18 @@ import { useEffect, useState } from "react";
 const Dashboard = () => {
   const { user, actions } = useUserStore();
   const [isEditing, setIsEditing] = useState(false);
-  const [orders, setOrders] = useState<OrderPreviewReady[]>([]);
-
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault();
     setIsEditing(false);
     // Handle profile update
   };
+  console.log(user)
 
-  useEffect(() => {
-    if (user) {
-      const ordersPreview = user.orders.map((o) => {
-        const items = o.items.map((oi) => {
-          const product = mockProducts.find((mp) => mp._id === oi.id);
-          const productVariant = product?.variants.find(
-            (pv) => pv.sku === oi.variantSku
-          );
-          return {
-            ...oi,
-            product: {
-              id: product?._id,
-              name: product?.name,
-              slug: product?.slug,
-              basePrice: product?.basePrice,
-              variant: productVariant,
-            },
-          };
-        });
-        return {
-          ...o,
-          items,
-        };
-      }) as OrderPreviewReady[];
-
-      setOrders(ordersPreview);
-    }
-  }, [user]);
 
   if (!user) return null;
+  const {orders} = user
+
 
   return (
     <div className="flex-1">
@@ -83,7 +56,7 @@ const Dashboard = () => {
               <CardContent className="p-6 text-center">
                 <Heart className="h-8 w-8 mx-auto mb-2 text-accent" />
                 <h3 className="font-semibold text-2xl">
-                  {user.wishlist.length}
+                  {user.wishList.length}
                 </h3>
                 <p className="text-muted-foreground">Wishlist Items</p>
               </CardContent>
@@ -115,14 +88,14 @@ const Dashboard = () => {
                     <div>
                       <p className="font-medium">Order #{order.id}</p>
                       <p className="text-sm text-muted-foreground">
-                        {order.date}
+                        {new Date(order.createdAt).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="text-right">
                       <Badge variant={getStatusColor(order.status) as any}>
                         {order.status}
                       </Badge>
-                      <p className="text-sm mt-1">${order.total}</p>
+                      <p className="text-sm mt-1">${order.totalAmount}</p>
                     </div>
                   </div>
                 ))}
@@ -163,7 +136,7 @@ const Dashboard = () => {
                     <Label htmlFor="firstName">First Name</Label>
                     <Input
                       id="firstName"
-                      value={user.firstName}
+                      value={user.name.first}
                       disabled={!isEditing}
                       // onChange={(e) =>
                       //   setUser({ ...user, firstName: e.target.value })
@@ -174,7 +147,7 @@ const Dashboard = () => {
                     <Label htmlFor="lastName">Last Name</Label>
                     <Input
                       id="lastName"
-                      value={user.lastName}
+                      value={user.name.last}
                       disabled={!isEditing}
                       // onChange={(e) =>
                       //   setUser({ ...user, lastName: e.target.value })
@@ -240,8 +213,8 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {user.addresses.slice(0, 3).map((address) => (
-                  <AddressItem key={address.id} address={address}/>
+                {user.addresses.slice(0, 3).map((address, idx) => (
+                  <AddressItem key={idx} address={address}/>
                 ))}
               </div>
             </CardContent>

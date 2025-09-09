@@ -25,7 +25,7 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
     // Collect all images from main and variant images
     const allImages = [
       ...(product.gallery || []),
-      ...(product.variants.flatMap(v => v.images || []))
+      ...((product.variants)?.flatMap(v => v.images || []))
     ];
 
     // Process all care instructions from materials and product level
@@ -35,7 +35,7 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
     ];
 
     // Process variants to ensure they have color and size
-    const processedVariants = product.variants.map(variant => ({
+    const processedVariants = product.variants?.map(variant => ({
       ...variant,
       color: variant.color?.name || "Default",
       size: variant.size || "One Size",
@@ -86,7 +86,8 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
         name: m.material.name,
         percentage: m.percentage
       })) || [],
-      slug: product.slug
+      slug: product.slug,
+      firstVariant:product.firstVariant
     };
   });
 };

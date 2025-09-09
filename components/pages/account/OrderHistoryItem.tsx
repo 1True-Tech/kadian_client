@@ -1,12 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getStatusColor } from "@/lib/utils/getStatusColor";
+import { OrdersResponseData } from "@/types/order";
 import { OrderPreviewReady } from "@/types/user";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-export default function OrderHistoryItem(order: OrderPreviewReady) {
+export default function OrderHistoryItem(order: OrdersResponseData) {
     console.log(order)
   return (
     <div key={order.id} className="border rounded-lg p-6">
@@ -14,7 +15,7 @@ export default function OrderHistoryItem(order: OrderPreviewReady) {
         <div>
           <h3 className="font-medium">Order #{order.id}</h3>
           <p className="text-sm text-muted-foreground">
-            Placed on {order.date}
+            Placed on {new Date(order.createdAt).toLocaleDateString()}
           </p>
         </div>
         <Badge variant={getStatusColor(order.status) as any}>
@@ -23,7 +24,7 @@ export default function OrderHistoryItem(order: OrderPreviewReady) {
       </div>
 
       <div className="space-y-3">
-        {order.items.map((item) => {
+        {/* {order..map((item) => {
           console.log(item);
           return (
             <div key={item.product.id} className="flex gap-4">
@@ -51,11 +52,11 @@ export default function OrderHistoryItem(order: OrderPreviewReady) {
               </Link>
             </div>
           );
-        })}
+        })} */}
       </div>
 
       <div className="flex justify-between items-center mt-4 pt-4 border-t">
-        <span className="font-semibold">Total: ${order.total}</span>
+        <span className="font-semibold">Total: ${order.totalAmount}</span>
         <Link href={`/account/order-history/${order.id}`}>
         <Button variant="outline" size="sm">
           View Details
