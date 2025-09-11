@@ -1,11 +1,8 @@
 import env from "@/lib/constants/env";
 import ping from "@/lib/utils/ping";
-import { OrdersResponseData } from "@/types/order";
 import { GeneralResponse } from "@/types/structures";
 import { UserData } from "@/types/user";
 import { NextRequest, NextResponse } from "next/server";
-
-
 
 interface UserResponse extends GeneralResponse {
   data?: UserData;
@@ -30,8 +27,8 @@ export async function GET(req: NextRequest) {
     const data = await res.json();
 
     if (res.ok && data.status === "good") {
-      const baseUrl = req.nextUrl.origin
-      const orderRes = await fetch(baseUrl+`/api/orders-by-user`, {
+      const baseUrl = req.nextUrl.origin;
+      const orderRes = await fetch(baseUrl + `/api/orders-by-user`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +36,7 @@ export async function GET(req: NextRequest) {
         },
       });
       const orderData = await orderRes.json();
-      if(orderRes.ok && orderData.status === "good" && data.data){
+      if (orderRes.ok && orderData.status === "good" && data.data) {
         data.data.orders = orderData.orders;
       }
       const successResponse: UserResponse = {

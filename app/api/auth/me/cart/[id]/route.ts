@@ -1,18 +1,17 @@
 import env from "@/lib/constants/env";
+import queries from "@/lib/queries";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
+import { client } from "@/lib/utils/NSClient";
 import ping from "@/lib/utils/ping";
+import { ProductRaw } from "@/types/product";
 import { GeneralResponse, ParamsProps } from "@/types/structures";
+import { CartItem, CartItemReady } from "@/types/user";
 import { NextRequest, NextResponse } from "next/server";
 
-interface CartItem {
-  sanityProductId: string;
-  variantSku: string;
-  quantity: number;
-  price: number;
-}
 
-interface CartItemResponse extends GeneralResponse {
-  data?: CartItem &{
-    itemsLeft:number
+export interface CartItemResponse extends GeneralResponse {
+  data?: CartItemReady & {
+    itemsLeft: number;
   };
 }
 
@@ -39,13 +38,47 @@ export async function GET(req: NextRequest, { params }: Params) {
     if (res.ok && data.status === "good") {
       const baseUrl = req.nextUrl.origin;
 
-      const stockRes = await (await fetch(`${baseUrl}/inventory/${id}/${data.data.variantSku}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: req.headers.get("authorization") || "",
-        },
-      })).json();
+      const stockRes = await (
+        await fetch(`${baseUrl}/inventory/${id}/${data.data.variantSku}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: req.headers.get("authorization") || "",
+          },
+        })
+      ).json();
+      const cartData: CartItemReady[] = await Promise.all(
+        data.data.map(async (item: CartItem) => {
+          const res: ProductRaw[] = await client.fetch(
+            queries.productsByIdsQuery,
+            { ids: [item.productId] }
+          );
+          const found = res.find((i) => i._id === item.productId);
+          const foundVariant = found?.variants.find(
+            (v) => v.sku === item.variantSku
+          );
+          return {
+            id: item._id,
+            productId: item.productId,
+            price: item.price,
+            size: foundVariant?.size,
+            color: foundVariant?.color,
+            quantity: item.quantity,
+            name: found?.name,
+            image: foundVariant?.images?.map((img) => ({
+              alt: img.alt,
+              src: fashionImageBuilder([img.asset], {
+                treatment: "catalog",
+                quality: 85,
+                format: "webp",
+              })[0],
+            }))[0],
+            updatedAt: item.updatedAt,
+            addedAt: item.addedAt,
+            variantSku: item.variantSku,
+          };
+        })
+      );
       const successResponse: CartItemResponse = {
         status: "good",
         connectionActivity: "online",
@@ -53,8 +86,8 @@ export async function GET(req: NextRequest, { params }: Params) {
         success: true,
         message: data.message || "Cart item retrieved successfully.",
         data: {
-          ...data.data,
-          itemsLeft: stockRes.data.currentStock
+          ...cartData[0],
+          itemsLeft: stockRes.data.currentStock,
         },
       };
 

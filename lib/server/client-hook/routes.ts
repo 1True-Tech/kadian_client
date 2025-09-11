@@ -4,6 +4,8 @@ import { OrderItem, CreateOrderBody, OrderCreateResponse, OrderDetailResponse, O
 import { InventoryGetResponse, InventoryItem, InventoryItemsResponse, InventoryPutResponse, InventoryStockUpdateResponse, InventoryVariantResponse } from "@/types/inventory";
 import { LoginRequestBody, LoginSuccessResponse } from "@/app/api/auth/login/route";
 import { RegisterRequestBody, RegisterSuccessResponse } from "@/app/api/auth/register/route";
+import { CartItemResponse } from "@/app/api/auth/me/cart/[id]/route";
+import { CartResponse } from "@/app/api/auth/me/cart/route";
 
 // Utility: extract :params from paths
 export type PathParams<Path extends string> =
@@ -48,13 +50,13 @@ export const routes = {
   getCart: {
     method: "GET",
     path: "/api/auth/me/cart",
-    response: {} as GeneralResponse & { data?: CartItem[] },
+    response: {} as CartResponse,
   },
   updateCart: {
     method: "PATCH",
     path: "/api/auth/me/cart",
     body: {} as {updateData: CartItem[]},
-    response: {} as GeneralResponse & { data?: CartItem[] },
+    response: {} as CartResponse,
   },
   clearCart: {
     method: "DELETE",
@@ -65,7 +67,7 @@ export const routes = {
     method: "GET",
     path: "/api/auth/me/cart/:id",
     params: {} as { id: string },
-    response: {} as GeneralResponse & { data?: CartItem[] },
+    response: {} as CartItemResponse,
   },
   updateCartItem: {
     method: "PATCH",
@@ -74,7 +76,7 @@ export const routes = {
     body: {} as {data:{
       increment?:number, quantity?:number
     }},
-    response: {} as GeneralResponse & { data?: CartItem[] },
+    response: {} as CartItemResponse,
   },
   deleteCartItem: {
     method: "DELETE",

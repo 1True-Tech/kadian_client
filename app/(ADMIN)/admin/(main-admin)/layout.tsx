@@ -25,7 +25,7 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
 
   const navigationItems = [
     { label: "Dashboard", href: "/admin", icon: Home },
-    { label: "Products", href: "/admin/products", icon: Package },
+    { label: "Inventory", href: "/admin/inventory", icon: Package },
     { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
     { label: "Customers", href: "/admin/customers", icon: Users },
     { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },

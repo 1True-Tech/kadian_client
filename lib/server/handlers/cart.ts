@@ -1,12 +1,15 @@
 import { GeneralResponse } from "@/types/structures";
 import { OrderItem } from "@/types/order";
 import cookies from "@/lib/utils/cookies";
+import { CartResponse } from "@/app/api/auth/me/cart/route";
+import { CartItem } from "@/types/user";
+import { CartItemResponse } from "@/app/api/auth/me/cart/[id]/route";
 
 /**
  * Get all cart items
  */
 export async function getCart(): Promise<
-  GeneralResponse & { data?: OrderItem[] }
+  CartResponse
 > {
   const token = cookies.get("access_token") || "";
 
@@ -20,9 +23,9 @@ export async function getCart(): Promise<
  * Update entire cart
  */
 export async function updateCart(
-  {body}: {body: { updateData: OrderItem[] }}
+  {body}: {body: { updateData: CartItem[] }}
   
-): Promise<GeneralResponse & { data?: OrderItem[] }> {
+): Promise<CartResponse> {
   const token = cookies.get("access_token") || "";
 
   const res = await fetch("/api/auth/me/cart", {
@@ -54,7 +57,7 @@ export async function clearCart(): Promise<GeneralResponse> {
  */
 export async function getCartItem(
   {params:{id}}:{params:{id:string}}
-): Promise<GeneralResponse & { data?: OrderItem }> {
+): Promise<CartItemResponse> {
   const token = cookies.get("access_token") || "";
 
   const res = await fetch(`/api/auth/me/cart/${id}`, {
@@ -68,7 +71,7 @@ export async function getCartItem(
  */
 export async function updateCartItem(
   {params:{id}, body}: {params:{id:string}, body: {data:{increment?:number, quantity?:number}}}
-): Promise<GeneralResponse & { data?: OrderItem }> {
+): Promise<CartItemResponse> {
   const token = cookies.get("access_token") || "";
 
   const res = await fetch(`/api/auth/me/cart/${id}`, {

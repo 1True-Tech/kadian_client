@@ -3,6 +3,9 @@ import ping from "@/lib/utils/ping";
 import { GeneralResponse, ParamsProps } from "@/types/structures";
 import { InventoryGetResponse, InventoryPutResponse } from "@/types/inventory";
 import { NextResponse } from "next/server";
+import { client } from "@/lib/utils/NSClient";
+import queries from "@/lib/queries";
+import { processProducts } from "@/lib/controllers/processShop/processProducts";
 
 type Params = ParamsProps<{ productId: string }>;
 
@@ -82,13 +85,23 @@ export async function PATCH(req: Request, { params }: Params) {
     } = await res.json();
 
     if (res.ok && data.status === "good") {
+      const productData = (
+        await Promise.all(
+          [data.data].map(async (i) => {
+            const itemData = await client.fetch(queries.productsByIdsQuery, {
+              ids: i?.sanityProductId,
+            });
+            return processProducts(itemData);
+          })
+        )
+      ).flat()[0];
       const successResponse: InventoryPutResponse & GeneralResponse = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
         message: data.message || "Inventory item updated successfully.",
-        data: data.data,
+        data: data.data ? { ...data.data, productData } : undefined,
       };
 
       return NextResponse.json(successResponse, { status: 200 });

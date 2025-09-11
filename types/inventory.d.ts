@@ -1,3 +1,5 @@
+import { ProductReady } from "./product";
+
 /**
  * A single variant's stock info
  */
@@ -31,6 +33,21 @@ export interface InventoryItem {
   /** ISO timestamp of when the inventory was last updated in MongoDB */
   updatedAt: string;
 }
+export interface InventoryItemReady {
+  /** Label for the inventory item */
+  label: string;
+  /** The Sanity product ID this inventory document belongs to */
+  sanityProductId: string;
+  /** Product slug */
+  slug: string;
+  /** Array of all variants for the given product, each with its current stock */
+  variants: InventoryVariant[];
+  /** ISO timestamp of when the inventory was created in MongoDB */
+  createdAt: string;
+  /** ISO timestamp of when the inventory was last updated in MongoDB */
+  updatedAt: string;
+  productData?: ProductReady
+}
 
 /* --------------------------- RESPONSE TYPES --------------------------- */
 
@@ -38,21 +55,21 @@ export interface InventoryItem {
  * Response for GET /api/v1/inventory/:productId
  */
 export interface InventoryGetResponse {
-  data?: InventoryItem;
+  data?: InventoryItemReady;
 }
 
 /**
  * Response for PATCH /api/v1/inventory/:productId
  */
 export interface InventoryPutResponse {
-  data?: InventoryItem;
+  data?: InventoryItemReady;
 }
 
 /**
  * Response for GET /api/v1/inventory
  */
 export interface InventoryItemsResponse {
-  data?: InventoryItem[];
+  data?: InventoryItemReady[];
 }
 
 /**

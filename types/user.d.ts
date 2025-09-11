@@ -1,6 +1,7 @@
 import { OrdersResponseData } from "./order";
-import { ProductReady, ProductVariantReady } from "./product";
+import { ProductReady, ProductVariantReady, Size } from "./product";
 import { AccountSettings } from "./settings";
+import { Color, ReadyImage } from "./structures";
 
 /**
  * User roles definition
@@ -36,6 +37,25 @@ export interface CartItem {
   price: number;
   _id?: string;
 }
+export interface CartItemReady {
+  /** Sanity product ID */
+  productId: string;
+  /** Date when item was added to cart */
+  addedAt?: Date;
+  /** Date when cart item was last updated */
+  updatedAt?: Date;
+  /** Number of items */
+  quantity: number;
+  /** Product variant SKU */
+  variantSku: string;
+  /** Item price */
+  price: number;
+  id: string;
+  size: Size | undefined;
+  color: Color;
+  name: string | undefined;
+  image: ReadyImage | undefined;
+}
 
 /**
  * Wishlist item type definition
@@ -70,7 +90,7 @@ export interface UserData {
   /** List of user addresses */
   addresses: Address[];
   /** User's shopping cart items */
-  cart: CartItem[];
+  cart: CartItemReady[];
   /** User's wishlist items */
   wishList: WishlistItem[];
   /** User's role ("user" or "admin") */

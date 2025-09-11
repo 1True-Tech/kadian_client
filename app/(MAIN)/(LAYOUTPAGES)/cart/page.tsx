@@ -1,79 +1,67 @@
 "use client";
-import { useState } from "react";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader } from "@/components/ui/loaders";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
-import { CartItem } from "@/assets/dummy-data/mockData";
+import { useQuery } from "@/lib/server/client-hook";
+import { useUserStore } from "@/store/user";
+import { ImageIcon, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect } from "react";
 
+const empty = (
+  <div className="container mx-auto px-4 py-16">
+    <div className="text-center max-w-md mx-auto">
+      <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
+      <h1 className="text-2xl font-light mb-4">Your cart is empty</h1>
+      <p className="text-muted-foreground mb-8">
+        Looks like you haven&apos;t added anything to your cart yet.
+      </p>
+      <Button asChild size="lg" className="btn-hero">
+        <Link href="/shop">Continue Shopping</Link>
+      </Button>
+    </div>
+  </div>
+);
 const Cart = () => {
   // Mock cart items
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "cart-1",
-      productId: "1",
-      name: "Silk Wrap Dress",
-      price: 149.99,
-      image: "/placeholder.svg",
-      size: "M",
-      color: "Black",
-      quantity: 1,
-    },
-    {
-      id: "cart-2",
-      productId: "3",
-      name: "Knit Sweater",
-      price: 79.99,
-      image: "/placeholder.svg",
-      size: "S",
-      color: "Cream",
-      quantity: 2,
-    },
-  ]);
+  const { user } = useUserStore();
+  const { run, data, status } = useQuery("getCart");
 
+  useEffect(() => {
+    run();
+  }, []);
+
+  if (status === "loading")
+    return (
+      <Loader loader="flip-text-loader" text="CART" loaderSize="fullscreen" />
+    );
+
+  if (!user) return empty;
+
+  if (!data || data.data?.totalItems === 0) {
+    return empty;
+  }
+  const { data: cart } = data;
+
+  if (!cart) {
+    return empty;
+  }
 
   const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity === 0) {
       removeItem(id);
       return;
     }
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
   };
 
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
+  const removeItem = (id: string) => {};
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const subtotal = cart.totalAmount;
   const shipping = subtotal > 75 ? 0 : 9.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-md mx-auto">
-          <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
-          <h1 className="text-2xl font-light mb-4">Your cart is empty</h1>
-          <p className="text-muted-foreground mb-8">
-            Looks like you haven&apos;t added anything to your cart yet.
-          </p>
-          <Button asChild size="lg" className="btn-hero">
-            <Link href="/shop">Continue Shopping</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -82,18 +70,22 @@ const Cart = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
-          {cartItems.map((item) => (
+          {cart.items.map((item) => (
             <Card key={item.id}>
               <CardContent className="p-6">
                 <div className="flex gap-4">
                   <div className="w-24 h-24 rounded-lg overflow-hidden isolate flex-shrink-0">
-                    <Image
-                      width={720}
-                      height={480}
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
+                    {item.image?.src ? (
+                      <Image
+                        width={720}
+                        height={480}
+                        src={item.image?.src || ""}
+                        alt={item.image.alt}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <ImageIcon />
+                    )}
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -103,7 +95,7 @@ const Cart = () => {
                           {item.name}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          Size: {item.size} • Color: {item.color}
+                          Size: {item.size?.label} • Color: {item.color.name}
                         </p>
                       </div>
                       <Button

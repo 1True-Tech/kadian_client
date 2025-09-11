@@ -3,6 +3,9 @@ import ping from "@/lib/utils/ping";
 import { GeneralResponse } from "@/types/structures";
 import { InventoryItemsResponse } from "@/types/inventory";
 import { NextResponse } from "next/server";
+import queries from "@/lib/queries";
+import { client } from "@/lib/utils/NSClient";
+import { processProducts } from "@/lib/controllers/processShop/processProducts";
 
 /**
  * POST /api/v1/inventory/_refresh (admin only)
@@ -27,13 +30,26 @@ export async function POST(req: Request) {
     } = await res.json();
 
     if (res.ok && data.status === "good") {
+      const productData = (
+        await Promise.all(
+          (data.data || []).map(async (i) => {
+            const itemData = await client.fetch(queries.productsByIdsQuery, {
+              ids: i.sanityProductId,
+            });
+            return processProducts(itemData);
+          })
+        )
+      ).flat();
       const successResponse: InventoryItemsResponse & GeneralResponse = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
         message: data.message || "Inventory refresh completed successfully.",
-        data: data.data,
+        data: data.data?.map((i) => ({
+          ...i,
+          productData: productData.find((pd) => pd._id === i.sanityProductId),
+        })),
       };
 
       return NextResponse.json(successResponse, { status: 200 });
