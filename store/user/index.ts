@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import type { User } from '@/types/user';
-import { UserStore } from './types';
+import type { User, UserData } from '@/types/user';
+import { storeUser, UserStore } from './types';
 import { fetchUser } from './controllers/fetchUser';
 import { produce } from 'immer';
 import cookies from '@/lib/utils/cookies';
@@ -19,18 +19,14 @@ export const useUserStore = create<UserStore>()(
         });
       },
 
-      fetchUser: async () => {
+      setStatus: (stats) => {
         set((state) => {
-          state.status = 'loading';
-          state.error = null;
+          state.status = stats;
         });
 
-        set(produce((draft:UserStore) => {
-            fetchUser(draft)
-        }))
       },
 
-      setUser: (user: User) => {
+      setUser: (user: storeUser) => {
         set((state) => {
           state.user = user;
           state.status = 'done';
@@ -42,17 +38,19 @@ export const useUserStore = create<UserStore>()(
           state.user = null;
           state.status = 'done';
         });
-        cookies.remove("user-id")
+        cookies.remove("access_token")
+        cookies.remove("refresh_token")
+
       },
 
       updateNotificationSettings: (settings: NotificationSettings) => {
         set((state) => {
           if (state.user) {
-            state.user.settings = {
-              ...state.user.settings,
-              notifications: settings,
-              security: state.user.settings?.security ?? {} as any
-            };
+            // state.user.settings = {
+            //   ...state.user.settings,
+            //   notifications: settings,
+            //   security: state.user.settings?.security ?? {} as any
+            // };
           }
         });
       },
@@ -85,17 +83,17 @@ export const useUserStore = create<UserStore>()(
         try {
           // API call would go here
           set((state) => {
-            if (state.user) {
-              state.user.settings = {
-                ...state.user.settings,
-                security: {
-                  ...state.user.settings?.security,
-                  lastPasswordChange: state.user.settings?.security?.lastPasswordChange ?? "",
-                  twoFactorEnabled: enabled
-                },
-                notifications: state.user.settings?.notifications ?? {} as NotificationSettings
-              };
-            }
+            // if (state.user) {
+            //   state.user.settings = {
+            //     ...state.user.settings,
+            //     security: {
+            //       ...state.user.settings?.security,
+            //       lastPasswordChange: state.user.settings?.security?.lastPasswordChange ?? "",
+            //       twoFactorEnabled: enabled
+            //     },
+            //     notifications: state.user.settings?.notifications ?? {} as NotificationSettings
+            //   };
+            // }
             state.status = 'done';
           });
           return true;
@@ -119,7 +117,8 @@ export const useUserStore = create<UserStore>()(
             state.user = null;
             state.status = 'done';
           });
-          cookies.remove("user-id");
+          cookies.remove("access_token");
+          cookies.remove("refresh_token");
           return true;
         } catch (error) {
           set((state) => {

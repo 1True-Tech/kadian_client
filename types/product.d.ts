@@ -128,7 +128,7 @@ export interface Brand {
 
 export interface ProductVariant {
   _key: string;
-  color: string;
+  color: Color | null;
   size: Size;
   images: ReadyImage[];
   isBase: boolean;
@@ -226,7 +226,13 @@ export interface ProductRaw extends ProductBase{
   brand: BrandSummaryRaw;
   mainImage: ProductImageRaw;
   gallery: ProductImageRaw[];
-  variants: ProductVariantRaw[];
+  variants: ProductVariant[];
+  firstVariant:{
+     price: number;
+  sku: string;
+  stock: number;
+  stockThreshold?: number;
+  }
 
 }
 export interface ProductReady extends Omit<ProductBase, "_type">{
@@ -234,6 +240,12 @@ export interface ProductReady extends Omit<ProductBase, "_type">{
   mainImage: Partial<ProductImageReady>;
   gallery: ProductImageReady[];
   variants: ProductVariantReady[];
+  firstVariant:{
+     price: number;
+  sku: string;
+  stock: number;
+  stockThreshold?: number;
+  }
 
 }
 
@@ -293,4 +305,36 @@ export type MaterialValidation = {
   minPercentage: 1
   maxPercentage: 100
   totalPercentage: 100
+}
+
+/**
+ * A single product variant used in Inventory sync.
+ */
+export interface ProductVariantInventory {
+  /** Stock Keeping Unit, unique per variant. */
+  sku: string;
+  /** Current stock level. */
+  stock: number;
+  /** Minimum stock before alerting */
+  stockThreshold: number;
+  /** Price of the variant. */
+  price: number;
+}
+
+/**
+ * A product object as used in Inventory sync.
+ */
+export interface ProductInventory {
+  /** Unique product ID from Sanity. */
+  id: string;
+  /** URL slug of the product. */
+  slug: string;
+  /** Name of the product. */
+  name: string;
+  /** Variants belonging to this product. */
+  variants: ProductVariantInventory[];
+  /** ISO timestamp when product was created. */
+  createdAt: string;
+  /** ISO timestamp when product was last updated. */
+  updatedAt: string;
 }

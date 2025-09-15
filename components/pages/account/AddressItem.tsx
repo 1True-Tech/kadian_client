@@ -47,9 +47,9 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
               <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
-                value={editedAddress.name}
+                value={editedAddress.country}
                 onChange={(e) =>
-                  setEditedAddress({ ...editedAddress, name: e.target.value })
+                  setEditedAddress({ ...editedAddress, country: e.target.value })
                 }
               />
             </div>
@@ -87,12 +87,12 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="zipCode">ZIP Code</Label>
+                <Label htmlFor="zipCode">Postal Code</Label>
                 <Input
-                  id="zipCode"
-                  value={editedAddress.zipCode}
+                  id="postalCode"
+                  value={editedAddress.postalCode}
                   onChange={(e) =>
-                    setEditedAddress({ ...editedAddress, zipCode: e.target.value })
+                    setEditedAddress({ ...editedAddress, postalCode: e.target.value })
                   }
                 />
               </div>
@@ -158,7 +158,6 @@ export default function AddressItem({ address }: Props) {
 
   const handleDelete = () => {
     // Here you would typically make an API call to delete the address
-    console.log('Delete address:', address.id);
     setIsDeleteDialogOpen(false);
   };
 
@@ -168,13 +167,13 @@ export default function AddressItem({ address }: Props) {
         <div className="flex justify-between items-start">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-medium">{address.name}</h3>
-              {address.isDefault && <Badge variant="secondary">Default</Badge>}
+              <h3 className="font-medium">{address.country}</h3>
+              {/* {address. && <Badge variant="secondary">Default</Badge>} */}
             </div>
             <p className="text-sm text-muted-foreground">
               {address.street}
               <br />
-              {address.city}, {address.state} {address.zipCode}
+              {address.city}, {address.state} {address.city}
               <br />
               {address.country}
             </p>

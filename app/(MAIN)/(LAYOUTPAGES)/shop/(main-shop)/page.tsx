@@ -8,6 +8,16 @@ import { ShopFilters } from "@/store/shopFilters/types";
 import { headers } from "next/headers";
 
 // Server Component
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Shop | Latest Fashion Collection",
+  description: "Browse our latest collection of premium fashion items. Find clothing, accessories, and more with easy filtering and sorting options.",
+  openGraph: {
+    title: "Shop | Latest Fashion Collection",
+    description: "Browse our latest collection of premium fashion items. Find clothing, accessories, and more with easy filtering and sorting options.",
+  },
+};
 async function Shop() {
   const headersList = await headers();
   const searchParams = headersList.get("x-searchParams") || "";

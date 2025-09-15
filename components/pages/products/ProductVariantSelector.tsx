@@ -24,8 +24,8 @@ export default function ProductVariantSelector({
       <div>
         <label className="font-medium">Color:</label>
         <div className="flex gap-2 mt-1">
-          {[...new Set(variants.map((v) => v.color))].map((color) => (
-            <div key={color} className="w-6 h-6 rounded-full border bg-gray-400" title={color}></div>
+          {[...new Set(variants.map((v) => v.color))].map((color, idx) => (
+            <div key={idx} className="w-6 h-6 rounded-full border bg-gray-400" title={color?.name}></div>
           ))}
         </div>
       </div>

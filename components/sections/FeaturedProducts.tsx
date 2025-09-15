@@ -89,8 +89,8 @@ const FeaturedProducts = () => {
 
                   {/* Action Buttons */}
                   <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <WishlistButton productId={`${product.id}`} />
-                    <AddToCartButton productId={`${product.id}`} />
+                    {/* <WishlistButton productId={`${product.id}`} />
+                    <AddToCartButton productId={`${product.id}`} /> */}
                   </div>
 
                   {/* Quick Add to Cart */}

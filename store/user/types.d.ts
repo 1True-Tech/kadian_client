@@ -1,14 +1,15 @@
 import { RequestProcess } from "@/types/structures";
-import { User } from "@/types/user";
+import { CartItem, UserData } from "@/types/user";
 
+export type storeUser = Omit<UserData, 'cart'>& {cart:CartItem[]}
 export interface UserStore {
-  user: User | null;
+  user: storeUser | null;
   status: RequestProcess;
   error: string | null;
   actions: {
     initialize: () => void;
-    fetchUser: () => Promise<void>;
-    setUser: (user: User) => void;
+    setUser: (user: storeUser) => void;
+    setStatus: (status: RequestProcess) => void;
     logout: () => void;
   };
 }

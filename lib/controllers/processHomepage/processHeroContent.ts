@@ -10,7 +10,6 @@ export const processHomepageHeroContent = async (): Promise<HomePageHero[]> => {
     mobile:imageAssetWithAsset|null;
     alt:string;
   }})[]>(queries.homepageHero);
-
   return items.map((item) => {
     const image = item.image ?? {};
 

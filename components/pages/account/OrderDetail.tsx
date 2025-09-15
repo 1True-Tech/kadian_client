@@ -2,6 +2,7 @@
 import { mockProducts } from "@/assets/dummy-data/mockData";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/store/user";
+import { OrderItem, OrdersResponseData } from "@/types/order";
 import { CartItemReady, OrderPreviewReady } from "@/types/user";
 import { LoaderCircleIcon } from "lucide-react";
 import Image from "next/image";
@@ -43,7 +44,7 @@ function OrderItemDetail({ item }: { item: CartItemReady }) {
 export default function OrderDetail(props: { id: string }) {
   const { user } = useUserStore();
   const [order, setOrder] = useState<
-    OrderPreviewReady | null | "not-initialized"
+    OrdersResponseData | null | "not-initialized"
   >("not-initialized");
 
   useEffect(() => {
@@ -53,29 +54,8 @@ export default function OrderDetail(props: { id: string }) {
         setOrder(null);
         return;
       }
-      const ordersItem = order.items.map((oi) => {
-        const product = mockProducts.find((mp) => mp._id === oi.id);
-        const productVariant = product?.variants.find(
-          (pv) => pv.sku === oi.variantSku
-        );
-        return {
-          ...oi,
-          product: {
-            id: product?._id,
-            name: product?.name,
-            slug: product?.slug,
-            basePrice: product?.basePrice,
-            variant: productVariant,
-          },
-        };
-      });
 
-      const orderPreview = {
-        ...order,
-        items: ordersItem,
-      } as OrderPreviewReady;
-
-      setOrder(orderPreview);
+      setOrder(order);
     }
   }, [user]);
   if (order === "not-initialized") return
@@ -84,38 +64,38 @@ export default function OrderDetail(props: { id: string }) {
     </div>;
 
   if (!order) return notFound();
-  const { id, date, status, total, items, shippingAddress } =
-    order as OrderPreviewReady;
+  const { id, createdAt, status, totalAmount, totalItems, userId } =
+    order as OrdersResponseData;
 
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow">
       <header className="mb-6">
         <h2 className="text-xl font-semibold">Order {id}</h2>
-        <p className="text-sm">Date: {date}</p>
+        <p className="text-sm">Date: {new Date(createdAt).toLocaleDateString()}</p>
         <p className="text-sm capitalize">Status: {status}</p>
       </header>
 
       <section>
-        {items &&
+        {/* {items &&
           items.map((item) => (
             <OrderItemDetail key={item.product.id} item={item} />
-          ))}
+          ))} */}
       </section>
 
       <div className="mt-4 text-right">
-        <p className="text-lg font-semibold">Total ${total.toFixed(2)}</p>
+        <p className="text-lg font-semibold">Total ${totalAmount.toFixed(2)}</p>
       </div>
 
-      <section className="mt-8">
+      {/* <section className="mt-8">
         <h3 className="text-lg font-medium mb-2">Shipping Address</h3>
-        <p>{shippingAddress.name}</p>
+        <p>{shippingAddress.country}</p>
         <p>{shippingAddress.street}</p>
         <p>
           {shippingAddress.city}, {shippingAddress.state}{" "}
-          {shippingAddress.zipCode}
+          {shippingAddress.postalCode}
         </p>
         <p>{shippingAddress.country}</p>
-      </section>
+      </section> */}
 
       <div className="mt-6 text-right">
         <Button variant="default">Track Package</Button>

@@ -31,7 +31,7 @@ export default function AddressesPage() {
         <CardContent>
           <div className="space-y-4">
             {user.addresses.map((address) => (
-              <AddressItem key={address.id} address={address} />
+              <AddressItem key={address.city} address={address} />
             ))}
           </div>
         </CardContent>

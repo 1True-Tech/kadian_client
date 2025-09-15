@@ -4,8 +4,7 @@ export const homepageHero = `
 *[
   _type == "homepageHero" &&
   active == true &&
-
-  // either no  is defined, or it’s already passed
+  // either no date is defined, or it’s already passed
   (!defined(startDate) || startDate <= now()) &&
 
   // either no endDate is defined, or it’s still in the future

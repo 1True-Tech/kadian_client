@@ -15,9 +15,10 @@ import { useUserStore } from "@/store/user";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const cartItems = 3; // This would come from cart context
   const { items } = useNavItems();
   const { user } = useUserStore();
+  const cartItems = user?.cart.length;
+  const wishListItems = user?.wishList.length;
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -84,9 +85,15 @@ const Header = () => {
               </Button>
             </Link>
             {user && (
-              <Link href="/account">
-                <Button variant="ghost" size="icon" className="hidden sm:flex">
+              <Link href="/wishlist">
+                <Button variant="ghost" size="icon" className="hidden sm:flex relative">
                   <Heart className="h-5 w-5" />
+                  {wishListItems && wishListItems > 0 ?(
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 bg-rose-gold text-rose-gold-foreground text-xs flex items-center justify-center">
+                      {wishListItems}
+                    </Badge>
+                  ):null}
+                  
                 </Button>
               </Link>
             )}
@@ -95,11 +102,11 @@ const Header = () => {
               <Link href="/cart">
                 <Button variant="ghost" size="icon" className="relative">
                   <ShoppingBag className="h-5 w-5" />
-                  {cartItems > 0 && (
+                  {cartItems && cartItems > 0 ? (
                     <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 bg-rose-gold text-rose-gold-foreground text-xs flex items-center justify-center">
                       {cartItems}
                     </Badge>
-                  )}
+                  ):null}
                 </Button>
               </Link>
               <HeaderUserSection />

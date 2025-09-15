@@ -743,61 +743,61 @@ const sharedAddress = {
   isDefault: true,
 };
 
-export const mockUsers: User[] = [
-  {
-    id: "admin-001",
-    firstName: "Kadian",
-    lastName: "Fashion",
-    email: "admin@kadian.com",
-    phone: "+1 (555) 987-6543",
-    test_password: "admin123",
-    role: "admin",
-    addresses: [
-      {
-        ...sharedAddress,
-        id: "addr-999",
-        name: "HQ",
-        street: "1 Admin Plaza",
-        city: "San Francisco",
-        state: "CA",
-        zipCode: "94105",
-      },
-    ],
-    orders: [],
-    wishlist: [],
-  },
-  {
-    id: "user-001",
-    firstName: "Sarah",
-    lastName: "Johnson",
-    email: "sarah.johnson@email.com",
-    phone: "+1 (555) 123-4567",
-    test_password: "user123",
-    role: "user",
-    addresses: [sharedAddress],
-    orders: [
-      {
-        id: "order-001",
-        date: "2024-01-15",
-        status: "delivered",
-        total: 239.98,
-        items: [
-          {
-            id: "prod-001",
-            variantSku:"SWD-BLK-M",
-            quantity: 1,
-            price: 149.99,
-          },
-          {
-            id: "prod-004",
-            variantSku:"SWD-BLK-M",
-            quantity: 1,
-            price: 89.99,
-          },
-        ],
-        shippingAddress: sharedAddress,
-      },
-    ],
-    wishlist: ["prod-003", "prod-004"],
-  },
-];
+// export const mockUsers: User[] = [
+//   {
+//     id: "admin-001",
+//     firstName: "Kadian",
+//     lastName: "Fashion",
+//     email: "admin@kadian.com",
+//     phone: "+1 (555) 987-6543",
+//     test_password: "admin123",
+//     role: "admin",
+//     addresses: [
+//       {
+//         ...sharedAddress,
+//         id: "addr-999",
+//         name: "HQ",
+//         street: "1 Admin Plaza",
+//         city: "San Francisco",
+//         state: "CA",
+//         zipCode: "94105",
+//       },
+//     ],
+//     orders: [],
+//     wishlist: [],
+//   },
+//   {
+//     id: "user-001",
+//     firstName: "Sarah",
+//     lastName: "Johnson",
+//     email: "sarah.johnson@email.com",
+//     phone: "+1 (555) 123-4567",
+//     test_password: "user123",
+//     role: "user",
+//     addresses: [sharedAddress],
+//     orders: [
+//       {
+//         id: "order-001",
+//         date: "2024-01-15",
+//         status: "delivered",
+//         total: 239.98,
+//         items: [
+//           {
+//             id: "prod-001",
+//             variantSku:"SWD-BLK-M",
+//             quantity: 1,
+//             price: 149.99,
+//           },
+//           {
+//             id: "prod-004",
+//             variantSku:"SWD-BLK-M",
+//             quantity: 1,
+//             price: 89.99,
+//           },
+//         ],
+//         shippingAddress: sharedAddress,
+//       },
+//     ],
+//     wishlist: ["prod-003", "prod-004"],
+//   },
+// ];
