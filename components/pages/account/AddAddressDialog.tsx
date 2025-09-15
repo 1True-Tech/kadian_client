@@ -13,13 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Address } from '@/types/user';
 
 const emptyAddress: Omit<Address, 'id'> = {
-  name: '',
   street: '',
   city: '',
   state: '',
-  zipCode: '',
+  postalCode: '',
   country: '',
-  isDefault: false,
 };
 
 interface AddAddressDialogProps {
@@ -49,17 +47,6 @@ export default function AddAddressDialog({ isOpen, onClose, onSave }: AddAddress
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={newAddress.name}
-                onChange={(e) =>
-                  setNewAddress({ ...newAddress, name: e.target.value })
-                }
-                required
-              />
-            </div>
             <div className="grid gap-2">
               <Label htmlFor="street">Street Address</Label>
               <Input
@@ -100,9 +87,9 @@ export default function AddAddressDialog({ isOpen, onClose, onSave }: AddAddress
                 <Label htmlFor="zipCode">ZIP Code</Label>
                 <Input
                   id="zipCode"
-                  value={newAddress.zipCode}
+                  value={newAddress.postalCode}
                   onChange={(e) =>
-                    setNewAddress({ ...newAddress, zipCode: e.target.value })
+                    setNewAddress({ ...newAddress, postalCode: e.target.value })
                   }
                   required
                 />

@@ -34,7 +34,7 @@ export async function GET(req: Request) {
         await Promise.all(
           (data.data || []).map(async (i) => {
             const itemData = await client.fetch(queries.productsByIdsQuery, {
-              ids: i.sanityProductId,
+              ids: [i.sanityProductId],
             });
             return processProducts(itemData);
           })

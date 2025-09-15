@@ -31,7 +31,7 @@ const Cart = () => {
 
   useEffect(() => {
     run();
-  }, []);
+  }, [run]);
 
   if (status === "loading")
     return (

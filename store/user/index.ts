@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import type { User, UserData } from '@/types/user';
-import { UserStore } from './types';
+import { storeUser, UserStore } from './types';
 import { fetchUser } from './controllers/fetchUser';
 import { produce } from 'immer';
 import cookies from '@/lib/utils/cookies';
@@ -26,7 +26,7 @@ export const useUserStore = create<UserStore>()(
 
       },
 
-      setUser: (user: UserData) => {
+      setUser: (user: storeUser) => {
         set((state) => {
           state.user = user;
           state.status = 'done';

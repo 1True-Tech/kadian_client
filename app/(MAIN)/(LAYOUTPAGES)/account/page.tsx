@@ -1,5 +1,4 @@
 "use client";
-import { mockProducts } from "@/assets/dummy-data/mockData";
 import AddressItem from "@/components/pages/account/AddressItem";
 import OrderHistoryItem from "@/components/pages/account/OrderHistoryItem";
 import { Badge } from "@/components/ui/badge";
@@ -10,14 +9,12 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getStatusColor } from "@/lib/utils/getStatusColor";
 import { useUserStore } from "@/store/user";
-import { OrderPreviewReady } from "@/types/user";
-import { Heart, MapPin, MoveRight, MoveRightIcon, Package } from "lucide-react";
-import Image from "next/image";
+import { Heart, MapPin, MoveRightIcon, Package } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Dashboard = () => {
-  const { user, actions } = useUserStore();
+  const { user } = useUserStore();
   const [isEditing, setIsEditing] = useState(false);
 
   const handleProfileUpdate = (e: React.FormEvent) => {

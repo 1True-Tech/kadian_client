@@ -1,6 +1,16 @@
 import BackButton from "@/components/feautures/backButton";
 import BgMask from "@/components/layout/bg-mask";
 import { HasSlot } from "@/types/structures";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Create Account",
+  description: "Create your Kadian account. Join us to enjoy premium fashion and exclusive benefits.",
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function Layout({ children }: HasSlot) {
   return (

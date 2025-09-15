@@ -1,9 +1,45 @@
-/// <reference path="./user.d.ts" />
-
 /**
  * Order status type definition
  */
-export type OrderStatus = "pending" | "paid" | "shipped" | "completed" | "cancelled";
+export type OrderStatus =
+  | "pending"
+  | "paid"
+  | "shipped"
+  | "completed"
+  | "cancelled";
+
+/**
+ * Payment method type definition
+ */
+export type PaymentMethod = "card" | "transfer" | "delivery";
+
+/**
+ * Proof of payment type definition
+ */
+export interface PaymentProof {
+  /** Cloudinary secure URL */
+  secureUrl: string;
+  /** Cloudinary public ID */
+  publicId: string;
+}
+
+/**
+ * Payment details type definition
+ */
+export interface Payment {
+  /** Selected payment method */
+  method: PaymentMethod;
+  /** Reference ID or transaction code */
+  reference?: string;
+  /** Paid amount */
+  amount: number;
+  /** Payment status */
+  status: "initiated" | "pending" | "paid" | "failed" | "refunded";
+  /** Proof of payment (for transfer) */
+  proof?: PaymentProof;
+  /** Date paid */
+  paidAt?: Date;
+}
 
 /**
  * Order item type definition
@@ -108,6 +144,8 @@ export interface OrdersResponseDetails {
   items: OrderItem[];
   /** Shipping address */
   shippingAddress?: ShippingAddress;
+  /** Payment details */
+  payment: Payment;
 }
 
 /**
@@ -128,6 +166,10 @@ export interface CreateOrderBody {
   shippingAddress: ShippingAddress;
   /** Customer information */
   customerInfo: CustomerInfo;
+  payment:{
+    method: PaymentMethod,
+    proof?: string
+  }
 }
 
 /**

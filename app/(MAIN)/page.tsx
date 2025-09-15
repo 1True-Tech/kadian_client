@@ -8,6 +8,16 @@ import FeaturedContent from "@/components/pages/home/styleGuide";
 import {getAllCategories} from '@/lib/controllers/processCategories'
 import { CreditCardIcon, PhoneIcon, Truck, UndoDotIcon } from "lucide-react";
 import LookBookFeats from "@/components/pages/home/LookBookFeats";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Kadian - Premium Fashion & Lifestyle",
+  description: "Shop the latest fashion trends at Kadian. Discover our curated collection of premium clothing, accessories, and lifestyle products.",
+  openGraph: {
+    title: "Kadian - Premium Fashion & Lifestyle",
+    description: "Shop the latest fashion trends at Kadian. Discover our curated collection of premium clothing, accessories, and lifestyle products.",
+  },
+};
 
 
 const Index = async () => {

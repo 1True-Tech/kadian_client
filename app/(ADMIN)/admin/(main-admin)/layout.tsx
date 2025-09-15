@@ -3,17 +3,26 @@ import { Loader } from "@/components/ui/loaders";
 import { Separator } from "@/components/ui/separator";
 import { LoadUser } from "@/lib/controllers/_loadUser";
 import {
-  BarChart3,
   Home,
   LogOut,
   Package,
-  Settings,
   ShoppingCart,
-  Users,
+  Users
 } from "lucide-react";
+import { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { ReactNode } from "react";
+import Profile from "./components/profile";
+
+export const metadata: Metadata = {
+  title: "Admin Dashboard",
+  description: "Kadian Admin Dashboard - Manage products, orders, and users",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -27,9 +36,9 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
     { label: "Dashboard", href: "/admin", icon: Home },
     { label: "Inventory", href: "/admin/inventory", icon: Package },
     { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
-    { label: "Customers", href: "/admin/customers", icon: Users },
-    { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-    { label: "Settings", href: "/admin/settings", icon: Settings },
+    { label: "Customers", href: "/admin/users", icon: Users },
+    // { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+    // { label: "Settings", href: "/admin/settings", icon: Settings },
   ];
 
   const isActive = (href: string) => {
@@ -50,19 +59,7 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
           <div className="w-64 bg-card border-r sticky top-0 h-[100dvh] flex flex-col">
             {/* Logo */}
             <div className="p-6 border-b">
-              <Link href="/admin" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-rose rounded-lg flex items-center justify-center">
-                  <span className="text-rose-gold-foreground font-semibold text-sm">
-                    K
-                  </span>
-                </div>
-                <div>
-                  <h1 className="font-semibold">Kadian Admin</h1>
-                  <p className="text-xs text-muted-foreground">
-                    Fashion Management
-                  </p>
-                </div>
-              </Link>
+              <Profile/>
             </div>
 
             {/* Navigation */}
@@ -111,7 +108,7 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1">
+          <div className="w-full shrink">
             {/* Header */}
             <header className="bg-card border-b px-6 py-4 sticky top-0">
               <div className="flex items-center justify-between">
@@ -128,7 +125,7 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
             </header>
 
             {/* Page Content */}
-            <main className="p-6">{children}</main>
+            <main>{children}</main>
           </div>
         </div>
       </div>

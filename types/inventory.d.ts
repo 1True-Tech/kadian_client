@@ -33,19 +33,8 @@ export interface InventoryItem {
   /** ISO timestamp of when the inventory was last updated in MongoDB */
   updatedAt: string;
 }
-export interface InventoryItemReady {
-  /** Label for the inventory item */
-  label: string;
-  /** The Sanity product ID this inventory document belongs to */
-  sanityProductId: string;
-  /** Product slug */
-  slug: string;
-  /** Array of all variants for the given product, each with its current stock */
-  variants: InventoryVariant[];
-  /** ISO timestamp of when the inventory was created in MongoDB */
-  createdAt: string;
-  /** ISO timestamp of when the inventory was last updated in MongoDB */
-  updatedAt: string;
+export interface InventoryItemReady extends InventoryItem {
+
   productData?: ProductReady
 }
 

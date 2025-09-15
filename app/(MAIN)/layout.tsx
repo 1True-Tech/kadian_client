@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 export default function Layout({ children }: HasSlot) {
   const path = usePathname()
-  const { load, items } = useNavItems();
+  const { load } = useNavItems();
   useEffect(() => {
     load();
   }, [path, load]);

@@ -72,6 +72,7 @@ export async function POST(req: Request) {
   try {
     const body: CreateOrderBody = await req.json();
 
+    console.log(body.payment.proof !== undefined)
     const res = await fetch(`${env.API_URL}orders`, {
       method: "POST",
       headers: {

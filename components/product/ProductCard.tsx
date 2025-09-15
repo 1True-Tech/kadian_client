@@ -50,7 +50,8 @@ const ProductCard = ({
             productId: product._id,
             variantSku: product.firstVariant.sku,
             addedAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+
           },
         ],
       });

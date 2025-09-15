@@ -6,7 +6,6 @@ import { Separator } from "@/components/ui/separator";
 import { useUserStore } from "@/store/user";
 import { HasSlot } from "@/types/structures";
 import {
-  HeartIcon,
   LogInIcon,
   LogOutIcon,
   MapPinIcon,
@@ -14,7 +13,7 @@ import {
   Settings2Icon,
   SettingsIcon,
   UserIcon,
-  UserPlusIcon,
+  UserPlusIcon
 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
@@ -59,7 +58,7 @@ export default function AccountSidebar({
                 <UserIcon className="h-10 w-10 text-rose-gold-foreground" />
               </div>
               <CardTitle className="text-xl font-light">
-                {user.firstName} {user.lastName}
+                {user.name.first} {user.name.last}
               </CardTitle>
               <p className="text-muted-foreground">{user.email}</p>
             </CardHeader>

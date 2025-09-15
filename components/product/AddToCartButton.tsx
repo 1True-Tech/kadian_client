@@ -1,11 +1,10 @@
 "use client";
+import { useQuery } from "@/lib/server/client-hook";
+import { cn } from "@/lib/utils";
+import { useUserStore } from "@/store/user";
+import { ProductReady, ProductVariant } from "@/types/product";
 import { MinusIcon, PlusIcon, ShoppingBagIcon } from "lucide-react";
 import { Button, ButtonProps } from "../ui/button";
-import { ProductReady, ProductVariant } from "@/types/product";
-import { useUserStore } from "@/store/user";
-import { useQuery } from "@/lib/server/client-hook";
-import { useEffect } from "react";
-import { cn } from "@/lib/utils";
 
 export default function AddToCartButton({
   product,
@@ -37,7 +36,7 @@ export default function AddToCartButton({
         ...user,
         cart: [
           ...user.cart,
-          ...(added.data||[])
+          ...(added.data?.items || [])
         ],
       });
     }
@@ -74,7 +73,7 @@ export default function AddToCartButton({
 
       if (data.data) {
         if (user) {
-          const item = data.data[0];
+          const item = data.data;
           actions.setUser({
             ...user,
             cart: [

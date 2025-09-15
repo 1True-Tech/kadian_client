@@ -2,7 +2,6 @@
 import { useUserStore } from "@/store/user";
 import { useEffect } from "react";
 import { useQuery } from "../server/client-hook";
-import { RequestProcess } from "@/types/structures";
 
 export function LoadUser() {
   const { user, actions, status } = useUserStore();
@@ -14,6 +13,7 @@ export function LoadUser() {
         const data = await loadUserRequest.run();
         if (data?.data) {
           actions.setUser(data.data);
+          console.log(data.data)
           actions.setStatus("done"); // ✅ update status on success
         } else {
           actions.setStatus("done"); // ✅ update status if no user data

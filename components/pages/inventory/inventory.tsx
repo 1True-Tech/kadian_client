@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { ChevronDown, ChevronUp, Pencil } from "lucide-react";
 import {
   Table,
@@ -14,17 +14,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { InventoryItem } from "@/types/inventory";
 import { ProductReady, ProductVariant } from "@/types/product";
+import Image from "next/image";
 
 interface InventoryProps {
-  items: (InventoryItem & { productData: ProductReady })[];
-  onEdit: (product: ProductReady) => void;
+  items: (InventoryItem & { productData?: ProductReady })[];
 }
 
-export default function Inventory({ items, onEdit }: InventoryProps) {
+export default function Inventory({ items }: InventoryProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
-
+  console.log(items)
   return (
-    <Card className="w-full">
+    <Card className="w-full !rounded-none">
       <CardContent className="p-4">
         <Table>
           <TableHeader>
@@ -40,54 +40,62 @@ export default function Inventory({ items, onEdit }: InventoryProps) {
           </TableHeader>
 
           <TableBody>
-            {items.map((item) => (
-              <>
-                {item.productData.variants.map((variant: ProductVariant) => {
-                  const isExpanded = expanded === variant.sku;
-                  return (
-                    <TableRow key={variant.sku}>
-                      <TableCell className="font-medium">
-                        {item.productData.name}
-                      </TableCell>
-                      <TableCell>{variant.sku}</TableCell>
-                      <TableCell>${variant.price}</TableCell>
-                      <TableCell>{variant.stock}</TableCell>
-                      <TableCell>{variant.stockThreshold ?? "-"}</TableCell>
-                      <TableCell>
-                        {new Date(item.updatedAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setExpanded(isExpanded ? null : variant.sku)}
-                        >
-                          {isExpanded ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4" />
+            {items.map((item, index) => (
+              <Fragment key={index}>
+                {item.productData?.variants.map(
+                  (variant: ProductVariant, idx) => {
+                    const isExpanded = expanded === variant.sku;
+                    return (
+                      <TableRow key={idx}>
+                        <TableCell className="font-medium">
+                          {item.productData?.name}
+                        </TableCell>
+                        <TableCell>{variant.sku}</TableCell>
+                        <TableCell>${variant.price}</TableCell>
+                        <TableCell>{variant.stock}</TableCell>
+                        <TableCell>{variant.stockThreshold ?? "-"}</TableCell>
+                        <TableCell>
+                          {new Date(item.createdAt).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setExpanded(isExpanded ? null : variant.sku)
+                            }
+                          >
+                            {isExpanded ? (
+                              <ChevronUp className="h-4 w-4" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4" />
+                            )}
+                          </Button>
+                          {item.productData && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              // onClick={() => onEdit(item?.productData)}
+                            >
+                              <Pencil className="h-4 w-4 mr-1" /> Edit
+                            </Button>
                           )}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onEdit(item.productData)}
-                        >
-                          <Pencil className="h-4 w-4 mr-1" /> Edit
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                )}
 
-                {item.productData.variants.map(
-                  (variant: ProductVariant) =>
+                {item.productData?.variants.map(
+                  (variant: ProductVariant, idx) =>
                     expanded === variant.sku && (
-                      <TableRow key={variant.sku + "-details"}>
+                      <TableRow key={variant.sku + "-details" + "-" + idx}>
                         <TableCell colSpan={7} className="bg-muted/50">
                           <div className="flex gap-4">
                             {variant.images?.[0] && (
-                              <img
+                              <Image
+                                width={500}
+                                height={500}
                                 src={variant.images[0].src}
                                 alt={variant.images[0].alt || "Variant image"}
                                 className="w-16 h-16 object-cover rounded-md"
@@ -114,7 +122,7 @@ export default function Inventory({ items, onEdit }: InventoryProps) {
                       </TableRow>
                     )
                 )}
-              </>
+              </Fragment>
             ))}
           </TableBody>
         </Table>
