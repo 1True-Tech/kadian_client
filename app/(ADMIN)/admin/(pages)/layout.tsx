@@ -1,19 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loaders";
-import { Separator } from "@/components/ui/separator";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { LoadUser } from "@/lib/controllers/_loadUser";
-import {
-  Home,
-  LogOut,
-  Package,
-  ShoppingCart,
-  Users
-} from "lucide-react";
 import { Metadata } from "next";
 import { headers } from "next/headers";
-import Link from "next/link";
 import { ReactNode } from "react";
-import Profile from "./components/profile";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",
@@ -32,92 +23,31 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
   const headerList = await headers();
   const pathname = headerList.get("x-pathname") || "/";
 
-  const navigationItems = [
-    { label: "Dashboard", href: "/admin", icon: Home },
-    { label: "Inventory", href: "/admin/inventory", icon: Package },
-    { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
-    { label: "Customers", href: "/admin/users", icon: Users },
-    // { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-    // { label: "Settings", href: "/admin/settings", icon: Settings },
-  ];
-
-  const isActive = (href: string) => {
-    if (href === "/admin") {
-      return pathname === "/admin";
-    }
-    return pathname.startsWith(href);
-  };
-
   return (
     <>
       <Loader loader="flip-text-loader" text="KADIAN" loaderSize="fullscreen">
         <LoadUser />
       </Loader>
-      <div className="min-h-screen bg-muted/30">
-        <div className="flex">
-          {/* Sidebar */}
-          <div className="w-64 bg-card border-r sticky top-0 h-[100dvh] flex flex-col">
-            {/* Logo */}
-            <div className="p-6 border-b">
-              <Profile/>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 p-4">
-              <div className="space-y-2">
-                {navigationItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                        isActive(item.href)
-                          ? "bg-accent text-accent-foreground"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </div>
-
-              <Separator className="my-4" />
-
-              {/* Quick Actions */}
-              <div className="space-y-2">
-                <Link
-                  href="/"
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                >
-                  <Home className="h-4 w-4" />
-                  View Store
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-                >
-                  <LogOut className="h-4 w-4 mr-3" />
-                  Sign Out
-                </Button>
-              </div>
-            </nav>
-          </div>
-
-          {/* Main Content */}
-          <div className="w-full shrink">
+      <SidebarProvider>
+        <AdminSidebar pathname={pathname} />
+        <div className="min-h-screen w-full bg-gradient-to-br from-background via-background/95 to-muted/10">
+          <div className="w-full min-h-screen bg-background/40">
             {/* Header */}
-            <header className="bg-card border-b px-6 py-4 sticky top-0">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">
-                  {navigationItems.find((item) => isActive(item.href))?.label ||
-                    "Dashboard"}
-                </h2>
+            <header className="bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/40 border-b border-border/40 px-8 py-4 sticky top-0 z-20 transition-all duration-200 shadow-sm">
+              <div className="flex items-center justify-between max-w-7xl mx-auto">
+                <div className="flex items-center gap-6">
+                  <SidebarTrigger className="h-9 w-9 rounded-xl border border-border/50 bg-background/50 hover:bg-accent/5 transition-all duration-200 lg:hidden" />
+                  <h2 className="text-xl font-semibold tracking-tight">
+                    {pathname === "/admin"
+                      ? "Dashboard"
+                      : pathname.split("/").pop()
+                        ? pathname.split("/").pop()!.charAt(0).toUpperCase() +
+                          pathname.split("/").pop()!.slice(1)
+                        : "Dashboard"}
+                  </h2>
+                </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground/90 font-medium tracking-wide">
                     Welcome back, Admin
                   </span>
                 </div>
@@ -125,10 +55,14 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
             </header>
 
             {/* Page Content */}
-            <main>{children}</main>
+            <main className="p-0 w-full mx-auto">
+              <div className="w-full bg-card/40 backdrop-blur-sm supports-[backdrop-filter]:bg-card/20 p-container">
+                {children}
+              </div>
+            </main>
           </div>
         </div>
-      </div>
+      </SidebarProvider>
     </>
   );
 };

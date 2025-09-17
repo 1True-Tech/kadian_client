@@ -1,13 +1,12 @@
-import { GeneralResponse } from "@/types/structures";
-import { CartItem, UserData } from "@/types/user";
-import { OrderItem, CreateOrderBody, OrderCreateResponse, OrderDetailResponse, OrderListResponse, OrderUpdateBody } from "@/types/order";
-import { InventoryGetResponse, InventoryItem, InventoryItemsResponse, InventoryPutResponse, InventoryStockUpdateResponse, InventoryVariantResponse } from "@/types/inventory";
+import { DashboardMetric } from "@/app/api/admin/route";
 import { LoginRequestBody, LoginSuccessResponse } from "@/app/api/auth/login/route";
-import { RegisterRequestBody, RegisterSuccessResponse } from "@/app/api/auth/register/route";
 import { CartItemResponse } from "@/app/api/auth/me/cart/[id]/route";
 import { CartResponse } from "@/app/api/auth/me/cart/route";
-import path from "path";
-import { DashboardMetric } from "@/app/api/admin/route";
+import { RegisterRequestBody, RegisterSuccessResponse } from "@/app/api/auth/register/route";
+import { InventoryGetResponse, InventoryItem, InventoryItemsResponse, InventoryPutResponse, InventoryStockUpdateResponse, InventoryVariantResponse } from "@/types/inventory";
+import { CreateOrderBody, OrderCreateResponse, OrderDetailResponse, OrderListResponse, OrderUpdateBody } from "@/types/order";
+import { GeneralResponse } from "@/types/structures";
+import { CartItem, UserData } from "@/types/user";
 
 // Utility: extract :params from paths
 export type PathParams<Path extends string> =

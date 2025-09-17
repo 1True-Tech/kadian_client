@@ -9,6 +9,7 @@ export interface RegisterRequestBody {
     first: string;
     last: string;
   };
+  username:string;
   email: string;
   password: string;
   phone?: string;

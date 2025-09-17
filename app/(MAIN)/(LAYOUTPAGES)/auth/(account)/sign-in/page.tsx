@@ -9,7 +9,7 @@ import { useQuery } from "@/lib/server/client-hook";
 import { useUserStore } from "@/store/user";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const SignIn = () => {
@@ -17,7 +17,7 @@ const SignIn = () => {
   const loginUser = useQuery("login");
   const getUser = useQuery("getMe");
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
     rememberMe: false,
   });
@@ -27,6 +27,8 @@ const SignIn = () => {
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +40,7 @@ const SignIn = () => {
       const userData = await getUser.run();
       if (userData.success && userData.data) {
         actions.setUser(userData.data);
-        push("/");
+        push(redirect);
       }
       {
         toast({
@@ -74,14 +76,14 @@ const SignIn = () => {
               className="space-y-6 text-background md:text-foreground"
             >
               <div>
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
-                  id="email"
-                  type="email"
+                  id="username"
+                  type="text"
                   className="text-black"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  placeholder="your@email.com"
+                  value={formData.username}
+                  onChange={(e) => handleInputChange("username", e.target.value)}
+                  placeholder="user123"
                   required
                 />
               </div>

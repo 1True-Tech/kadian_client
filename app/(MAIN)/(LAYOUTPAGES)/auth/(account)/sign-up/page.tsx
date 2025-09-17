@@ -4,28 +4,57 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useQuery } from "@/lib/server/client-hook";
+import { useUserStore } from "@/store/user";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const SignUp = () => {
+  const signUpUser = useQuery("register");
+  const getUser = useQuery("getMe");
   const [showPassword, setShowPassword] = useState(false);
+  const { actions } = useUserStore();
+  const { push } = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    userName: "",
     password: "",
     agreeToTerms: false,
     subscribeNewsletter: false,
   });
-
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Sign up:", formData);
+    const res = await signUpUser.run({
+      body: {
+        email: formData.email,
+        password: formData.password,
+        name: {
+          first: formData.firstName,
+          last: formData.lastName,
+        },
+        username: formData.userName,
+        phone: "",
+      },
+    });
+
+    if (res.success && res.status === "good") {
+      const userData = await getUser.run();
+      if (userData.success && userData.data) {
+        actions.setUser(userData.data);
+        push(redirect);
+      }
+    }
     // Handle sign up
   };
 
@@ -52,8 +81,7 @@ const SignUp = () => {
                   <Input
                     id="firstName"
                     value={formData.firstName}
-                  className="text-black"
-
+                    className="text-black"
                     onChange={(e) =>
                       handleInputChange("firstName", e.target.value)
                     }
@@ -65,8 +93,7 @@ const SignUp = () => {
                   <Input
                     id="lastName"
                     value={formData.lastName}
-                  className="text-black"
-
+                    className="text-black"
                     onChange={(e) =>
                       handleInputChange("lastName", e.target.value)
                     }
@@ -82,9 +109,22 @@ const SignUp = () => {
                   type="email"
                   value={formData.email}
                   className="text-black"
-
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   placeholder="your@email.com"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={formData.userName}
+                  className="text-black"
+                  onChange={(e) =>
+                    handleInputChange("userName", e.target.value)
+                  }
+                  placeholder="user123"
                   required
                 />
               </div>
@@ -96,8 +136,7 @@ const SignUp = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
-                  className="text-black"
-
+                    className="text-black"
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
@@ -166,8 +205,18 @@ const SignUp = () => {
                 </div>
               </div>
 
-              <Button type="submit" size="lg" variant={"ghost"} className="w-full btn-hero bg-accent text-accent-foreground">
-                Create Account
+              <Button
+                type="submit"
+                size="lg"
+                variant={"ghost"}
+                className="w-full btn-hero bg-accent text-accent-foreground"
+                disabled={signUpUser.status === "loading" || getUser.status === "loading"}
+              >
+                {signUpUser.status === "loading"
+                  ? "Creating Account..."
+                  : getUser.status === "loading"
+                  ? "Loading User..."
+                  : "Sign Up"}
               </Button>
 
               <div className="text-center md:text-left">

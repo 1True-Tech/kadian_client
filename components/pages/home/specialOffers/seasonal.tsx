@@ -23,9 +23,9 @@ export const SeasonalProducts = async () => {
               {offer.title}
             </h2>
             {offer.terms && (
-              <p className="text-elegant max-w-2xl mx-auto">
+              <div className="prose text-elegant max-w-2xl mx-auto">
                 <PortableText value={offer.terms} />
-              </p>
+              </div>
             )}
           </div>
 
