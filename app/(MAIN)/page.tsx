@@ -9,6 +9,7 @@ import {getAllCategories} from '@/lib/controllers/processCategories'
 import { CreditCardIcon, PhoneIcon, Truck, UndoDotIcon } from "lucide-react";
 import LookBookFeats from "@/components/pages/home/LookBookFeats";
 import { Metadata } from "next";
+import { SeasonalProducts } from "@/components/pages/home/specialOffers/seasonal";
 
 export const metadata: Metadata = {
   title: "Kadian - Premium Fashion & Lifestyle",
@@ -31,7 +32,7 @@ const Index = async () => {
         <LookBookFeats />
         <FeaturedContent />
         <CategoryShowcase categories={category}/>
-        
+        <SeasonalProducts/>
         <ServiceFeatures
         items={[
           {

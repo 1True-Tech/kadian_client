@@ -60,12 +60,70 @@ export const HomePageSpecialOffer = `
   terms,
   category,
   "slug": slug.current,
-  "products": products[]{
-    discountType,
-    discountValue,
-    featured,
-    "product": product->${ProductListingItem}
+  products[]{
+  discountType,
+  discountValue,
+  featured,
+  product->{
+  _id,
+    _type,
+    _createdAt,
+    name,
+    "slug": slug.current,
+    description,
+    basePrice,
+    
+    "brand": brand->{
+      name,
+      "slug": slug.current
+    },
+    
+    category->{
+      name,
+      "slug": slug.current,
+      "parent": parent->{
+        name,
+        "slug": slug.current
+      }
+    },
+    
+    "mainImage": images[primary == true][0]{
+      asset,
+  alt,
+  "primary": coalesce(primary, false),
+  crop,
+  hotspot
+    },
+    "gallery":images[]{
+    asset,
+  alt,
+  "primary": coalesce(primary, false),
+  crop,
+  hotspot
+    },
+    "firstVariant": variants[0]{
+    price,
+  sku,
+  stock,
+  stockThreshold,
+    },
+    "variants": variants[]{
+      _key,
+      price,
+      stock,
+      "color": color->{
+        name,
+        hex,
+        rgba
+      },
+      "size": size->{label}
+    },
+    
+    rating,
+    tags,
+    isActive
   }
+}
 }
 
 `

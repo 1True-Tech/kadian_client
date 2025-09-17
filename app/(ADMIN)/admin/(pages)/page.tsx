@@ -1,28 +1,43 @@
+"use client"
 import { DashboardMetric } from "@/app/api/admin/route";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import baseUrl from "@/lib/utils/baseurl";
-import { OrderListResponse } from "@/types/order";
-import { GeneralResponse } from "@/types/structures";
+import { useQuery } from "@/lib/server/client-hook";
 import {
   DollarSign,
   Eye,
   Package,
   ShoppingCart,
   TrendingUp,
-  Users,
+  Users
 } from "lucide-react";
-import { cookies } from "next/headers";
 
-const AdminDashboard = async () => {
-  const access_token = (await cookies()).get("access_token")
-  const adminDashboard:GeneralResponse & {data?:DashboardMetric} = await (await fetch(`${await baseUrl()}/api/admin`, {
-    headers: {
-      authorization: `Bearer ${access_token?.value}`
-    }
-  })).json();
-  const stats = (adminDashboard.data?.stats||[]).map(ad => ({
+const AdminDashboard = () => {
+  const {run, data,status,error} = useQuery("getAdminDashboard")
+
+  if(status==="idle"){
+    run()
+  }
+
+  if (status === "loading" || status==="idle") {
+    return (
+      <div className="flex items-center justify-center h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <div className="flex items-center justify-center h-[60vh]">
+        <p className="text-red-500">Error loading dashboard: {String(error)}</p>
+      </div>
+    );
+  }
+
+  const adminDashboard = data?.data as DashboardMetric;
+  const stats = (adminDashboard?.stats||[]).map(ad => ({
     title: ad.title,
     value: ad.value,
     change: ad.change,
@@ -38,10 +53,10 @@ const AdminDashboard = async () => {
     positive: ad.positive,
   }));
 
-  const recentOrders = (adminDashboard.data?.recentOrders||[])
+  const recentOrders = (adminDashboard?.recentOrders||[])
   
 
-  const topProducts = (adminDashboard.data?.topProducts||[]);
+  const topProducts = (adminDashboard?.topProducts||[]);
   
 
   const getStatusColor = (status: string) => {

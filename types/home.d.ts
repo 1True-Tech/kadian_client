@@ -6,6 +6,7 @@ import {
   MarkDef,
   sanityImageAsset,
 } from "./structures";
+import { ProductRaw, ProductReady } from "./product";
 
 export interface HomePageHero {
   title: string;
@@ -44,21 +45,39 @@ export interface LookBookItem {
 
 export type SpecialOffers = SpecialOffer[];
 
-export interface SpecialOffer {
+export interface SpecialOfferBase {
   slug: string;
-  products: OfferProduct[];
   displayImages: imageAssetWithAlt[] | ReadyImage;
   highlightColor: Color;
   title: string;
   terms: TypedObject[] | null;
-  category: string;
+  category:
+    | "flash_sale"
+    | "seasonal_sale"
+    | "clearance"
+    | "bundle"
+    | "new_customer"
+    | "featured";
+}
+export interface SpecialOfferReady extends SpecialOfferBase {
+  products: OfferProductReady[];
+}
+export interface SpecialOfferRaw extends SpecialOfferBase {
+  products: OfferProductRaw[];
 }
 
-export interface OfferProduct {
+
+
+export interface OfferProductBase {
   discountType: "percentage" | "fixed" | "special";
   discountValue: number;
   featured: boolean;
-  product: OfferProductInfo;
+}
+export interface OfferProductReady extends OfferProductBase {
+  product: ProductReady;
+}
+export interface OfferProductRaw extends OfferProductBase {
+  product: ProductRaw;
 }
 
 export interface OfferProductInfo {
