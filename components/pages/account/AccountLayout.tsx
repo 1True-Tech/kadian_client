@@ -16,6 +16,7 @@ import {
   UserPlusIcon
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
 export default function AccountSidebar({
@@ -23,6 +24,8 @@ export default function AccountSidebar({
   mainHeader,
 }: HasSlot & { mainHeader: ReactNode }) {
   const { user, actions } = useUserStore();
+    const pathname = usePathname(); // current URL path
+  
   if (!user)
     return (
       <section className="w-full max-w-md mx-auto text-center py-16 px-6">
@@ -32,13 +35,13 @@ export default function AccountSidebar({
         </p>
 
         <div className="flex justify-center gap-4">
-          <Link href="/auth/sign-in">
+          <Link href={`/auth/sign-in?redirect=${encodeURIComponent(pathname)}`}>
             <Button variant="secondary">
               <LogInIcon className="h-4 w-4 mr-2" />
               Log In
             </Button>
           </Link>
-          <Link href="/auth/sign-up">
+          <Link href={`/auth/sign-up?redirect=${encodeURIComponent(pathname)}`}>
             <Button variant={"glow"}>
               <UserPlusIcon className="h-4 w-4 mr-2" />
               Sign Up

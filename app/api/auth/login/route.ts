@@ -5,7 +5,7 @@ import { GeneralResponse } from "@/types/structures";
 import { NextResponse } from "next/server";
 
 export interface LoginRequestBody {
-  email: string;
+  username: string;
   password: string;
 }
 
