@@ -6,6 +6,8 @@ import { LoginRequestBody, LoginSuccessResponse } from "@/app/api/auth/login/rou
 import { RegisterRequestBody, RegisterSuccessResponse } from "@/app/api/auth/register/route";
 import { CartItemResponse } from "@/app/api/auth/me/cart/[id]/route";
 import { CartResponse } from "@/app/api/auth/me/cart/route";
+import path from "path";
+import { DashboardMetric } from "@/app/api/admin/route";
 
 // Utility: extract :params from paths
 export type PathParams<Path extends string> =
@@ -196,6 +198,13 @@ export const routes = {
     path: "/api/auth/me/wishlist/:id",
     params: {} as { id: string },
     response: {} as GeneralResponse,
+  },
+
+  // --- ADMIN DASHBOARD ---
+  getAdminDashboard: {
+    method: "GET",
+    path: "/api/admin",
+    response: {} as GeneralResponse & { data?: DashboardMetric },
   },
 } as const;
 

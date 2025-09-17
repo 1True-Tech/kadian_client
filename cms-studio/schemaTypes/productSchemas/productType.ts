@@ -45,22 +45,20 @@ export const productType = defineType({
         primary,
         32,
         0,
-        initialLetters(moddedTitle,2),
+        initialLetters(moddedTitle, 2),
         text
       );
-      const mainImage = media?media.find((m: { primary: any; }) => m.primary):null
+      const mainImage = media
+        ? media.find((m: { primary: any }) => m.primary)
+        : null;
 
-      const url =
-        mainImage
-          ? fashionImageBuilder(
-              [mainImage.asset],
-              {
-                quality: 50,
-                treatment: "thumbnail",
-                format: "webp",
-              }
-            )[0]
-          : previewImgText;
+      const url = mainImage
+        ? fashionImageBuilder([mainImage.asset], {
+            quality: 50,
+            treatment: "thumbnail",
+            format: "webp",
+          })[0]
+        : previewImgText;
 
       const subtitle = [
         brand,
@@ -102,11 +100,11 @@ export const productType = defineType({
       description:
         "Product image gallery; each image must have alt text for accessibility.",
       fieldset: "general",
-      singleImageConfig:{
-        previewImgOptions:{
-          colorScheme:"blackAndWhite"
-        }
-      }
+      singleImageConfig: {
+        previewImgOptions: {
+          colorScheme: "blackAndWhite",
+        },
+      },
     }),
     defineField({
       name: "description",
@@ -174,21 +172,27 @@ export const productType = defineType({
               validation: (Rule) => Rule.min(0).max(100),
             }),
           ],
-          preview:{
-            select:{
+          preview: {
+            select: {
               title: "material.name",
-              sub: 'percentage'
+              sub: "percentage",
             },
-            prepare({title, sub}) {
-              const {primary,text} = generateAccessibleColorPair()
-              const url = createColorSwatchDataUrl(primary, 100, 0, title, text)
-                return{
-                  title,
-                  subtitle: sub||'--no title info--',
-                  imageUrl:url
-                }
+            prepare({ title, sub }) {
+              const { primary, text } = generateAccessibleColorPair();
+              const url = createColorSwatchDataUrl(
+                primary,
+                100,
+                0,
+                title,
+                text
+              );
+              return {
+                title,
+                subtitle: sub || "--no title info--",
+                imageUrl: url,
+              };
             },
-          }
+          },
         },
       ],
       fieldset: "fashionFields",
@@ -235,21 +239,22 @@ export const productType = defineType({
     // 3. VARIANTS: cloth/skincare variants handled in imported variantType
     variantType,
 
-    // 4. SHARED FIELDS: ratings, tags, SEO
-    defineField({
-      name: "rating",
-      title: "Average Rating",
-      type: "number",
-      readOnly: true,
-      description: "Average customer rating",
-      fieldset: "general",
-    }),
+    // make the tags field be a dropdown with options of "New Arrival", "Best Seller", "Limited Edition",
     defineField({
       name: "tags",
       title: "Tags",
       type: "array",
-      description: "Optional searchable tags",
-      of: [defineArrayMember({ type: "string" })],
+      of: [{ type: "string" }],
+      options: {
+        list: [
+          { title: "New Arrival", value: "new_arrival" },
+          { title: "Best Seller", value: "best_seller" },
+          { title: "Limited Edition", value: "limited_edition" },
+          { title: "Exclusive", value: "exclusive" },
+          { title: "On Sale", value: "on_sale" },
+        ],
+        layout: "tags",
+      },
       fieldset: "general",
     }),
     defineField({

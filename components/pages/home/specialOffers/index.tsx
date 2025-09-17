@@ -65,8 +65,8 @@ export default async function SpecialOffersSection() {
               <ProductGrid
                 loading={!hasProducts}
                 products={offer.products.map((p) => ({
-                  image: p.product.image as ReadyImage,
-                  price: p.product.price,
+                  image: p.product.mainImage as ReadyImage,
+                  price: p.product.basePrice,
                   name: p.product.name,
                   slug: p.product.slug,
                   discount: {

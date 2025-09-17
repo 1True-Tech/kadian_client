@@ -35,13 +35,14 @@ export type DashboardMetric = {
 }
 export async function GET(req: NextRequest) {
   const isOnline = await ping();
+    console.log(req.headers.get("authorization"))
 
   try {
     const res = await fetch(`${env.API_URL}admin/dashboard`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        authorization: req.headers.get("authorization") || "",
+        Authorization: req.headers.get("authorization") || "",
       },
     });
 
