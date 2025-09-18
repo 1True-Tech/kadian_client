@@ -26,7 +26,7 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
   return (
     <>
       <Loader loader="flip-text-loader" text="KADIAN" loaderSize="fullscreen">
-        <LoadUser />
+        <LoadUser rerouteOnFail />
       </Loader>
       <SidebarProvider>
         <AdminSidebar pathname={pathname} />

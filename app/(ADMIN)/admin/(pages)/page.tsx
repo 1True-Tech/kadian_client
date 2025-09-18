@@ -197,10 +197,10 @@ const AdminDashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex items-center justify-between">
             <CardTitle>Recent Orders</CardTitle>
-            <Button variant="outline" size="sm">
+            { recentOrders.length>0&&<Button variant="outline" size="sm">
               <Eye className="h-4 w-4 mr-2" />
               View All
-            </Button>
+            </Button>}
           </CardHeader>
 
           <CardContent>
