@@ -205,6 +205,50 @@ export const routes = {
     path: "/api/admin",
     response: {} as GeneralResponse & { data?: DashboardMetric },
   },
+  // --- ADMIN USER MANAGEMENT ---
+  getUsers: {
+    method: "GET",
+    path: "/api/users",
+    response: {} as GeneralResponse & { data?: UserData[] },
+  },
+  getUserById: {
+    method: "GET",
+    path: "/api/users/:userId",
+    params: {} as { userId: string },
+    response: {} as GeneralResponse & { data?: UserData },
+  },
+  updateUser: {
+    method: "PATCH",
+    path: "/api/users/:userId",
+    params: {} as { userId: string },
+    body: {} as Partial<UserData>,
+    response: {} as GeneralResponse,
+  },
+  createUser: {
+    method: "POST",
+    path: "/api/users",
+    body: {} as Partial<UserData>,
+    response: {} as GeneralResponse & { data?: UserData },
+  },
+  getUserDetails: {
+    method: "GET",
+    path: "/api/users/:userId",
+    params: {} as { userId: string },
+    response: {} as GeneralResponse & { data?: UserData },
+  },
+  updateUserRole: {
+    method: "PATCH",
+    path: "/api/users/:userId/role",
+    params: {} as { userId: string },
+    body: {} as { role: string },
+    response: {} as GeneralResponse,
+  },
+  deleteUser: {
+    method: "DELETE",
+    path: "/api/users/:userId",
+    params: {} as { userId: string },
+    response: {} as GeneralResponse,
+  },
 } as const;
 
 export type Routes = {

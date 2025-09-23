@@ -20,6 +20,7 @@ import { lBPtComponents } from "@/components/feautures/PortableText";
 import { Badge } from "@/components/ui/badge";
 import { Color } from "@/types/structures";
 import AddToCartButton from "@/components/product/AddToCartButton";
+import { useUserStore } from "@/store/user";
 
 interface ProductDetailClientProps {
   product: ProductReady;
@@ -27,6 +28,7 @@ interface ProductDetailClientProps {
 
 const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  const {user} = useUserStore()
 
   // All variants are source of truth
   const sizes: Size[] = Array.from(
@@ -188,7 +190,7 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
 
 
           {/* Actions */}
-          <div className="space-y-3 pt-4">
+          {user&&<div className="space-y-3 pt-4">
             <AddToCartButton
               productVariant={selectedVariant}
               product={product}
@@ -207,7 +209,7 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 <Share2 className="h-4 w-4" />
               </Button>
             </div>
-          </div>
+          </div>}
 
           {/* Trust info */}
           <div className="grid grid-cols-1 gap-4 pt-6 border-t">

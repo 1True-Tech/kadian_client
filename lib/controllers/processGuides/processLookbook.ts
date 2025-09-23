@@ -1,6 +1,6 @@
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
-import { imageAssetWithAlt } from "@/types/structures";
 import { Lookbook } from "@/types/guides";
+import { imageAssetWithAlt } from "@/types/structures/image";
 
 type LookbookRaw = Omit<Lookbook, "looks"> & {
   looks: Array<{
@@ -20,32 +20,42 @@ type LookbookRaw = Omit<Lookbook, "looks"> & {
 };
 
 export const processLookbook = (lookbook: LookbookRaw): Lookbook => {
+  // Extract first paragraph from introduction for description if available
+  let description = "";
+  if (lookbook.introduction && lookbook.introduction.length > 0) {
+    const firstBlock = lookbook.introduction[0];
+    if (firstBlock.children && firstBlock.children.length > 0) {
+      description = firstBlock.children[0]?.text || "";
+    }
+  }
+
   return {
     ...lookbook,
-    looks: lookbook.looks.map((look) => ({
+    description, // Add description field
+    looks: lookbook.looks?.map((look) => ({
       ...look,
       image: {
-        alt: look.image.alt,
-        src: fashionImageBuilder([look.image.asset], {
+        alt: look.image?.alt || "Lookbook image",
+        src: fashionImageBuilder([look.image?.asset], {
           treatment: "lookbook",
           quality: 100,
           format: "webp",
         })[0],
       },
-      outfitDetails: look.outfitDetails.map((detail) => ({
+      outfitDetails: look.outfitDetails?.map((detail) => ({
         ...detail,
         productLink: {
           ...detail.productLink,
           image: {
-            alt: detail.productLink.image.alt,
-            src: fashionImageBuilder([detail.productLink.image.asset], {
+            alt: detail.productLink?.image?.alt || "Product image",
+            src: fashionImageBuilder([detail.productLink?.image?.asset], {
               treatment: "catalog",
               quality: 85,
               format: "webp",
             })[0],
           },
         },
-      })),
-    })),
+      })) || [],
+    })) || [],
   };
 };

@@ -4,7 +4,7 @@ import baseUrl from "@/lib/utils/baseurl";
 import { InventoryItemsResponse } from "@/types/inventory";
 
 export default async function InventoryPage() {
-  const res = await fetch(`${await baseUrl()}/api/inventory`, {
+  const res = await fetch(`${baseUrl}/api/inventory`, {
     cache: "no-store",
   });
   const inventoryData: InventoryItemsResponse = await res.json();

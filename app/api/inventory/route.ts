@@ -1,9 +1,10 @@
 import env from "@/lib/constants/env";
 import { processProducts } from "@/lib/controllers/processShop/processProducts";
 import queries from "@/lib/queries";
-import { client } from "@/lib/utils/NSClient";
+import { refreshInventory } from "@/lib/server/handlers";
+import { client, sanityClientServer } from "@/lib/utils/NSClient";
 import ping from "@/lib/utils/ping";
-import { InventoryItem, InventoryItemsResponse } from "@/types/inventory";
+import { InventoryItemSanity, InventoryItemsResponse } from "@/types/inventory";
 import { GeneralResponse } from "@/types/structures";
 import { NextResponse } from "next/server";
 
@@ -66,5 +67,37 @@ export async function GET(req: Request) {
     };
 
     return NextResponse.json(errorData, { status: errorData.statusCode });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const { docId, variantSku, price, stock, stockThreshold } =
+      await req.json();
+
+    if (!docId || !variantSku) {
+      return NextResponse.json(
+        { error: "Missing docId or variantSku" },
+        { status: 400 }
+      );
+    }
+    const res = await sanityClientServer
+      .patch(docId)
+      .set({
+        [`variants[sku=="${variantSku}"].price`]: price,
+        [`variants[sku=="${variantSku}"].stock`]: stock,
+        [`variants[sku=="${variantSku}"].stockThreshold`]: stockThreshold,
+      })
+      .commit();
+
+    await refreshInventory()
+
+    return NextResponse.json({ success: true, data: res });
+  } catch (err: any) {
+    console.error("Sanity update error:", err.message);
+    return NextResponse.json(
+      { error: "Failed to update variant" },
+      { status: 500 }
+    );
   }
 }

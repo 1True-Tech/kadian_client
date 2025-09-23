@@ -1,15 +1,14 @@
 import env from "@/lib/constants/env";
 import ping from "@/lib/utils/ping";
 import {
+  DataResponse,
   GeneralResponse,
-  Pagination,
 } from "@/types/structures";
 import { UserData } from "@/types/user";
 import { NextResponse } from "next/server";
+import { Pagination } from "@/types/structures";
 
-interface UserListResponse extends GeneralResponse {
-  data: UserData[];
-}
+interface UserListResponse extends DataResponse<UserData[]> {}
 /**
  * GET /api/v1/orders (admin only)
  * Retrieve all orders (paginated)

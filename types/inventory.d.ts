@@ -16,6 +16,20 @@ export interface InventoryVariant {
   price: number;
 }
 
+export interface InventoryItemSanity {
+  /** Label for the inventory item */
+  name: string;
+  /** The Sanity product ID this inventory document belongs to */
+  id: string;
+  /** Product slug */
+  slug: string;
+  /** Array of all variants for the given product, each with its current stock */
+  variants: Omit<InventoryVariant, 'currentStock'>[];
+  /** ISO timestamp of when the inventory was created in MongoDB */
+  createdAt: string;
+  /** ISO timestamp of when the inventory was last updated in MongoDB */
+  updatedAt: string;
+}
 /**
  * A product's inventory record
  */

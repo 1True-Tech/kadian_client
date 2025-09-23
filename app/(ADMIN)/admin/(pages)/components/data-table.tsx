@@ -8,6 +8,9 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
+  getFilteredRowModel,
+  ColumnFiltersState,
+  FilterFn,
 } from "@tanstack/react-table"
 import {
   Table,
@@ -18,17 +21,25 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Search } from "lucide-react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  searchKey?: string
+  placeholder?: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  searchKey = "email",
+  placeholder = "Search...",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState("")
 
   const table = useReactTable({
     data,
@@ -37,8 +48,13 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     state: {
       sorting,
+      columnFilters,
+      globalFilter,
     },
   })
 

@@ -1,6 +1,7 @@
 import env from "@/lib/constants/env";
 import ping from "@/lib/utils/ping";
-import { GeneralResponse, ParamsProps } from "@/types/structures";
+import { DataResponse, GeneralResponse } from "@/types/structures";
+import { ParamsProps } from "@/types/structures";
 import { InventoryGetResponse, InventoryPutResponse } from "@/types/inventory";
 import { NextResponse } from "next/server";
 import { client } from "@/lib/utils/NSClient";

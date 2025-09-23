@@ -20,24 +20,25 @@ export const allCategories = `*[_type == "category"] {
 }`;
 
 export const categoryBySlug = `*[_type == "category" && slug.current == $slug] {
+
   _id,
   name,
   slug,
   description,
-  category_images[]{
+   category_images[]{
     alt,
-    "asset": asset
+    asset
   },
-  "collections": *[_type == "collection" && references(^._id)] {
+  collections[] -> {
     _id,
     title,
     slug,
     description,
     collection_images[]{
       alt,
-      "asset": asset-
+      asset
     }
-  }
+  },
 }`;
 
 export const searchCategories = `*[_type == "category" && (name match $searchTerm || description match $searchTerm)] {

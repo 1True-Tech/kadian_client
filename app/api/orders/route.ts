@@ -1,8 +1,8 @@
 import env from "@/lib/constants/env";
 import ping from "@/lib/utils/ping";
 import {
+  DataResponse,
   GeneralResponse,
-  Pagination,
 } from "@/types/structures";
 import {
   OrderListResponse,
@@ -10,6 +10,8 @@ import {
   OrderCreateResponse,
   CreateOrderBody,
 } from "@/types/order";
+import { Pagination } from "@/types/structures";
+
 import { NextResponse } from "next/server";
 
 /**
@@ -36,13 +38,13 @@ export async function GET(req: Request) {
     } = await res.json();
 
     if (res.ok && data.status === "good") {
-      const successResponse: OrderListResponse & GeneralResponse = {
+      const successResponse: DataResponse<any> = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
         message: data.message || "Orders retrieved successfully.",
-        orders: data.orders,
+        data: data.data,
       };
 
       return NextResponse.json(successResponse, { status: 200 });
@@ -89,14 +91,16 @@ export async function POST(req: Request) {
     } = await res.json();
 
     if (res.ok && data.status === "good") {
-      const successResponse: OrderCreateResponse & GeneralResponse = {
+      const successResponse: DataResponse<OrderCreateResponse> = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
         message: data.message || "Order created successfully.",
-        orderId: data.orderId,
-        statusValue: data.statusValue,
+        data: {
+          orderId: data.orderId,
+          statusValue: data.statusValue,
+        },
       };
 
       return NextResponse.json(successResponse, { status: 201 });

@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { processSpecialOffersHome } from "@/lib/controllers/processHomepage/ProcessSpecialOffer";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
+import Link from "next/link";
 
 export const SeasonalProducts = async () => {
   const data = await processSpecialOffersHome();
@@ -101,9 +102,9 @@ export const SeasonalProducts = async () => {
                       <p className="text-sm text-muted-foreground mb-1">
                         {product.product.category.name}
                       </p>
-                      <h3 className="font-medium mb-2">
+                      <Link href={`/shop/${product.product.slug}`}><h3 className="font-medium mb-2">
                         {product.product.name}
-                      </h3>
+                      </h3></Link>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-rose-gold">
                           {originalPrice}

@@ -10,9 +10,28 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { User } from "@/types/user"
+import { UserData } from "@/types/user"
+import Link from "next/link"
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<UserData>[] = [
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const user = row.original
+      return `${user.name.first} ${user.name.last}`
+    }
+  },
   {
     accessorKey: "email",
     header: ({ column }) => {
@@ -22,34 +41,6 @@ export const columns: ColumnDef<User>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "name.first",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          First Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "name.last",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Last Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -70,27 +61,28 @@ export const columns: ColumnDef<User>[] = [
     },
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "active",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Joined
+          Status
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
     cell: ({ row }) => {
-      return new Date(row.getValue("createdAt")).toLocaleDateString()
-    },
+      const isActive = row.getValue("active")
+      return isActive ? "Active" : "Inactive"
+    }
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const user = row.original
-
+ 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -101,23 +93,8 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.email)}
-            >
-              Copy email
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {
-              // Add edit functionality
-            }}>
-              Edit user
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                // Add delete functionality
-              }}
-              className="text-red-600"
-            >
-              Delete user
+            <DropdownMenuItem>
+              <Link href={`/admin/users/${user._id}`}>Edit User</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

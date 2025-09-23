@@ -385,3 +385,40 @@ export const productsByIdsQueryMini = groq`
     }
   }
 `;
+
+export const productCartItem = groq`
+  *[_type == "product" && _id in $ids]{
+    "productId":_id,
+    "addedAt":_createdAt,
+    "updatedAt":_updatedAt,
+    name,
+    "slug": slug.current,
+    "price":basePrice,
+    "image": images[primary == true][0]{
+      "src": asset->url,
+      alt,
+    },
+    "variantSku": variants[sku == $vSku][0].sku,
+    "variant": variants[sku == $vSku][0] {
+      ${variantFragment}
+    },
+    "size": variants[sku == $vSku][0].size->{label, value},
+    "color": variants[sku == $vSku][0].color->{name,hex,rgba},
+  }
+`
+
+export const productInventory = groq`
+*[_type == "product"] | order(_createdAt desc) {
+"createdAt": _createdAt,
+"updatedAt": _updatedAt,
+"id": _id,
+"slug": slug.current,
+name,
+variants[]{
+sku,
+stock,
+stockThreshold,
+price
+}
+}
+`

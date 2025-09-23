@@ -1,4 +1,5 @@
 import { DashboardMetric } from "@/app/api/admin/route";
+import { UserData } from "@/types/user";
 import cookies from "@/lib/utils/cookies";
 import { GeneralResponse } from "@/types/structures";
 
@@ -10,6 +11,70 @@ export async function getAdminDashboard(): Promise<
 > {
   const token = cookies.get("access_token") || "";
   const res = await fetch("/api/admin", {
+    headers: { authorization: "Bearer " + token },
+  });
+  return res.json();
+}
+
+export async function getUsers(): Promise<GeneralResponse & { data?: UserData[] }> {
+  const token = cookies.get("access_token") || "";
+  const res = await fetch("/api/users", {
+    headers: { authorization: "Bearer " + token },
+  });
+  return res.json();
+}
+
+export async function getUserById(userId: string): Promise<GeneralResponse & { data?: UserData }> {
+  const token = cookies.get("access_token") || "";
+  const res = await fetch(`/api/users/${userId}`, {
+    headers: { authorization: "Bearer " + token },
+  });
+  return res.json();
+}
+
+export async function updateUser(userId: string, userData: Partial<UserData>): Promise<GeneralResponse> {
+  const token = cookies.get("access_token") || "";
+  const res = await fetch(`/api/users/${userId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(userData),
+  });
+  return res.json();
+}
+
+export async function createUser(userData: Partial<UserData>): Promise<GeneralResponse & { data?: UserData }> {
+  const token = cookies.get("access_token") || "";
+  const res = await fetch(`/api/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(userData),
+  });
+  return res.json();
+}
+
+export async function updateUserRole(userId: string, role: string): Promise<GeneralResponse> {
+  const token = cookies.get("access_token") || "";
+  const res = await fetch(`/api/users/${userId}/role`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token,
+    },
+    body: JSON.stringify({ role }),
+  });
+  return res.json();
+}
+
+export async function deleteUser(userId: string): Promise<GeneralResponse> {
+  const token = cookies.get("access_token") || "";
+  const res = await fetch(`/api/users/${userId}`, {
+    method: "DELETE",
     headers: { authorization: "Bearer " + token },
   });
   return res.json();

@@ -10,6 +10,7 @@ export interface Lookbook {
     year: number;
   };
   introduction: any[];
+  description?: string;
   looks: {
     image: Image;
     outfitDetails: {
@@ -26,6 +27,7 @@ export interface StyleGuide {
   slug: { current: string };
   category: string;
   introduction: any[];
+  description?: string;
   sections: {
     title: string;
     content: any[];
