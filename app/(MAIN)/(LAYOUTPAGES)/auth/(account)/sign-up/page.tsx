@@ -34,7 +34,6 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Sign up:", formData);
     const res = await signUpUser.run({
       body: {
         email: formData.email,
@@ -48,14 +47,13 @@ const SignUp = () => {
       },
     });
 
-    if (res.success && res.status === "good") {
+    if (res?.success && res?.status === "good") {
       const userData = await getUser.run();
-      if (userData.success && userData.data) {
+      if (userData?.success && userData.data) {
         actions.setUser(userData.data);
         push(redirect);
       }
     }
-    // Handle sign up
   };
 
   return (

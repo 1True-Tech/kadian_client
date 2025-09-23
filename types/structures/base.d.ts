@@ -49,6 +49,9 @@ export interface GeneralResponse {
   /** Indicates if the operation was successful. */
   success: boolean;
 }
+export interface DataResponse<T> extends GeneralResponse {
+  data: T
+}
 
 /**
  * Helper type that returns true if `T` is not a plain object (e.g., string, array, function).

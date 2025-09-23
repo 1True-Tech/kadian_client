@@ -11,6 +11,7 @@ import { HasSlot } from "@/types/structures";
 
 type ClientGuardPropsBase = {
   loaderSize: "fullscreen" | "parent";
+  unLoad?:boolean
 };
 
 type ClientGuardProps =
@@ -26,6 +27,7 @@ export function Loader({
   children,
   loaderSize,
   loader,
+  unLoad,
   ...props
 }: ClientGuardProps & Partial<HasSlot>) {
   const isDomLoaded = useDomLoaded();
@@ -51,14 +53,14 @@ export function Loader({
   }
 
   useEffect(() => {
-    if (isDomLoaded) {
+    if (isDomLoaded || unLoad) {
       const timeout = setTimeout(() => {
         setHideLoader(true);
       }, 400); // duration of fade-out
 
       return () => clearTimeout(timeout);
     }
-  }, [isDomLoaded]);
+  }, [isDomLoaded, unLoad]);
 
   return (
     !hideLoader && (

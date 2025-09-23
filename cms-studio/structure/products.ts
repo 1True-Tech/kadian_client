@@ -10,6 +10,7 @@ export const productsStructure: GroupDefinition = {
       filterId: '',
       schemaType: 'product',
     }),
+    
   ],
   skipUsedSchemas: false,
 }

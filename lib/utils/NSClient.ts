@@ -6,3 +6,10 @@ export const client = createClient({
   dataset: env.DATASET,
   useCdn: true,
 });
+
+export const sanityClientServer = createClient({
+  projectId: env.PID,
+  dataset: env.DATASET,
+  useCdn: true,
+  token: env.SANITY_STUDIO_TOKEN_SEED
+});

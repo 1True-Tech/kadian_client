@@ -14,11 +14,18 @@ const API_URL = preventEmpty({
   value: process.env.NEXT_PUBLIC_API_URL,
   defaultMessage: "API_URL variable is not available",
 });
+const BASE_URL = preventEmpty({
+  value: process.env.NEXT_PUBLIC_BASE_URL,
+  defaultMessage: "BASE_URL variable is not available",
+});
+
 
 const env = {
   PID,
   DATASET,
-  API_URL
+  API_URL,
+  BASE_URL,
+  SANITY_STUDIO_TOKEN_SEED:process.env.SANITY_STUDIO_TOKEN_SEED
 };
 
 export default env;

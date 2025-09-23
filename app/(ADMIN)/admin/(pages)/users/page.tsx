@@ -1,53 +1,106 @@
-import { Metadata } from "next";
-import { DataTable } from "../components/data-table";
-import { columns } from "../components/users-columns";
-import { cookies } from "next/headers";
-import baseUrl from "@/lib/utils/baseurl";
+"use client";
 
-export const metadata: Metadata = {
+import { DataTable } from "../components/data-table";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery } from "@/lib/server/client-hook";
+import { useEffect, useState } from "react";
+import { Plus, RefreshCw } from "lucide-react";
+import Link from "next/link";
+import Head from "next/head";
+import { columns } from "../components/users-columns";
+import { UserData } from "@/types/user";
+
+const metaContentClient = {
   title: "Users Management | Admin Dashboard",
   description: "Manage user accounts",
 };
 
-async function getUsers() {
-  try {
-    const response = await fetch(`${await baseUrl()}/api/users`, {
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${(await cookies()).get("access_token")?.value}`, //
-      },
-    });
+const Meta = ({placeHolder}:{placeHolder?:string}) => {
+  return (
+    <Head>
+      <title>{placeHolder}|{metaContentClient.title}</title>
+      <meta name="description" content={metaContentClient.description} />
+    </Head>
+  );
+};
+export default function UsersPage() {
+  const { run, data, status, error } = useQuery("getUsers");
+  const [users, setUsers] = useState<UserData[]>([]);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch users");
+  useEffect(() => {
+    if (status === "idle") run();
+  }, [status, run]);
+
+  useEffect(() => {
+    if (data?.data) {
+      setUsers(data.data);
     }
+  }, [data]);
 
-    const data = await response.json();
-    return { users: data.data, success: true };
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    return { users: [], success: false };
-  }
-}
+  const handleRefresh = () => {
+    run();
+  };
 
-export default async function UsersPage() {
-  const { users = [], success } = await getUsers();
-  
-  if (!success) {
+  if (status === "loading" || status === "idle") {
     return (
       <div className="container mx-auto p-6">
+        <Meta placeHolder={"loading"}/>
         <h1 className="text-3xl font-bold mb-8">Users Management</h1>
-        <p className="text-red-500">Failed to load users data.</p>
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <div className="container mx-auto p-6">
+        <Meta placeHolder={"Something went wrong"}/>
+        <h1 className="text-3xl font-bold mb-8">Users Management</h1>
+        <p className="text-red-500">Failed to load users data: {String(error)}</p>
+        <Button onClick={handleRefresh} className="mt-4">
+          <RefreshCw className="mr-2 h-4 w-4" /> Try Again
+        </Button>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">Users Management</h1>
-      <div className="rounded-md border">
-        <DataTable columns={columns} data={users} />
+        <Meta/>
+
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Users Management</h1>
+        <div className="flex gap-2">
+          <Button onClick={handleRefresh} variant="outline" size="sm">
+            <RefreshCw className="mr-2 h-4 w-4" /> Refresh
+          </Button>
+          <Link href="/admin/users/new">
+            <Button size="sm">
+              <Plus className="mr-2 h-4 w-4" /> Add User
+            </Button>
+          </Link>
+        </div>
       </div>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>All Users</CardTitle>
+          <CardDescription>
+            Manage and monitor user accounts across the platform
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable 
+            columns={columns} 
+            data={users} 
+            searchKey="email" 
+            placeholder="Search users by email..."
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }

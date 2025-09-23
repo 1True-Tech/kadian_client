@@ -1,11 +1,14 @@
+import queries from "@/lib/queries";
 import cookies from "@/lib/utils/cookies";
+import { client } from "@/lib/utils/NSClient";
 import {
-    InventoryGetResponse,
-    InventoryItem,
-    InventoryItemsResponse,
-    InventoryPutResponse,
-    InventoryStockUpdateResponse,
-    InventoryVariantResponse,
+  InventoryGetResponse,
+  InventoryItem,
+  InventoryItemSanity,
+  InventoryItemsResponse,
+  InventoryPutResponse,
+  InventoryStockUpdateResponse,
+  InventoryVariantResponse,
 } from "@/types/inventory";
 import { GeneralResponse } from "@/types/structures";
 
@@ -29,10 +32,16 @@ export async function refreshInventory(): Promise<
   InventoryItemsResponse & GeneralResponse
 > {
   const token = cookies.get("access_token") || "";
+  const data: InventoryItemSanity[] = await client.fetch(
+    queries.productInventory
+  );
 
   const res = await fetch("/api/inventory/_refresh", {
     method: "POST",
     headers: { authorization: "Bearer " + token },
+    body: JSON.stringify({
+      data,
+    }),
   });
   return res.json();
 }
@@ -40,9 +49,11 @@ export async function refreshInventory(): Promise<
 /**
  * Get a single product’s inventory
  */
-export async function getInventoryByProduct(
-  {params:{productId}}:{params:{productId: string}}
-): Promise<InventoryGetResponse & GeneralResponse> {
+export async function getInventoryByProduct({
+  params: { productId },
+}: {
+  params: { productId: string };
+}): Promise<InventoryGetResponse & GeneralResponse> {
   const res = await fetch(`/api/inventory/${productId}`);
   return res.json();
 }
@@ -50,9 +61,13 @@ export async function getInventoryByProduct(
 /**
  * Update a product’s inventory (admin only)
  */
-export async function updateInventoryData(
-  {params:{productId}, body}: {params:{productId: string}, body: Partial<InventoryItem>}
-): Promise<InventoryPutResponse & GeneralResponse> {
+export async function updateInventoryData({
+  params: { productId },
+  body,
+}: {
+  params: { productId: string };
+  body: Partial<InventoryItem>;
+}): Promise<InventoryPutResponse & GeneralResponse> {
   const token = cookies.get("access_token") || "";
 
   const res = await fetch(`/api/inventory/${productId}`, {
@@ -69,9 +84,11 @@ export async function updateInventoryData(
 /**
  * Get a specific variant’s inventory
  */
-export async function getInventoryVariant(
-  {params:{productId, sku}}:{params:{productId: string, sku: string}}
-): Promise<InventoryVariantResponse & GeneralResponse> {
+export async function getInventoryVariant({
+  params: { productId, sku },
+}: {
+  params: { productId: string; sku: string };
+}): Promise<InventoryVariantResponse & GeneralResponse> {
   const token = cookies.get("access_token") || "";
 
   const res = await fetch(`/api/inventory/${productId}/${sku}`, {
@@ -83,9 +100,13 @@ export async function getInventoryVariant(
 /**
  * Update stock for a specific variant (admin only)
  */
-export async function updateInventoryStock(
-  {params:{productId, sku}, body:{stock}}: {params:{productId: string, sku: string}, body: {stock: number}}
-): Promise<InventoryStockUpdateResponse & GeneralResponse> {
+export async function updateInventoryStock({
+  params: { productId, sku },
+  body: { stock },
+}: {
+  params: { productId: string; sku: string };
+  body: { stock: number };
+}): Promise<InventoryStockUpdateResponse & GeneralResponse> {
   const token = cookies.get("access_token") || "";
 
   const res = await fetch(`/api/inventory/${productId}/${sku}/stock`, {

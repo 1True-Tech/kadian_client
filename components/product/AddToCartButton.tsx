@@ -36,7 +36,7 @@ export default function AddToCartButton({
         ...user,
         cart: [
           ...user.cart,
-          ...(added.data?.items || [])
+          ...(added?.data?.items || [])
         ],
       });
     }
@@ -71,7 +71,7 @@ export default function AddToCartButton({
         },
       });
 
-      if (data.data) {
+      if (data?.data) {
         if (user) {
           const item = data.data;
           actions.setUser({

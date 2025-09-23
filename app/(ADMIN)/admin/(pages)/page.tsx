@@ -16,12 +16,17 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
+import Link from "next/link";
 
 type EmptyStateProps = {
   title: string;
   description?: string;
   Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   action?: { label: string; onClick?: () => void };
+  navigateUrl?: {
+    url: string;
+    label: string;
+  };
 };
 
 function EmptyState({
@@ -29,6 +34,7 @@ function EmptyState({
   description,
   Icon = InboxIcon,
   action,
+  navigateUrl,
 }: EmptyStateProps) {
   return (
     <div className="w-full py-10 px-6 flex flex-col items-center justify-center gap-3 text-center">
@@ -40,7 +46,14 @@ function EmptyState({
         <p className="text-sm text-muted-foreground max-w-xs">{description}</p>
       ) : null}
 
-      {action ? (
+      {navigateUrl ? (
+        <Link href={navigateUrl.url}>
+          <Button variant="ghost" size="sm" className="mt-3">
+            <PlusIcon className="h-4 w-4 mr-2" />
+            {navigateUrl.label}
+          </Button>
+        </Link>
+      ) : action ? (
         <Button
           variant="ghost"
           size="sm"
@@ -126,10 +139,10 @@ const AdminDashboard: React.FC = () => {
       ad.type === "orders"
         ? ShoppingCart
         : ad.type === "revenue"
-          ? DollarSign
-          : ad.type === "users"
-            ? Users
-            : TrendingUp,
+        ? DollarSign
+        : ad.type === "users"
+        ? Users
+        : TrendingUp,
     positive: ad.positive,
   }));
 
@@ -197,10 +210,12 @@ const AdminDashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex items-center justify-between">
             <CardTitle>Recent Orders</CardTitle>
-            <Button variant="outline" size="sm">
-              <Eye className="h-4 w-4 mr-2" />
-              View All
-            </Button>
+            {recentOrders.length > 0 && (
+              <Button variant="outline" size="sm">
+                <Eye className="h-4 w-4 mr-2" />
+                View All
+              </Button>
+            )}
           </CardHeader>
 
           <CardContent>
@@ -210,10 +225,6 @@ const AdminDashboard: React.FC = () => {
                   title="No recent orders"
                   description="No orders were placed in the selected time range"
                   Icon={ShoppingCart}
-                  action={{
-                    label: "Create Order",
-                    onClick: () => console.log("create order clicked"),
-                  }}
                 />
               ) : (
                 recentOrders.map((order: any) => (
@@ -236,8 +247,8 @@ const AdminDashboard: React.FC = () => {
                             order.status === "delivered"
                               ? "bg-green-500"
                               : order.status === "pending"
-                                ? "bg-amber-500"
-                                : "bg-red-500"
+                              ? "bg-amber-500"
+                              : "bg-red-500"
                           }`}
                         />
                         <Badge
@@ -259,12 +270,12 @@ const AdminDashboard: React.FC = () => {
         <Card>
           <CardHeader className="flex items-center justify-between">
             <CardTitle>Top Products</CardTitle>
-            {
-             topProducts.length>0&& <Button variant="outline" size="sm">
-              <Eye className="h-4 w-4 mr-2" />
-              View All
-            </Button>
-            }
+            {topProducts.length > 0 && (
+              <Button variant="outline" size="sm">
+                <Eye className="h-4 w-4 mr-2" />
+                View All
+              </Button>
+            )}
           </CardHeader>
 
           <CardContent>
@@ -274,9 +285,9 @@ const AdminDashboard: React.FC = () => {
                   title="No top products"
                   description="No product has enough sales to appear here yet"
                   Icon={Package}
-                  action={{
+                  navigateUrl={{
                     label: "Add Product",
-                    onClick: () => console.log("add product clicked"),
+                    url:"/admin/cms-studio/structure/new-product"
                   }}
                 />
               ) : (
@@ -316,38 +327,43 @@ const AdminDashboard: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-[repeat(auto-fit,_minmax(10rem,_1fr))] md:grid-cols-3 gap-4">
-            <Button
-              className="h-20 flex-col gap-2 rounded-xl shadow-sm hover:shadow-md transition transform hover:-translate-y-1"
-              variant="outline"
-            >
-              <div className="p-2 rounded-md bg-gradient-to-br from-indigo-50 to-indigo-100">
-                <Package className="h-6 w-6" />
-              </div>
+            <Link href="/admin/cms-studio/structure/new-product">
+              <Button
+                className="h-20 flex-col gap-2 rounded-xl shadow-sm hover:shadow-md transition transform hover:-translate-y-1"
+                variant="outline"
+              >
+                <div className="p-2 rounded-md bg-gradient-to-br from-indigo-50 to-indigo-100">
+                  <Package className="h-6 w-6" />
+                </div>
 
-              <span>Add Product</span>
-            </Button>
+                <span>Add Product</span>
+              </Button>
+            </Link>
+            <Link href="/admin/orders">
+              <Button
+                className="h-20 flex-col gap-2 rounded-xl shadow-sm hover:shadow-md transition transform hover:-translate-y-1"
+                variant="outline"
+              >
+                <div className="p-2 rounded-md bg-gradient-to-br from-emerald-50 to-emerald-100">
+                  <ShoppingCart className="h-6 w-6" />
+                </div>
 
-            <Button
-              className="h-20 flex-col gap-2 rounded-xl shadow-sm hover:shadow-md transition transform hover:-translate-y-1"
-              variant="outline"
-            >
-              <div className="p-2 rounded-md bg-gradient-to-br from-emerald-50 to-emerald-100">
-                <ShoppingCart className="h-6 w-6" />
-              </div>
+                <span>Manage Orders</span>
+              </Button>
+            </Link>
 
-              <span>Process Orders</span>
-            </Button>
+            <Link href="/admin/users">
+              <Button
+                className="h-20 flex-col gap-2 rounded-xl shadow-sm hover:shadow-md transition transform hover:-translate-y-1"
+                variant="outline"
+              >
+                <div className="p-2 rounded-md bg-gradient-to-br from-amber-50 to-amber-100">
+                  <Users className="h-6 w-6" />
+                </div>
 
-            <Button
-              className="h-20 flex-col gap-2 rounded-xl shadow-sm hover:shadow-md transition transform hover:-translate-y-1"
-              variant="outline"
-            >
-              <div className="p-2 rounded-md bg-gradient-to-br from-amber-50 to-amber-100">
-                <Users className="h-6 w-6" />
-              </div>
-
-              <span>Manage Customers</span>
-            </Button>
+                <span>Manage Customers</span>
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>

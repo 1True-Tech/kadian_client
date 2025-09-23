@@ -1,7 +1,7 @@
 import env from "@/lib/constants/env";
 import ping from "@/lib/utils/ping";
-import { GeneralResponse } from "@/types/structures";
-import { OrderListResponse } from "@/types/order";
+import { DataResponse, GeneralResponse } from "@/types/structures";
+import { OrderListResponse, OrdersResponseDetails } from "@/types/order";
 import { NextResponse } from "next/server";
 
 /**
@@ -27,13 +27,13 @@ export async function GET(req: Request) {
     } = await res.json();
 
     if (res.ok && data.status === "good") {
-      const successResponse: OrderListResponse & GeneralResponse = {
+      const successResponse: DataResponse<OrdersResponseDetails[]|undefined> = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
         message: data.message || "User orders retrieved successfully.",
-        orders: data.orders,
+        data: data.data,
       };
 
       return NextResponse.json(successResponse, { status: 200 });

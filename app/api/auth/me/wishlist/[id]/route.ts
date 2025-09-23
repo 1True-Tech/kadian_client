@@ -1,6 +1,7 @@
 import env from "@/lib/constants/env";
 import ping from "@/lib/utils/ping";
-import { GeneralResponse, ParamsProps } from "@/types/structures";
+import { ParamsProps } from "@/types/structures";
+import { DataResponse, GeneralResponse } from "@/types/structures";
 import { NextResponse } from "next/server";
 
 interface WishlistItem {
@@ -12,9 +13,7 @@ interface WishlistItem {
   addedAt: string;
 }
 
-interface WishlistItemResponse extends GeneralResponse {
-  data?: WishlistItem;
-}
+type WishlistItemResponse = DataResponse<WishlistItem>;
 
 type Params = ParamsProps<{ id: string }>;
 

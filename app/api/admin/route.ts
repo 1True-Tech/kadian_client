@@ -35,7 +35,6 @@ export type DashboardMetric = {
 }
 export async function GET(req: NextRequest) {
   const isOnline = await ping();
-    console.log(req.headers.get("authorization"))
 
   try {
     const res = await fetch(`${env.API_URL}admin/dashboard`, {

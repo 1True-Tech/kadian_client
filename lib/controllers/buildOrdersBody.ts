@@ -1,10 +1,10 @@
 import { CartItemReady } from "@/types/user";
-import { CreateOrderBody } from "@/types/order";
+import { CreateOrderBody, PaymentMethod } from "@/types/order";
 
 export function buildCreateOrderBody(
   items: CartItemReady[],
   formData: any,
-  paymentMethod: "card" | "transfer" | "delivery",
+  paymentMethod: PaymentMethod,
   proofMedia?: string
 ): CreateOrderBody{
   const base = {

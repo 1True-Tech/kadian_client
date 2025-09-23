@@ -1,19 +1,21 @@
 import env from "@/lib/constants/env";
 import ping from "@/lib/utils/ping";
-import { GeneralResponse, Pagination, ParamsProps } from "@/types/structures";
+import { DataResponse, GeneralResponse } from "@/types/structures";
+import { Pagination, ParamsProps } from "@/types/structures";
+
 import { UserData } from "@/types/user";
 import { NextResponse } from "next/server";
 
 type Params = ParamsProps<{ userId: string }>;
 
-interface UserListResponse extends GeneralResponse {
-  data: {
-    id: string;
-    email: UserData["email"];
-    name: UserData["name"];
-    role: UserData["role"];
-  };
+interface UserRoleData {
+  id: string;
+  email: UserData["email"];
+  name: UserData["name"];
+  role: UserData["role"];
 }
+
+type UserListResponse = DataResponse<UserRoleData>;
 
 export async function PATCH(req: Request, { params }: Params) {
   const isOnline = await ping();

@@ -6,13 +6,16 @@ import { PortableText } from "next-sanity";
 import Image from "next/image";
 import WishlistButton from "../product/WishlistButton";
 import AddToCartButton from "../product/AddToCartButton";
+import { Skeleton } from "@/components/ui/skeleton";
+import FeaturedProductsFallback from "./FeaturedProductsFallback";
 
 const FeaturedProducts = async () => {
-  const data = await processSpecialOffersHome();
-  const offer = data.find((offer) => offer.category === "featured");
-  if (!offer) return null;
-  const dataProducts = offer.products;
-  if (dataProducts.length <= 0) return null;
+  try {
+    const data = await processSpecialOffersHome();
+    const offer = data?.find((offer) => offer.category === "featured");
+    if (!offer) return <FeaturedProductsFallback />;
+    const dataProducts = offer.products;
+    if (!dataProducts || dataProducts.length <= 0) return <FeaturedProductsFallback />;
 
   return (
     <section className="py-16 bg-secondary/30">
@@ -113,6 +116,10 @@ const FeaturedProducts = async () => {
       </div>
     </section>
   );
+  } catch (error) {
+    console.error("Error loading featured products:", error);
+    return <FeaturedProductsFallback />;
+  }
 };
 
 export default FeaturedProducts;

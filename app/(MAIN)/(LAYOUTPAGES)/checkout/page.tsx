@@ -13,23 +13,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/components/ui/use-toast";
 import { buildCreateOrderBody } from "@/lib/controllers/buildOrdersBody";
 import { useQuery } from "@/lib/server/client-hook";
 import fileToBase64 from "@/lib/utils/filetobase64";
+import { useCart } from "@/lib/hooks/useCart";
 import { useUserStore } from "@/store/user";
 import { CartItemReady } from "@/types/user";
 import { CreditCard, Lock, Trash2, Wallet, Truck } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { client } from "@/lib/utils/NSClient";
+import queries from "@/lib/queries";
+import { PaymentMethod } from "@/types/order";
+
+// Initialize Stripe with publishable key
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
 
 const Checkout = () => {
+  const router = useRouter();
   const { user } = useUserStore();
-  const { run, data, status } = useQuery("getCart");
+  const { cart, clearCart, subtotal } = useCart();
   const createOrder = useQuery("createOrder");
-
-  useEffect(() => {
-    run();
-  }, [run]);
+  
   const [proofFile, setProofFile] = useState<File | null>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,15 +46,18 @@ const Checkout = () => {
   };
 
   const [itemsForOrder, setItemsForOrder] = useState<CartItemReady[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<
-    "card" | "transfer" | "delivery"
-  >("card");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
 
   useEffect(() => {
-    if (data?.data?.items) {
-      setItemsForOrder(data.data.items);
+    async function getCarts(){
+      const loadCartProduct:CartItemReady[] = await client.fetch(queries.productCartItem, {ids: cart.map(c => c.productId), vSku:cart.map(c => c.variantSku)})
+      setItemsForOrder(loadCartProduct);
     }
-  }, [data]);
+    if (cart?.length) {
+      getCarts()
+      
+    }
+  }, [cart]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -66,7 +77,6 @@ const Checkout = () => {
       setFormData({
         email: user?.email || "",
         phone: user?.phone || "",
-
         firstName: user?.name.first || "",
         lastName: user?.name.last || "",
         city: userPrimaryAddress?.city || "",
@@ -77,6 +87,24 @@ const Checkout = () => {
       });
     }
   }, [user]);
+  
+  const handleSubmitOrder = async (orderBody: any) => {
+    // For transfer and delivery payment methods
+    const orderResponse = await createOrder.run({ body: orderBody });
+    
+    if (orderResponse?.orderId) {
+      toast({
+        title: "Order Placed Successfully",
+        description: `Your order #${orderResponse.orderId} has been placed`,
+      });
+      
+      // Clear cart
+      clearCart();
+      
+      // Redirect to order confirmation
+      router.push(`/account/order-history/${orderResponse.orderId}`);
+    }
+  };
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -116,9 +144,69 @@ const Checkout = () => {
         proofBase64
       );
       await createOrder.run({ body: orderWithProof });
-    } else {
-      console.log();
-      await createOrder.run({ body: orderBody });
+    } else if (paymentMethod === "stripe") {
+      // Create order first
+      const orderResponse = await createOrder.run({ body: orderBody });
+      
+      if (orderResponse?.orderId) {
+        // Redirect to Stripe Checkout
+        const stripe = await stripePromise;
+        
+        // Call API to create a checkout session
+        const checkoutSession = await fetch("/api/payments/stripe/create-checkout-session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            orderId: orderResponse.orderId,
+            items: itemsForOrder.map(item => ({
+              name: item.name,
+              description: `${item.color?.name || ''} ${item.size?.label || ''}`.trim(),
+              quantity: item.quantity,
+              price: item.price * 100, // Stripe uses cents
+              image: item.image?.src
+            })),
+            customerEmail: formData.email,
+          }),
+        });
+        
+        const { sessionId } = await checkoutSession.json();
+        
+        // Redirect to Stripe Checkout
+        await stripe?.redirectToCheckout({
+          sessionId,
+        });
+      }
+    } else if (paymentMethod === "paypal") {
+        // Create order first
+        const orderResponse = await createOrder.run({ body: orderBody });
+        
+        if (orderResponse?.orderId) {
+          // Redirect to PayPal
+          const paypalResponse = await fetch("/api/payments/paypal/create-order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderId: orderResponse.orderId,
+              items: itemsForOrder.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+              })),
+              customerEmail: formData.email,
+            }),
+          });
+          
+          const { approvalUrl } = await paypalResponse.json();
+          
+          // Redirect to PayPal approval URL
+          if (approvalUrl) {
+            window.location.href = approvalUrl;
+          }
+        }
     }
   };
 
@@ -288,45 +376,42 @@ const Checkout = () => {
               <Select
                 value={paymentMethod}
                 onValueChange={(val) =>
-                  setPaymentMethod(val as "card" | "transfer" | "delivery")
+                  setPaymentMethod(val as "stripe" | "paypal" | "transfer" | "delivery")
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Payment Method" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="card">Credit/Debit Card</SelectItem>
+                  <SelectItem value="stripe">Credit/Debit Card (Stripe)</SelectItem>
+                  <SelectItem value="paypal">PayPal</SelectItem>
                   <SelectItem value="transfer">Bank Transfer</SelectItem>
                   <SelectItem value="delivery">Pay on Delivery</SelectItem>
                 </SelectContent>
               </Select>
 
-              {paymentMethod === "card" && (
+              {paymentMethod === "stripe" && (
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="cardNumber">Card Number</Label>
-                    <Input id="cardNumber" placeholder="1234 5678 9012 3456" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="expiry">Expiry Date</Label>
-                      <Input id="expiry" placeholder="MM/YY" />
-                    </div>
-                    <div>
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input id="cvv" placeholder="123" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="cardName">Name on Card</Label>
-                    <Input id="cardName" placeholder="John Smith" />
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm">
                     <Lock className="h-4 w-4" />
-                    Your payment information is secure and encrypted
+                    You&apos;ll be redirected to Stripe&apos;s secure payment page after clicking &quot;Complete Order&quot;
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Image src="/visa.svg" alt="Visa" width={40} height={25} />
+                    <Image src="/mastercard.svg" alt="Mastercard" width={40} height={25} />
+                    <Image src="/amex.svg" alt="American Express" width={40} height={25} />
+                  </div>
+                </div>
+              )}
+              
+              {paymentMethod === "paypal" && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Lock className="h-4 w-4" />
+                    You&apos;ll be redirected to PayPal&apos;s secure payment page after clicking &quot;Complete Order&quot;
+                  </div>
+                  <div className="flex justify-center">
+                    <Image src="/paypal.svg" alt="PayPal" width={100} height={30} />
                   </div>
                 </div>
               )}

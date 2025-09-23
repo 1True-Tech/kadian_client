@@ -11,7 +11,7 @@ export type OrderStatus =
 /**
  * Payment method type definition
  */
-export type PaymentMethod = "card" | "transfer" | "delivery";
+export type PaymentMethod = "card" | "transfer" | "delivery" |"stripe"|"paypal";
 
 /**
  * Proof of payment type definition
@@ -115,7 +115,7 @@ export interface OrdersResponseData {
  */
 export interface OrderListResponse {
   /** List of orders */
-  orders?: OrdersResponseData[];
+  data?: OrdersResponseDetails[] | undefined;
 }
 
 /**
@@ -124,28 +124,67 @@ export interface OrderListResponse {
 export interface OrdersResponseDetails {
   /** Order ID */
   id: string;
-  /** User ID */
-  userId: string;
-  /** Guest ID */
-  guestId: string;
+
+  /** User ID (null if guest order) */
+  userId: string | null;
+
+  /** Guest ID (present if guest order) */
+  guestId: string | null;
+
   /** Total number of unique products */
   totalProducts: number;
+
   /** Total number of items */
   totalItems: number;
+
   /** Total order amount */
   totalAmount: number;
+
   /** Order status */
   status: OrderStatus;
-  /** Order creation date */
-  createdAt: Date;
-  /** Order last update date */
-  updatedAt: Date;
+
   /** Order items */
-  items: OrderItem[];
-  /** Shipping address */
-  shippingAddress?: ShippingAddress;
+  items?: OrderItem[];
+
   /** Payment details */
-  payment: Payment;
+  payment: {
+    method: string;
+    reference: string | null;
+    amount: number;
+    status: string;
+    proof?: {
+      imageId: string;
+      filename: string;
+    };
+    paidAt: string | null;
+  };
+
+  /** Shipping address */
+  shippingAddress: {
+    line1: string;
+    line2: string;
+    city: string;
+    state: string;
+    postal: string;
+    country: string;
+    _id: string;
+  };
+
+  /** Customer information */
+  customerInfo: {
+    name: {
+      first: string;
+      last: string;
+    };
+    email: string;
+    phone: string;
+  };
+
+  /** Order creation date */
+  createdAt: string;
+
+  /** Order last update date */
+  updatedAt: string;
 }
 
 /**
