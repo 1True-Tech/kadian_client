@@ -249,6 +249,31 @@ export const routes = {
     params: {} as { userId: string },
     response: {} as GeneralResponse,
   },
+  // --- IMAGES ---
+  getImages: {
+    method: "GET",
+    path: "/api/images",
+    response: {} as {
+      status: string;
+      connectionActivity: string;
+      statusCode: number;
+      success: boolean;
+      message?: string;
+      images: {
+        _id: string;
+        filename: string;
+        mimetype: string;
+        uploadedAt: string;
+        __v: number;
+      }[];
+    },
+  },
+  getImageById: {
+    method: "GET",
+    path: "/api/images/:id",
+    params: {} as { id: string },
+    response: {} as Response,
+  },
 } as const;
 
 export type Routes = {
