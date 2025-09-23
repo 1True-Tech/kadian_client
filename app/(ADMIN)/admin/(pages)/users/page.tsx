@@ -11,16 +11,16 @@ import Head from "next/head";
 import { columns } from "../components/users-columns";
 import { UserData } from "@/types/user";
 
-export const metaContentCient = {
+const metaContentClient = {
   title: "Users Management | Admin Dashboard",
   description: "Manage user accounts",
 };
 
-const Meta = () => {
+const Meta = ({placeHolder}:{placeHolder?:string}) => {
   return (
     <Head>
-      <title>{metaContentCient.title}</title>
-      <meta name="description" content={metaContentCient.description} />
+      <title>{placeHolder}|{metaContentClient.title}</title>
+      <meta name="description" content={metaContentClient.description} />
     </Head>
   );
 };
@@ -45,6 +45,7 @@ export default function UsersPage() {
   if (status === "loading" || status === "idle") {
     return (
       <div className="container mx-auto p-6">
+        <Meta placeHolder={"loading"}/>
         <h1 className="text-3xl font-bold mb-8">Users Management</h1>
         <div className="flex items-center justify-center h-[60vh]">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
@@ -56,6 +57,7 @@ export default function UsersPage() {
   if (status === "error") {
     return (
       <div className="container mx-auto p-6">
+        <Meta placeHolder={"Something went wrong"}/>
         <h1 className="text-3xl font-bold mb-8">Users Management</h1>
         <p className="text-red-500">Failed to load users data: {String(error)}</p>
         <Button onClick={handleRefresh} className="mt-4">
@@ -67,6 +69,8 @@ export default function UsersPage() {
 
   return (
     <div className="container mx-auto p-6">
+        <Meta/>
+
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Users Management</h1>
         <div className="flex gap-2">

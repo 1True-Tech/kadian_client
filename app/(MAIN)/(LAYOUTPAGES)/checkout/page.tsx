@@ -17,7 +17,7 @@ import { toast } from "@/components/ui/use-toast";
 import { buildCreateOrderBody } from "@/lib/controllers/buildOrdersBody";
 import { useQuery } from "@/lib/server/client-hook";
 import fileToBase64 from "@/lib/utils/filetobase64";
-import { useCart } from "@/hooks/useCart";
+import { useCart } from "@/lib/hooks/useCart";
 import { useUserStore } from "@/store/user";
 import { CartItemReady } from "@/types/user";
 import { CreditCard, Lock, Trash2, Wallet, Truck } from "lucide-react";

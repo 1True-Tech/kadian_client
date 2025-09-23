@@ -182,7 +182,7 @@ export default function UserDetailPage() {
             <Card>
               <CardHeader>
                 <CardTitle>User Information</CardTitle>
-                <CardDescription>Manage user's personal information</CardDescription>
+                <CardDescription>Manage user&lsquo;s personal information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -237,7 +237,7 @@ export default function UserDetailPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Account Settings</CardTitle>
-                <CardDescription>Manage user's role and status</CardDescription>
+                <CardDescription>Manage user&lsquo;s role and status</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">

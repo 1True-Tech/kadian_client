@@ -36,22 +36,22 @@ const SignIn = () => {
       body: formData,
     });
 
-    if (successfulSignIn.status === "good" && successfulSignIn.success) {
+    if (successfulSignIn?.status === "good" && successfulSignIn.success) {
       const userData = await getUser.run();
-      if (userData.success && userData.data) {
+      if (userData?.success && userData.data) {
         actions.setUser(userData.data);
         push(redirect);
       }
       {
         toast({
           title: "User information failed to load",
-          description: userData.message,
+          description: userData?.message,
         });
       }
     } else {
       toast({
         title: "Sign In Failed",
-        description: successfulSignIn.message,
+        description: successfulSignIn?.message,
         variant: "destructive",
       });
     }
