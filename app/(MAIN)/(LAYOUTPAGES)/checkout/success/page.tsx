@@ -52,7 +52,7 @@ export default function CheckoutSuccess() {
               </p>
             )}
             <p className="text-muted-foreground max-w-md mx-auto">
-              We've sent a confirmation email with your order details and tracking information.
+              We&apos;ve sent a confirmation email with your order details and tracking information.
             </p>
           </div>
           

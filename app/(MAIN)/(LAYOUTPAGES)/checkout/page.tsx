@@ -394,7 +394,7 @@ const Checkout = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-sm">
                     <Lock className="h-4 w-4" />
-                    You'll be redirected to Stripe's secure payment page after clicking "Complete Order"
+                    You&apos;ll be redirected to Stripe&apos;s secure payment page after clicking &quot;Complete Order&quot;
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Image src="/visa.svg" alt="Visa" width={40} height={25} />
@@ -408,7 +408,7 @@ const Checkout = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-sm">
                     <Lock className="h-4 w-4" />
-                    You'll be redirected to PayPal's secure payment page after clicking "Complete Order"
+                    You&apos;ll be redirected to PayPal&apos;s secure payment page after clicking &quot;Complete Order&quot;
                   </div>
                   <div className="flex justify-center">
                     <Image src="/paypal.svg" alt="PayPal" width={100} height={30} />
