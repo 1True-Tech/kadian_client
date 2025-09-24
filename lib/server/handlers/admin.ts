@@ -24,36 +24,10 @@ export async function getUsers(): Promise<GeneralResponse & { data?: UserData[] 
   return res.json();
 }
 
-export async function getUserById(userId: string): Promise<GeneralResponse & { data?: UserData }> {
+export async function getUserDetails(userId: string): Promise<GeneralResponse & { data?: UserData }> {
   const token = cookies.get("access_token") || "";
   const res = await fetch(`/api/users/${userId}`, {
     headers: { authorization: "Bearer " + token },
-  });
-  return res.json();
-}
-
-export async function updateUser(userId: string, userData: Partial<UserData>): Promise<GeneralResponse> {
-  const token = cookies.get("access_token") || "";
-  const res = await fetch(`/api/users/${userId}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: "Bearer " + token,
-    },
-    body: JSON.stringify(userData),
-  });
-  return res.json();
-}
-
-export async function createUser(userData: Partial<UserData>): Promise<GeneralResponse & { data?: UserData }> {
-  const token = cookies.get("access_token") || "";
-  const res = await fetch(`/api/users`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: "Bearer " + token,
-    },
-    body: JSON.stringify(userData),
   });
   return res.json();
 }
