@@ -6,7 +6,7 @@ import { RegisterRequestBody, RegisterSuccessResponse } from "@/app/api/auth/reg
 import { InventoryGetResponse, InventoryItem, InventoryItemsResponse, InventoryPutResponse, InventoryStockUpdateResponse, InventoryVariantResponse } from "@/types/inventory";
 import { CreateOrderBody, OrderCreateResponse, OrderDetailResponse, OrderListResponse, OrderUpdateBody } from "@/types/order";
 import { GeneralResponse } from "@/types/structures";
-import { CartItem, UserData } from "@/types/user";
+import { CartItem, UserData, UserDataMini } from "@/types/user";
 
 // Utility: extract :params from paths
 export type PathParams<Path extends string> =
@@ -209,7 +209,7 @@ export const routes = {
   getUsers: {
     method: "GET",
     path: "/api/users",
-    response: {} as GeneralResponse & { data?: UserData[] },
+    response: {} as GeneralResponse & { data?: UserDataMini[] },
   },
   getUserById: {
     method: "GET",
@@ -227,8 +227,8 @@ export const routes = {
   createUser: {
     method: "POST",
     path: "/api/users",
-    body: {} as Partial<UserData>,
-    response: {} as GeneralResponse & { data?: UserData },
+    body: {} as Partial<UserDataMini>,
+    response: {} as GeneralResponse & { data?: UserDataMini },
   },
   getUserDetails: {
     method: "GET",

@@ -30,6 +30,7 @@ export default function Inventory({ items }: InventoryProps) {
   } | null>(null);
   const refInvent = useQuery("refreshInventory");
   const refreshInventory = () => refInvent.run();
+  console.log(items)
 
   return (
     <>
@@ -70,7 +71,7 @@ export default function Inventory({ items }: InventoryProps) {
                           {item.productData?.variants.length}
                         </TableCell>
                         <TableCell>
-                          {new Date(item.createdAt).toLocaleDateString()}
+                          {new Date(item.productData?._updatedAt||item.productData?._createdAt||"").toLocaleDateString()}
                         </TableCell>
                         <TableCell className="text-right">
                           <Button

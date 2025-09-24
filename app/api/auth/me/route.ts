@@ -36,8 +36,10 @@ export async function GET(req: NextRequest) {
         },
       });
       const orderData = await orderRes.json();
+      console.log(orderData.data)
+
       if (orderRes.ok && orderData.status === "good" && data.data) {
-        data.data.orders = orderData.orders;
+        data.data.orders = orderData.data;
       }
       const successResponse: UserResponse = {
         status: "good",

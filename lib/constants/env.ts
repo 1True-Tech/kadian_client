@@ -20,12 +20,14 @@ const BASE_URL = preventEmpty({
 });
 
 
+
 const env = {
   PID,
   DATASET,
   API_URL,
   BASE_URL,
-  SANITY_STUDIO_TOKEN_SEED:process.env.SANITY_STUDIO_TOKEN_SEED
+  SANITY_STUDIO_TOKEN_SEED:process.env.SANITY_STUDIO_TOKEN_SEED,
+  SANITY_STUDIO_UPDATE_TOKEN:process.env.SANITY_STUDIO_UPDATE_TOKEN,
 };
 
 export default env;

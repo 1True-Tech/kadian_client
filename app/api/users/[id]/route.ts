@@ -1,18 +1,16 @@
-import { authOptions } from "@/lib/auth";
-import baseUrl from "@/lib/utils/baseurl";
-import { getServerSession } from "next-auth";
+import env from "@/lib/constants/env";
+import { ParamsProps } from "@/types/structures";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  {params}: ParamsProps<{ id: string }>
 ) {
-  const session = await getServerSession(authOptions);
-  console.log(session);
+  const {id} = await params
   try {
     const token = (await cookies()).get("access_token")?.value;
-    const response = await fetch(`${baseUrl}/api/users/${params.id}`, {
+    const response = await fetch(`${env.API_URL}users/${id}`, {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
@@ -32,13 +30,15 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  
+  {params}: ParamsProps<{ id: string }>
 ) {
+  const {id} = await params
   try {
     const userData = await req.json();
     const token = (await cookies()).get("access_token")?.value;
 
-    const response = await fetch(`${baseUrl}/api/users/${params.id}`, {
+    const response = await fetch(`${env.API_URL}users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -60,12 +60,14 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  
+  {params}: ParamsProps<{ id: string }>
 ) {
+  const {id} = await params
   try {
     const token = (await cookies()).get("access_token")?.value;
 
-    const response = await fetch(`${baseUrl}/api/users/${params.id}`, {
+    const response = await fetch(`${env.API_URL}users/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

@@ -319,6 +319,7 @@ export const productsByIdsQuery = groq`
     _id,
     _type,
     _createdAt,
+    _updatedAt,
     name,
     "slug": slug.current,
     description,
@@ -395,15 +396,15 @@ export const productCartItem = groq`
     "slug": slug.current,
     "price":basePrice,
     "image": images[primary == true][0]{
-      "src": asset->url,
+      "src": asset.asset -> url,
       alt,
     },
     "variantSku": variants[sku == $vSku][0].sku,
     "variant": variants[sku == $vSku][0] {
       ${variantFragment}
     },
-    "size": variants[sku == $vSku][0].size->{label, value},
-    "color": variants[sku == $vSku][0].color->{name,hex,rgba},
+    "size": variants[sku in $vSku][0].size->{label, value},
+    "color": variants[sku in $vSku][0].color->{name,hex,rgba},
   }
 `
 

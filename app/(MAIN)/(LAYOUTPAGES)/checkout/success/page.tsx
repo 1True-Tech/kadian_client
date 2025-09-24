@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCart } from '@/hooks/useCart';
+import { useCart } from '@/lib/hooks/useCart';
 
 export default function CheckoutSuccess() {
   const router = useRouter();

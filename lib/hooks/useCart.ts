@@ -35,7 +35,7 @@ export function useCart() {
       },
     });
 
-    if (response.data && user) {
+    if (response?.data && user) {
       actions.setUser({
         ...user,
         cart: [
@@ -86,7 +86,7 @@ export function useCart() {
       },
     });
 
-    if (response.data && user) {
+    if (response?.data && user) {
       const updatedItem = response.data;
       actions.setUser({
         ...user,

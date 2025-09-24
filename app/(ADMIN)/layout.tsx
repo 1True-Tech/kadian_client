@@ -5,6 +5,7 @@ import { Unauthorized } from "@/components/feautures/unauthorized";
 import { Loader } from "@/components/ui/loaders";
 import { LoadUser } from "@/lib/controllers/_loadUser";
 import { useQuery } from "@/lib/server/client-hook";
+import cookies from "@/lib/utils/cookies";
 import { ReactNode } from "react";
 
 interface AdminLayoutProps {
@@ -13,6 +14,7 @@ interface AdminLayoutProps {
 
 const AdminOnly = ({ children }: AdminLayoutProps) => {
   const { run, data: userData, error, status } = useQuery("getMe");
+  const hasCookie = cookies.get("access_token");
   if (status === "idle") {
     run();
   }
@@ -26,8 +28,8 @@ const AdminOnly = ({ children }: AdminLayoutProps) => {
       />
     );
   }
-  if (userData.statusCode === 401 ) return <Unauthorized />;
-  if (!userData.data) return <NotAuthenticated />;
+  if (userData.statusCode === 401 && hasCookie ) return <Unauthorized />;
+  if (!userData.data || !hasCookie) return <NotAuthenticated />;
   if(error)return <ErrorState message={userData.message}/>
   return (
     <>

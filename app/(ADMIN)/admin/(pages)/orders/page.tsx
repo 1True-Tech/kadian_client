@@ -24,7 +24,7 @@ export default function OrdersPage() {
     );
   }
 
-  if (!data.orders?.length) {
+  if (!data.data?.length) {
     return (
       <div className="container mx-auto p-6">
         <h1 className="text-3xl font-bold mb-8">Orders Management</h1>
@@ -51,7 +51,7 @@ export default function OrdersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.orders.map((order: OrdersResponseDetails, idex) => {
+              {data.data.map((order: OrdersResponseDetails, idex) => {
                 const isExpanded = expandedOrder === order.id;
 
                 return (

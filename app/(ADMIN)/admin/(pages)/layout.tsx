@@ -23,7 +23,7 @@ const AdminLayout = async ({ children }: AdminLayoutProps) => {
   return (
     <SidebarProvider>
       <AdminSidebar pathname={pathname} />
-      <div className="min-h-screen w-full bg-gradient-to-br from-background via-background/95 to-muted/10">
+      <div className="min-h-screen max-w-[calc(100vw-(var(--sidebar-width)+1rem))] w-full bg-gradient-to-br from-background via-background/95 to-muted/10">
         <div className="w-full min-h-screen bg-background/40">
           {/* Header */}
           <header className="bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/40 border-b border-border/40 px-8 py-4 sticky top-0 z-20 transition-all duration-200 shadow-sm">
