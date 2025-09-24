@@ -1,8 +1,5 @@
-import { authOptions } from "@/lib/auth";
 import env from "@/lib/constants/env";
-import baseUrl from "@/lib/utils/baseurl";
 import { ParamsProps } from "@/types/structures";
-import { getServerSession } from "next-auth";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 

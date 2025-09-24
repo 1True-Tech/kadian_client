@@ -1,5 +1,5 @@
 import { DashboardMetric } from "@/app/api/admin/route";
-import { UserData } from "@/types/user";
+import { UserData, UserDataMini } from "@/types/user";
 import cookies from "@/lib/utils/cookies";
 import { GeneralResponse } from "@/types/structures";
 
@@ -16,7 +16,7 @@ export async function getAdminDashboard(): Promise<
   return res.json();
 }
 
-export async function getUsers(): Promise<GeneralResponse & { data?: UserData[] }> {
+export async function getUsers(): Promise<GeneralResponse & { data?: UserDataMini[] }> {
   const token = cookies.get("access_token") || "";
   const res = await fetch("/api/users", {
     headers: { authorization: "Bearer " + token },

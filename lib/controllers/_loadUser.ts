@@ -12,7 +12,7 @@ interface ReturnStructure {
   returnPage?: React.ReactNode;
   returnLoad?: React.ReactNode;
   rerouteOnFail?: boolean;
-  pushData?:UserData
+  pushData?: UserData;
 }
 export function LoadUser({
   rerouteOnFail = false,
@@ -20,12 +20,12 @@ export function LoadUser({
   returnHasNoUser = "no user",
   returnLoad = "loading",
   returnPage = "page",
-  pushData
+  pushData,
 }: ReturnStructure) {
   const { user, actions, status } = useUserStore();
   const loadUserRequest = useQuery("getMe", { retry: false });
   const { push } = useRouter();
-  
+
   const runUserInfo = useCallback(async () => {
     if (status !== "done" && !pushData) {
       try {
@@ -43,17 +43,17 @@ export function LoadUser({
       }
     }
 
-    if(pushData){
-      actions.setUser(pushData)
-      actions.setStatus("done")
+    if (pushData) {
+      actions.setUser(pushData);
+      actions.setStatus("done");
     }
-
-  }, []);
-  console.log(status);
-  if (status === "not-initialized") {
-    actions.initialize();
-    runUserInfo();
-  }
+  }, [actions, loadUserRequest, push, pushData, rerouteOnFail, status]);
+  useEffect(() => {
+    if (status === "not-initialized") {
+      actions.initialize();
+      runUserInfo();
+    }
+  }, [status, actions, runUserInfo]);
 
   if (
     status === "loading" ||
@@ -64,7 +64,7 @@ export function LoadUser({
   if (status === "has-error") return returnHasNoUser;
 
   if (user) {
-    if (user.role !== "admin") return returnBadAuth;
+    if (user.role !== "admin" && user.role !== "superadmin") return returnBadAuth;
     return returnPage;
   }
   return returnHasNoUser;

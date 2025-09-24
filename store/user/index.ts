@@ -1,11 +1,8 @@
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import type { User, UserData } from '@/types/user';
-import { storeUser, UserStore } from './types';
-import { fetchUser } from './controllers/fetchUser';
-import { produce } from 'immer';
 import cookies from '@/lib/utils/cookies';
 import { NotificationSettings } from '@/types/settings';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+import { storeUser, UserStore } from './types';
 
 export const useUserStore = create<UserStore>()(
   immer((set) => ({

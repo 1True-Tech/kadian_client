@@ -30,14 +30,16 @@ import queries from "@/lib/queries";
 import { PaymentMethod } from "@/types/order";
 
 // Initialize Stripe with publishable key
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
+);
 
 const Checkout = () => {
   const router = useRouter();
   const { user } = useUserStore();
   const { cart, clearCart, subtotal } = useCart();
   const createOrder = useQuery("createOrder");
-  
+
   const [proofFile, setProofFile] = useState<File | null>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,13 +51,25 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
 
   useEffect(() => {
-    async function getCarts(){
-      const loadCartProduct:CartItemReady[] = await client.fetch(queries.productCartItem, {ids: cart.map(c => c.productId), vSku:cart.map(c => c.variantSku)})
-      setItemsForOrder(loadCartProduct);
+    async function getCarts() {
+      const loadCartProduct: CartItemReady[] = await client.fetch(
+        queries.productCartItem,
+        {
+          ids: cart.map((c) => c.productId),
+          vSku: cart.map((c) => c.variantSku),
+        }
+      );
+
+      setItemsForOrder([
+        ...loadCartProduct.map((item) => ({
+          ...item,
+          quantity:
+            cart.find((c) => c.variantSku === item.variantSku)?.quantity || 1,
+        })),
+      ]);
     }
     if (cart?.length) {
-      getCarts()
-      
+      getCarts();
     }
   }, [cart]);
 
@@ -87,20 +101,20 @@ const Checkout = () => {
       });
     }
   }, [user]);
-  
+
   const handleSubmitOrder = async (orderBody: any) => {
     // For transfer and delivery payment methods
     const orderResponse = await createOrder.run({ body: orderBody });
-    
+
     if (orderResponse?.orderId) {
       toast({
         title: "Order Placed Successfully",
         description: `Your order #${orderResponse.orderId} has been placed`,
       });
-      
+
       // Clear cart
       clearCart();
-      
+
       // Redirect to order confirmation
       router.push(`/account/order-history/${orderResponse.orderId}`);
     }
@@ -147,66 +161,73 @@ const Checkout = () => {
     } else if (paymentMethod === "stripe") {
       // Create order first
       const orderResponse = await createOrder.run({ body: orderBody });
-      
+
       if (orderResponse?.orderId) {
         // Redirect to Stripe Checkout
         const stripe = await stripePromise;
-        
+
         // Call API to create a checkout session
-        const checkoutSession = await fetch("/api/payments/stripe/create-checkout-session", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            orderId: orderResponse.orderId,
-            items: itemsForOrder.map(item => ({
-              name: item.name,
-              description: `${item.color?.name || ''} ${item.size?.label || ''}`.trim(),
-              quantity: item.quantity,
-              price: item.price * 100, // Stripe uses cents
-              image: item.image?.src
-            })),
-            customerEmail: formData.email,
-          }),
-        });
-        
-        const { sessionId } = await checkoutSession.json();
-        
-        // Redirect to Stripe Checkout
-        await stripe?.redirectToCheckout({
-          sessionId,
-        });
-      }
-    } else if (paymentMethod === "paypal") {
-        // Create order first
-        const orderResponse = await createOrder.run({ body: orderBody });
-        
-        if (orderResponse?.orderId) {
-          // Redirect to PayPal
-          const paypalResponse = await fetch("/api/payments/paypal/create-order", {
+        const checkoutSession = await fetch(
+          "/api/payments/stripe/create-checkout-session",
+          {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
               orderId: orderResponse.orderId,
-              items: itemsForOrder.map(item => ({
+              items: itemsForOrder.map((item) => ({
                 name: item.name,
+                description:
+                  `${item.color?.name || ""} ${item.size?.label || ""}`.trim(),
                 quantity: item.quantity,
-                price: item.price
+                price: item.price * 100, // Stripe uses cents
+                image: item.image?.src,
               })),
               customerEmail: formData.email,
             }),
-          });
-          
-          const { approvalUrl } = await paypalResponse.json();
-          
-          // Redirect to PayPal approval URL
-          if (approvalUrl) {
-            window.location.href = approvalUrl;
           }
+        );
+
+        const { sessionId } = await checkoutSession.json();
+
+        // Redirect to Stripe Checkout
+        await stripe?.redirectToCheckout({
+          sessionId,
+        });
+      }
+    } else if (paymentMethod === "paypal") {
+      // Create order first
+      const orderResponse = await createOrder.run({ body: orderBody });
+
+      if (orderResponse?.orderId) {
+        // Redirect to PayPal
+        const paypalResponse = await fetch(
+          "/api/payments/paypal/create-order",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderId: orderResponse.orderId,
+              items: itemsForOrder.map((item) => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+              })),
+              customerEmail: formData.email,
+            }),
+          }
+        );
+
+        const { approvalUrl } = await paypalResponse.json();
+
+        // Redirect to PayPal approval URL
+        if (approvalUrl) {
+          window.location.href = approvalUrl;
         }
+      }
     }
   };
 
@@ -376,14 +397,18 @@ const Checkout = () => {
               <Select
                 value={paymentMethod}
                 onValueChange={(val) =>
-                  setPaymentMethod(val as "stripe" | "paypal" | "transfer" | "delivery")
+                  setPaymentMethod(
+                    val as "stripe" | "paypal" | "transfer" | "delivery"
+                  )
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Payment Method" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="stripe">Credit/Debit Card (Stripe)</SelectItem>
+                  <SelectItem value="stripe">
+                    Credit/Debit Card (Stripe)
+                  </SelectItem>
                   <SelectItem value="paypal">PayPal</SelectItem>
                   <SelectItem value="transfer">Bank Transfer</SelectItem>
                   <SelectItem value="delivery">Pay on Delivery</SelectItem>
@@ -394,24 +419,41 @@ const Checkout = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-sm">
                     <Lock className="h-4 w-4" />
-                    You&apos;ll be redirected to Stripe&apos;s secure payment page after clicking &quot;Complete Order&quot;
+                    You&apos;ll be redirected to Stripe&apos;s secure payment
+                    page after clicking &quot;Complete Order&quot;
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Image src="/visa.svg" alt="Visa" width={40} height={25} />
-                    <Image src="/mastercard.svg" alt="Mastercard" width={40} height={25} />
-                    <Image src="/amex.svg" alt="American Express" width={40} height={25} />
+                    <Image
+                      src="/mastercard.svg"
+                      alt="Mastercard"
+                      width={40}
+                      height={25}
+                    />
+                    <Image
+                      src="/amex.svg"
+                      alt="American Express"
+                      width={40}
+                      height={25}
+                    />
                   </div>
                 </div>
               )}
-              
+
               {paymentMethod === "paypal" && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-sm">
                     <Lock className="h-4 w-4" />
-                    You&apos;ll be redirected to PayPal&apos;s secure payment page after clicking &quot;Complete Order&quot;
+                    You&apos;ll be redirected to PayPal&apos;s secure payment
+                    page after clicking &quot;Complete Order&quot;
                   </div>
                   <div className="flex justify-center">
-                    <Image src="/paypal.svg" alt="PayPal" width={100} height={30} />
+                    <Image
+                      src="/paypal.svg"
+                      alt="PayPal"
+                      width={100}
+                      height={30}
+                    />
                   </div>
                 </div>
               )}
@@ -449,38 +491,40 @@ const Checkout = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                {itemsForOrder.map((item) => (
-                  <div key={item.variantSku} className="flex gap-4">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden">
-                      <Image
-                        width={720}
-                        height={480}
-                        src={item.image?.src || "/placeholder.svg"}
-                        alt={item.name || ""}
-                        className="w-full h-full object-cover"
-                      />
+                {itemsForOrder.map((item) => {
+                  return (
+                    <div key={item.variantSku} className="flex gap-4">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden">
+                        <Image
+                          width={720}
+                          height={480}
+                          src={item.image?.src || "/placeholder.svg"}
+                          alt={item.name || ""}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium">{item.name}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {item.color?.name ?? ""}, {item.size?.label}
+                        </p>
+                        <p className="text-sm">Qty: {item.quantity}</p>
+                      </div>
+                      <div className="flex flex-col items-end justify-between">
+                        <span className="font-medium">
+                          ${item.price * item.quantity}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveItem(item.variantSku)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium">{item.name}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        {item.color?.name ?? ""}, {item.size?.label}
-                      </p>
-                      <p className="text-sm">Qty: {item.quantity}</p>
-                    </div>
-                    <div className="flex flex-col items-end justify-between">
-                      <span className="font-medium">
-                        ${item.price * item.quantity}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveItem(item.variantSku)}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <Separator />

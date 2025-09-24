@@ -1,12 +1,12 @@
 import { OrdersResponseData } from "./order";
-import { ProductReady, ProductVariantReady, Size } from "./product";
+import { ProductVariantReady, Size } from "./product";
 import { AccountSettings } from "./settings";
 import { Color, ReadyImage } from "./structures";
 
 /**
  * User roles definition
  */
-export type UserRole = "admin" | "user";
+export type UserRole = "admin" | "user" | "superadmin";
 
 /**
  * Address type definition
@@ -75,6 +75,17 @@ export interface Name {
   last: string;
 }
 
+export interface UserDataMini {
+    id: string;
+    email: string;
+    name: {
+        first: string;
+        last: string;
+    };
+    role: string;
+    isActive: boolean;
+    lastSeen: Date|null
+}
 /**
  * User data type definition
  */

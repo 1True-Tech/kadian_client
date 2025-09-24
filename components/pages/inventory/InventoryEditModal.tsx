@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { InventoryItem } from "@/types/inventory";
 import { ProductReady, ProductVariant } from "@/types/product";
-import { client } from "@/lib/utils/NSClient";
+import { useState } from "react";
 
 type Props = {
   data: {
@@ -23,11 +22,17 @@ type Props = {
   onClose?: () => void;
   onSave?: (status: "good" | "bad") => void;
 };
-
-export default function InventoryEditModal({ data, onClose, onSave }: Props) {
-  
-
-  const { item, variantSku } = data!;
+const DataAvailable = ({
+  data,
+  onClose,
+  onSave,
+}: Omit<Props, "data"> & {
+  data: {
+    item: InventoryItem & { productData?: ProductReady };
+    variantSku: string;
+  };
+}) => {
+  const { item, variantSku } = data;
   const variant = item.productData?.variants.find(
     (v: ProductVariant) => v.sku === variantSku
   );
@@ -36,7 +41,6 @@ export default function InventoryEditModal({ data, onClose, onSave }: Props) {
   const [price, setPrice] = useState(variant?.price ?? 0);
   const [stock, setStock] = useState(variant?.stock ?? 0);
   const [threshold, setThreshold] = useState(variant?.stockThreshold ?? 0);
-  if (!data) return null;
 
   const handleSave = async () => {
     try {
@@ -137,4 +141,8 @@ export default function InventoryEditModal({ data, onClose, onSave }: Props) {
       </DialogContent>
     </Dialog>
   );
+};
+export default function InventoryEditModal({ data, ...props }: Props) {
+  if (!data) return null;
+  return <DataAvailable data={data} {...props} />;
 }
