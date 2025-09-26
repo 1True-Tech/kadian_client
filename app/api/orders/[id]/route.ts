@@ -36,7 +36,7 @@ export async function GET(req: Request, { params }: Params) {
         statusCode: res.status,
         success: true,
         message: data.message || "Order details retrieved successfully.",
-        order: data.order,
+        data: data.data,
       };
 
       return NextResponse.json(successResponse, { status: 200 });
@@ -89,7 +89,7 @@ export async function PATCH(req: Request, { params }: Params) {
         statusCode: res.status,
         success: true,
         message: data.message || "Order updated successfully.",
-        order: data.order,
+        data: data.data,
       };
 
       return NextResponse.json(successResponse, { status: 200 });

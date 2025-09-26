@@ -399,8 +399,8 @@ export const productCartItem = groq`
       "src": asset.asset -> url,
       alt,
     },
-    "variantSku": variants[sku == $vSku][0].sku,
-    "variant": variants[sku == $vSku][0] {
+    "variantSku": variants[sku in $vSku][0].sku,
+    "variant": variants[sku in $vSku][0] {
       ${variantFragment}
     },
     "size": variants[sku in $vSku][0].size->{label, value},

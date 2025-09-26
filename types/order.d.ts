@@ -11,7 +11,12 @@ export type OrderStatus =
 /**
  * Payment method type definition
  */
-export type PaymentMethod = "card" | "transfer" | "delivery" |"stripe"|"paypal";
+export type PaymentMethod =
+  | "card"
+  | "transfer"
+  | "delivery"
+  | "stripe"
+  | "paypal";
 
 /**
  * Proof of payment type definition
@@ -192,7 +197,7 @@ export interface OrdersResponseDetails {
  */
 export interface OrderDetailResponse {
   /** Order details */
-  order?: OrdersResponseDetails;
+  data?: OrdersResponseDetails;
 }
 
 /**
@@ -205,20 +210,28 @@ export interface CreateOrderBody {
   shippingAddress: ShippingAddress;
   /** Customer information */
   customerInfo: CustomerInfo;
-  payment:{
-    method: PaymentMethod,
-    proof?: string
-  }
+  payment: {
+    method: PaymentMethod;
+    proof?: string;
+    idempotencyKey?: string;
+  };
 }
 
 /**
  * Order create response type definition
  */
 export interface OrderCreateResponse {
-  /** Created order ID */
-  orderId?: string;
-  /** Order status */
-  statusValue?: string;
+  data: {
+    /** Created order ID */
+    orderId?: string;
+    /** Order status */
+    statusValue?: string;
+    payment: {
+      method: PaymentMethod;
+      proof?: string;
+      idempotencyKey?: string;
+    };
+  };
 }
 
 /**
