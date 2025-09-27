@@ -11,7 +11,8 @@ import { HasSlot } from "@/types/structures";
 
 type ClientGuardPropsBase = {
   loaderSize: "fullscreen" | "parent";
-  unLoad?:boolean
+  unLoad?: boolean;
+  type?: "dom-loader" | "content-loader";
 };
 
 type ClientGuardProps =
@@ -28,13 +29,18 @@ export function Loader({
   loaderSize,
   loader,
   unLoad,
+  type = "dom-loader",
   ...props
 }: ClientGuardProps & Partial<HasSlot>) {
   const isDomLoaded = useDomLoaded();
   const [hideLoader, setHideLoader] = useState(false);
+  const [isContentLoaded, setIsContentLoaded] = useState(false);
+
+  // Example: for content loader, you can set isContentLoaded manually
+  // e.g., after a fetch completes, call setIsContentLoaded(true).
+  // Or pass unLoad=true externally to force hide.
 
   let loaderElement: React.ReactNode;
-
   switch (loader) {
     case "flip-text-loader":
       loaderElement = <FlipTextLoader text={(props as any).text} />;
@@ -53,14 +59,16 @@ export function Loader({
   }
 
   useEffect(() => {
-    if (isDomLoaded || unLoad) {
+    const ready =
+      type === "dom-loader" ? isDomLoaded : isContentLoaded || unLoad;
+
+    if (ready) {
       const timeout = setTimeout(() => {
         setHideLoader(true);
-      }, 400); // duration of fade-out
-
+      }, 400); // fade-out duration
       return () => clearTimeout(timeout);
     }
-  }, [isDomLoaded, unLoad]);
+  }, [isDomLoaded, isContentLoaded, unLoad, type]);
 
   return (
     !hideLoader && (
@@ -68,9 +76,13 @@ export function Loader({
         <div
           className={cn(
             "flex items-center justify-center transition-opacity duration-300 ease-in-out",
-            isDomLoaded ? "opacity-0 pointer-events-none" : "opacity-100",
+            type === "dom-loader" && isDomLoaded
+              ? "opacity-0 pointer-events-none"
+              : type === "content-loader" && (isContentLoaded || unLoad)
+              ? "opacity-0 pointer-events-none"
+              : "opacity-100",
             loaderSize === "fullscreen"
-              ? "fixed w-screen h-[100dvh] inset-0 bg-background z-100"
+              ? "fixed inset-0 w-screen h-[100dvh] bg-background z-100"
               : "w-full h-full"
           )}
         >

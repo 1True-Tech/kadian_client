@@ -35,7 +35,7 @@ export async function GET(req: Request) {
     const data = await res.json();
 
     if (res.ok && data.status === "good") {
-      const cartData:CartItemReady[] = await Promise.all(
+      const cartData: CartItemReady[] = await Promise.all(
         data.data.map(async (item: CartItem) => {
           const res: ProductRaw[] = await client.fetch(
             queries.productsByIdsQuery,
@@ -71,7 +71,7 @@ export async function GET(req: Request) {
         (sum, item) => sum + item.price * item.quantity,
         0
       );
-      const totalItems = cartData.length
+      const totalItems = cartData.length;
       const successResponse: CartResponse = {
         status: "good",
         connectionActivity: "online",
@@ -81,7 +81,7 @@ export async function GET(req: Request) {
         data: {
           totalAmount,
           totalItems,
-          items: cartData
+          items: cartData,
         },
       };
 
@@ -124,13 +124,54 @@ export async function PATCH(req: Request) {
     const data = await res.json();
 
     if (res.ok && data.status === "good") {
+      const cartData: CartItemReady[] = await Promise.all(
+        data.data.map(async (item: CartItem) => {
+          const res: ProductRaw[] = await client.fetch(
+            queries.productsByIdsQuery,
+            { ids: [item.productId] }
+          );
+          const found = res.find((i) => i._id === item.productId);
+          const foundVariant = found?.variants.find(
+            (v) => v.sku === item.variantSku
+          );
+          return {
+            id: item._id,
+            productId: item.productId,
+            price: item.price,
+            size: foundVariant?.size,
+            color: foundVariant?.color,
+            quantity: item.quantity,
+            name: found?.name,
+            image: foundVariant?.images?.map((img) => ({
+              alt: img.alt,
+              src: fashionImageBuilder([img.asset], {
+                treatment: "catalog",
+                quality: 85,
+                format: "webp",
+              })[0],
+            }))[0],
+            updatedAt: item.updatedAt,
+            addedAt: item.addedAt,
+            variantSku: item.variantSku,
+          };
+        })
+      );
+      const totalAmount = cartData.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+      const totalItems = cartData.length;
       const successResponse: CartResponse = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
-        message: data.message || "Cart updated successfully.",
-        data: data.data,
+        message: data.message || "Cart retrieved successfully.",
+        data: {
+          totalAmount,
+          totalItems,
+          items: cartData,
+        },
       };
 
       return NextResponse.json(successResponse, { status: 200 });
