@@ -6,7 +6,8 @@ import { RegisterRequestBody, RegisterSuccessResponse } from "@/app/api/auth/reg
 import { InventoryGetResponse, InventoryItem, InventoryItemsResponse, InventoryPutResponse, InventoryStockUpdateResponse, InventoryVariantResponse } from "@/types/inventory";
 import { CreateOrderBody, OrderCreateResponse, OrderDetailResponse, OrderListResponse, OrderUpdateBody } from "@/types/order";
 import { GeneralResponse } from "@/types/structures";
-import { CartItem, UserData, UserDataMini } from "@/types/user";
+import { Address, CartItem, UserData, UserDataMini } from "@/types/user";
+import { AddressDeleteRequest, AddressRequestBody } from "../handlers/address";
 
 // Utility: extract :params from paths
 export type PathParams<Path extends string> =
@@ -248,6 +249,38 @@ export const routes = {
     path: "/api/users/:userId",
     params: {} as { userId: string },
     response: {} as GeneralResponse,
+  },
+
+  // --- ADDRESS ---
+  getAddresses: {
+    method: "GET",
+    path: "/api/auth/me/address",
+    params: {} as {},
+    response: {} as GeneralResponse & { data?: Address[] },
+  },
+
+  addAddresses: {
+    method: "POST",
+    path: "/api/auth/me/address",
+    params: {} as {},
+    body: {} as AddressRequestBody,
+    response: {} as GeneralResponse & { data?: Address[] },
+  },
+
+  updateAddresses: {
+    method: "PATCH",
+    path: "/api/auth/me/address",
+    params: {} as {},
+    body: {} as AddressRequestBody,
+    response: {} as GeneralResponse & { data?: Address[] },
+  },
+
+  deleteAddress: {
+    method: "DELETE",
+    path: "/api/auth/me/address",
+    params: {} as {},
+    body: {} as AddressDeleteRequest,
+    response: {} as GeneralResponse & { data?: Address[] },
   },
   // --- IMAGES ---
   getImages: {

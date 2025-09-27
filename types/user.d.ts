@@ -12,10 +12,12 @@ export type UserRole = "admin" | "user" | "superadmin";
  * Address type definition
  */
 export interface Address {
-  street: string;
+  id: string;
+  line1: string;
+  line2?: string;
   city: string;
   state: string;
-  postalCode: string;
+  postal: string;
   country: string;
 }
 
