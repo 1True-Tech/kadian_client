@@ -8,7 +8,7 @@ import Link from "next/link";
 import React from "react";
 
 export default function OrderHistoryItem(order: OrdersResponseData) {
-    console.log(order)
+    
   return (
     <div key={order.id} className="border rounded-lg p-6">
       <div className="flex justify-between items-start mb-4">
@@ -24,35 +24,33 @@ export default function OrderHistoryItem(order: OrdersResponseData) {
       </div>
 
       <div className="space-y-3">
-        {/* {order..map((item) => {
-          console.log(item);
-          return (
-            <div key={item.product.id} className="flex gap-4">
-              <Image
-                width={720}
-                height={480}
-                src={
-                  item.product.variant ? item.product.variant.images[0].src : ""
-                }
-                alt={
-                  item.product.variant
-                    ? item.product.variant.images[0].alt
-                    : item.product.variant
-                }
-                className="w-16 h-16 object-cover rounded"
-              />
-              <Link href={`/product/${item.product.slug}`}>
-                <div className="flex-1">
-                  <h4 className="font-medium">{item.product.name}</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Qty: {item.quantity}
-                  </p>
-                  <p className="text-sm font-medium">${item.price}</p>
-                </div>
-              </Link>
+        {order.items && order.items.map((item, index) => (
+          <div key={index} className="flex gap-4">
+            <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center">
+              {item.image ? (
+                <Image
+                  width={64}
+                  height={64}
+                  src={item.image}
+                  alt={item.name || "Product image"}
+                  className="w-16 h-16 object-cover rounded"
+                />
+              ) : (
+                <span className="text-xs text-gray-500">No image</span>
+              )}
             </div>
-          );
-        })} */}
+            <div className="flex-1">
+              <h4 className="font-medium">{item.name}</h4>
+              <p className="text-sm text-muted-foreground">
+                Qty: {item.quantity}
+              </p>
+              <p className="text-sm font-medium">${item.price}</p>
+              {item.variantSku && (
+                <p className="text-xs text-muted-foreground">SKU: {item.variantSku}</p>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="flex justify-between items-center mt-4 pt-4 border-t">

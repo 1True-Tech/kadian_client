@@ -8,6 +8,7 @@ import queries from "@/lib/queries";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import ProductDetailSkeleton from "./ProductDetailSkeleton";
+import ErrorBoundary from "@/components/ui/error-boundary";
 
 export async function generateMetadata({ params }: ParamsProps<{ id: string }>): Promise<Metadata> {
   try {
@@ -66,9 +67,11 @@ const ProductDetail = async ({ params }: ParamsProps<{ id: string }>) => {
 
     return (
       <PagesLayout showBreadcrumbs breadcrumbItems={breadcrumbItems}>
-        <Suspense fallback={<ProductDetailSkeleton />}>
-          <ProductDetailClient product={product} />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<ProductDetailSkeleton />}>
+            <ProductDetailClient product={product} />
+          </Suspense>
+        </ErrorBoundary>
       </PagesLayout>
     );
   } catch (error) {

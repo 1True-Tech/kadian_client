@@ -29,7 +29,8 @@ export function LoadUser({
   const runUserInfo = useCallback(async () => {
     if (status !== "done" && !pushData) {
       try {
-        const data = await loadUserRequest.run();
+        // Use the enhanced API endpoint with include_orders parameter
+        const data = await loadUserRequest.run({ query:{include_orders: "true"} });
         if (data?.data) {
           actions.setUser(data.data);
         }

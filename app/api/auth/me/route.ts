@@ -1,4 +1,6 @@
 import env from "@/lib/constants/env";
+import queries from "@/lib/queries";
+import { client } from "@/lib/utils/NSClient";
 import ping from "@/lib/utils/ping";
 import { GeneralResponse } from "@/types/structures";
 import { UserData } from "@/types/user";
@@ -16,7 +18,8 @@ export async function GET(req: NextRequest) {
   const isOnline = await ping();
 
   try {
-    const res = await fetch(`${env.API_URL}auth/me`, {
+    // Make a single request to the server that includes orders
+    const res = await fetch(`${env.API_URL}auth/me?include_orders=true`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -27,20 +30,15 @@ export async function GET(req: NextRequest) {
     const data = await res.json();
 
     if (res.ok && data.status === "good") {
-      const baseUrl = req.nextUrl.origin;
-      const orderRes = await fetch(baseUrl + `/api/orders-by-user`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: req.headers.get("authorization") || "",
-        },
-      });
-      const orderData = await orderRes.json();
-      console.log(orderData.data)
-
-      if (orderRes.ok && orderData.status === "good" && data.data) {
-        data.data.orders = orderData.data;
-      }
+      const userData = data.data as UserData;
+      const products = await client.fetch(queries.productsOrdersQuery, {items: userData.orders?.flatMap(p => p.items)})
+      userData.orders = userData.orders?.map(order => ({
+        ...order,
+        items: order.items?.map(item => ({
+          ...item,
+          product: products.find((p: { _id: any; }) => p._id === item.productId)
+        }))
+      }))
       const successResponse: UserResponse = {
         status: "good",
         connectionActivity: "online",

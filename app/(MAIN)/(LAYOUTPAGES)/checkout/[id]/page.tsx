@@ -4,6 +4,7 @@ import { UserInfoForm } from "@/components/pages/checkout/CustomerInfoForm";
 import { OrderReview, OrderSummary } from "@/components/pages/checkout/OrderSummary";
 import { PaymentMethodForm } from "@/components/pages/checkout/PaymentSection";
 import { Loader } from "@/components/ui/loaders";
+import ErrorBoundary from "@/components/ui/error-boundary";
 import { toast } from "@/components/ui/use-toast";
 import { buildCreateOrderBody } from "@/lib/controllers/buildOrdersBody";
 import { useCart } from "@/lib/hooks/useCart";
@@ -26,7 +27,15 @@ const stripe = await loadStripe(
 
 // Step type definition
 
-const Checkout = () => {
+const CheckoutPage = () => {
+  return (
+    <ErrorBoundary>
+      <CheckoutContent />
+    </ErrorBoundary>
+  );
+};
+
+const CheckoutContent = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
   const { user } = useUserStore();
@@ -36,7 +45,8 @@ const Checkout = () => {
 
   const [currentStep, setCurrentStep] = useState<CheckoutStep>("user-info");
   const [orderId, setOrderId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with loading state
+  const [loadingMessage, setLoadingMessage] = useState("Preparing checkout...");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [idempotencyKey] = useState<string>(uuidv4());
   const [itemsForOrder, setItemsForOrder] = useState<CartItemReady[]>([]);
@@ -133,6 +143,7 @@ const Checkout = () => {
           });
         }
       }
+      setIsLoading(false); // Turn off loading when data is loaded
     }
     loadData();
   }, [id]);
@@ -248,11 +259,70 @@ const Checkout = () => {
     else if (currentStep === "payment") setCurrentStep("review");
   };
 
+  const checkInventoryAvailability = async (items: CartItemReady[]) => {
+    try {
+      // Check inventory for each item
+      const inventoryChecks = await Promise.all(
+        items.map(async (item) => {
+          const response = await fetch(`/api/inventory/${item.productId}/${item.variantSku}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+          
+          if (!response.ok) {
+            return { available: false, item };
+          }
+          
+          const data = await response.json();
+          const available = data.data?.stock >= item.quantity;
+          return { 
+            available, 
+            item,
+            currentStock: data.data?.stock || 0
+          };
+        })
+      );
+      
+      // Find any unavailable items
+      const unavailableItems = inventoryChecks.filter(check => !check.available);
+      
+      if (unavailableItems.length > 0) {
+        const itemNames = unavailableItems.map(
+          check => `${check.item.name} (${check.currentStock} available, ${check.item.quantity} requested)`
+        ).join(", ");
+        
+        toast({
+          title: "Inventory Error",
+          description: `Some items are no longer available in the requested quantity: ${itemNames}`,
+          variant: "destructive",
+        });
+        
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      toast({
+        title: "Inventory Check Failed",
+        description: "Unable to verify product availability. Please try again.",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   const handleProcessPayment = async () => {
     setIsLoading(true);
-    console.log("ordering", paymentMethod);
     try {
       if (!orderId) throw new Error("Order ID missing");
+      
+      // Check inventory availability before processing payment
+      const inventoryAvailable = await checkInventoryAvailability(itemsForOrder);
+      if (!inventoryAvailable) {
+        setIsLoading(false);
+        return;
+      }
+      
       if (paymentMethod === "transfer" && proofFile) {
         const proof = await fileToBase64(proofFile);
         await fetch(`/api/orders/${orderId}`, {
@@ -294,16 +364,18 @@ const Checkout = () => {
         const data = await res.json();
         if (data.success) {
           await stripe?.redirectToCheckout({ sessionId: data.data.sessionId });
+        } else {
+          throw new Error(data.message || "Failed to create checkout session");
         }
       }
       if (paymentMethod === "delivery") {
         clearCart();
         router.push(`/checkout/success?order_id=${orderId}`);
       }
-    } catch {
+    } catch (error: any) {
       toast({
         title: "Payment Error",
-        description: "Payment failed",
+        description: error.message || "Payment failed. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -319,7 +391,11 @@ const Checkout = () => {
     redirect(`/checkout/${id}/success`);
   if (currentStep === "cancelled") redirect(`/checkout/${id}/cancel`);
   if (isLoading) {
-    return <Loader loader="hr-line-loader" loaderSize="parent" />;
+    return (
+      <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[50vh]">
+        <Loader loader="flip-text-loader" loaderSize="parent" text={loadingMessage} />
+      </div>
+    );
   }
 
   return (
@@ -367,4 +443,4 @@ const Checkout = () => {
   );
 };
 
-export default Checkout;
+export default CheckoutPage;

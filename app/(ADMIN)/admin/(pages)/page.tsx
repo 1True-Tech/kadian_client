@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { DashboardMetric } from "@/app/api/admin/route";
 import { Badge } from "@/components/ui/badge";
+import ErrorBoundary from "@/components/ui/error-boundary";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@/lib/server/client-hook";
@@ -103,6 +104,14 @@ function AnimatedNumber({
 }
 
 const AdminDashboard: React.FC = () => {
+  return (
+    <ErrorBoundary>
+      <AdminDashboardContent />
+    </ErrorBoundary>
+  );
+};
+
+const AdminDashboardContent: React.FC = () => {
   const { run, data, status, error } = useQuery("getAdminDashboard");
 
   useEffect(() => {

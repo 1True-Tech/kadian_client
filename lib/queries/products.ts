@@ -313,6 +313,54 @@ export const productSearchQuery = groq`
     }
   }
 `;
+export const productsOrdersQuery = groq`
+  *[_type == "product" && _id in $items[].productId]{
+    _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    name,
+    "slug": slug.current,
+    description,
+    basePrice,
+
+    "brand": brand->{
+      name,
+      "slug": slug.current
+    },
+
+    category->{
+      name,
+      "slug": slug.current,
+      "parent": parent->{
+        name,
+        "slug": slug.current
+      }
+    },
+
+    "mainImage": images[primary == true][0]{
+      ${imageFragment}
+    },
+    "gallery": images[]{
+      ${imageFragment}
+    },
+
+    "firstVariant": variants[0]{
+      price,
+      sku,
+      stock,
+      stockThreshold
+    },
+
+    "variants": variants[sku in $items[productId == ^._id].variantSku][0] {
+      ${variantFragment}
+    },
+
+    rating,
+    tags,
+    isActive
+  }
+`;
 
 export const productsByIdsQuery = groq`
   *[_type == "product" && _id in $ids]{

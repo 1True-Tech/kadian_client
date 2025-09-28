@@ -34,6 +34,7 @@ export const routes = {
   getMe: {
     method: "GET",
     path: "/api/auth/me",
+    query: {} as {include_orders:boolean},
     response: {} as GeneralResponse & { data?: UserData },
   },
   updateMe: {
