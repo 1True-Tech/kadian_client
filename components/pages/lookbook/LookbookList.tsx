@@ -25,12 +25,12 @@ export default function LookbookList({ initialLookbooks }: LookbookListProps) {
   const years = Object.keys(lookbooksByYear).sort((a, b) => Number(b) - Number(a));
 
   return (
-    <section className="py-16">
+    <section className="py-16 bg-background">
       <div className="px-container">
         <div className="text-center mb-12 animate-fade-up">
-          <h1 className="heading-section text-4xl font-cinzel mb-4">Lookbook</h1>
-          <p className="text-elegant max-w-2xl mx-auto">
-            Explore our seasonal collections and get inspired by the latest fashion trends.
+          <h1 className="heading-section text-5xl font-cinzel mb-4 text-primary">Lookbook</h1>
+          <p className="text-elegant max-w-2xl mx-auto text-lg">
+            Explore our seasonal collections and get inspired by the latest fashion trends. Discover curated looks, outfit inspiration, and shop the styles you love.
           </p>
         </div>
 
@@ -40,7 +40,7 @@ export default function LookbookList({ initialLookbooks }: LookbookListProps) {
               <TabsTrigger
                 key={year}
                 value={year}
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 py-2 rounded-full font-semibold text-lg"
               >
                 {year}
               </TabsTrigger>
@@ -49,13 +49,13 @@ export default function LookbookList({ initialLookbooks }: LookbookListProps) {
 
           {years.map((year) => (
             <TabsContent key={year} value={year}>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {lookbooksByYear[Number(year)].map((lookbook) => (
                   <Link
                     key={lookbook._id}
                     href={`/lookbook/${lookbook.slug.current}`}
                   >
-                    <Card className="card-premium overflow-hidden group cursor-pointer hover-lift">
+                    <Card className="card-premium overflow-hidden group cursor-pointer hover-lift border border-accent/40 shadow-md">
                       <CardContent className="p-0 relative">
                         {lookbook.looks[0]?.image ? (
                           <div className="relative aspect-[2/3]">
