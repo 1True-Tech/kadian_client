@@ -34,7 +34,7 @@ export default function OrderDetailsPage() {
 
   if (status === "idle") run({params:{id}});
     
-  if (!data?.success || !data.order) {
+  if (!data?.success || !data.data) {
     return (
       <div className="container mx-auto p-6">
         <h1 className="text-3xl font-bold mb-6">Order Details</h1>
@@ -43,7 +43,7 @@ export default function OrderDetailsPage() {
     );
   }
 
-  const order: OrdersResponseDetails = data.order;
+  const order: OrdersResponseDetails = data.data;
   
   // Set initial selected status from order data
   if (selectedStatus === "" && order.status) {
