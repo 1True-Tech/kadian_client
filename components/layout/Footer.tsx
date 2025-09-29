@@ -19,44 +19,52 @@ export default function Footer() {
         </div>
         {/* Navigation */}
         <nav className="flex flex-col gap-small min-w-44">
-          <h3 className="text-lg font-extrabold font-cinzel">Information</h3>
+          <h3 className="text-lg font-extrabold font-cinzel">Useful Links</h3>
           <ul className="flex flex-col gap-xtrasmall">
             <li className="footer-nav-list-item">
-              <Link href="/" className="footer-nav-list-item-link">
-                About us
+              <Link href="/about" className="footer-nav-list-item-link">
+                About Us
               </Link>
             </li>
             <li className="footer-nav-list-item">
               <Link href="/shop" className="footer-nav-list-item-link">
+                Shop
+              </Link>
+            </li>
+            <li className="footer-nav-list-item">
+              <Link href="/contact" className="footer-nav-list-item-link">
                 Contact
               </Link>
             </li>
             <li className="footer-nav-list-item">
-              <Link href="/about" className="footer-nav-list-item-link">
-                FAQ&apos;s
+              <Link href="/legal/terms" className="footer-nav-list-item-link">
+                Terms & Conditions
+              </Link>
+            </li>
+            <li className="footer-nav-list-item">
+              <Link href="/legal/privacy" className="footer-nav-list-item-link">
+                Privacy Policy
+              </Link>
+            </li>
+            <li className="footer-nav-list-item">
+              <Link href="/lookbook" className="footer-nav-list-item-link">
+                Lookbook
+              </Link>
+            </li>
+            <li className="footer-nav-list-item">
+              <Link href="/style-guide" className="footer-nav-list-item-link">
+                Style Guide
+              </Link>
+            </li>
+            <li className="footer-nav-list-item">
+              <Link href="/category" className="footer-nav-list-item-link">
+                Categories
               </Link>
             </li>
           </ul>
         </nav>
         <nav className="flex flex-col gap-small min-w-44">
-          <h3 className="text-lg font-extrabold font-cinzel">Our Services</h3>
-          <ul className="flex flex-col gap-xtrasmall">
-            <li className="footer-nav-list-item">
-              <Link href="/" className="footer-nav-list-item-link">
-                Shipping & delivery
-              </Link>
-            </li>
-            <li className="footer-nav-list-item">
-              <Link href="/shop" className="footer-nav-list-item-link">
-                Returns & Refunds
-              </Link>
-            </li>
-            <li className="footer-nav-list-item">
-              <Link href="/about" className="footer-nav-list-item-link">
-                Book a Consultation
-              </Link>
-            </li>
-          </ul>
+          {/* Removed unnecessary service links */}
         </nav>
         {/* Newsletter Signup */}
         <div className="flex flex-col gap-small">
@@ -127,13 +135,13 @@ export default function Footer() {
         </p>
 
         <p className="flex items-center justify-center gap-small">
-          <a href="#" className="hover:underline">
+          <Link href="/legal/terms" className="hover:underline">
             Terms & Conditions
-          </a>{" "}
+          </Link>
           |
-          <a href="#" className="hover:underline">
+          <Link href="/legal/privacy" className="hover:underline">
             Privacy Policy
-          </a>
+          </Link>
         </p>
       </div>
     </footer>

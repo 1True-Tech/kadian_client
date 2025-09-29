@@ -11,7 +11,7 @@ export const processShopListNavigations = async (): Promise<NavItem[]> => {
         url: "/",
       },
       {
-        label: "Shop",
+        label: "Categories",
         children: [
           ...categoryItems.map(
             (category: {
