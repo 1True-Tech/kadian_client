@@ -34,10 +34,16 @@ export async function GET(req: NextRequest) {
       const products = await client.fetch(queries.productsOrdersQuery, {items: userData.orders?.flatMap(p => p.items)})
       userData.orders = userData.orders?.map(order => ({
         ...order,
-        items: order.items?.map(item => ({
+        items: order.items?.map(item => {
+          const foundProduct = products.find((p: { _id: any; }) => p._id === item.productId)
+          const foundVariant = foundProduct.variants.filter((p: { sku: string; })=> p.sku === item.variantSku)
+          return ({
           ...item,
-          product: products.find((p: { _id: any; }) => p._id === item.productId)
-        }))
+          product: {
+            ...foundProduct,
+            variants:foundVariant
+          }
+        })})
       }))
       const successResponse: UserResponse = {
         status: "good",
