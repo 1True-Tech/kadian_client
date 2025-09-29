@@ -1,5 +1,4 @@
 "use client";
-import { mockProducts } from "@/assets/dummy-data/mockData";
 import ProductGrid from "@/components/product/ProductGrid";
 import { Button } from "@/components/ui/button";
 import { processProducts } from "@/lib/controllers/processShop/processProducts";
@@ -8,7 +7,6 @@ import { useQuery } from "@/lib/server/client-hook";
 import { client } from "@/lib/utils/NSClient";
 import { useUserStore } from "@/store/user";
 import { ProductReady } from "@/types/product";
-import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Wishlist = () => {
@@ -29,10 +27,6 @@ const Wishlist = () => {
     fetchProducts();
   }, [user]);
 
-  const addToCart = (productId: string) => {
-    console.log("Add to cart:", productId);
-    // Handle add to cart
-  };
 
   async function clearAll() {
     await clearWishlist.run();
@@ -76,7 +70,7 @@ const Wishlist = () => {
         )}
       </div>
 
-      <ProductGrid products={wishlistProducts} onAddToCart={addToCart} />
+      <ProductGrid products={wishlistProducts} />
     </div>
   );
 };
