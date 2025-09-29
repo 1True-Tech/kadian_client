@@ -33,12 +33,12 @@ export default function StyleGuideList({ initialGuides }: StyleGuideListProps) {
   const categories = Object.keys(guidesByCategory);
 
   return (
-    <section className="py-16">
+    <section className="py-16 bg-background">
       <div className="px-container">
         <div className="text-center mb-12 animate-fade-up">
-          <h1 className="heading-section text-4xl font-cinzel mb-4">Style Guide</h1>
-          <p className="text-elegant max-w-2xl mx-auto">
-            Expert fashion advice and styling tips for every occasion and body type.
+          <h1 className="heading-section text-5xl font-cinzel mb-4 text-primary">Style Guide</h1>
+          <p className="text-elegant max-w-2xl mx-auto text-lg">
+            Expert fashion advice and styling tips for every occasion and body type. Browse curated guides, discover new trends, and elevate your wardrobe.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export default function StyleGuideList({ initialGuides }: StyleGuideListProps) {
               <TabsTrigger
                 key={category}
                 value={category}
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-6 py-2 rounded-full font-semibold text-lg"
               >
                 {categoryLabels[category]}
               </TabsTrigger>
@@ -57,13 +57,13 @@ export default function StyleGuideList({ initialGuides }: StyleGuideListProps) {
 
           {categories.map((category) => (
             <TabsContent key={category} value={category}>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {guidesByCategory[category].map((guide) => (
                   <Link
                     key={guide._id}
                     href={`/style-guide/${guide.slug.current}`}
                   >
-                    <Card className="card-premium overflow-hidden group cursor-pointer hover-lift">
+                    <Card className="card-premium overflow-hidden group cursor-pointer hover-lift border border-accent/40 shadow-md">
                       <CardContent className="p-0 relative">
                         {guide.sections[0]?.styleImages?.[0] ? (
                           <div className="relative aspect-[3/2]">

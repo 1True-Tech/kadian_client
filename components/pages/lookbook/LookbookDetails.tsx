@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Lookbook } from "@/types/guides";
@@ -14,18 +15,18 @@ interface LookbookDetailsProps {
 
 export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
   return (
-    <section className="py-16">
+    <section className="py-16 bg-background">
       <div className="px-container">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-up">
-          <div className="text-sm font-medium text-muted-foreground mb-2">
+          <div className="text-sm font-medium text-muted-foreground mb-2 tracking-wide uppercase">
             {lookbook.season.name} {lookbook.season.year}
           </div>
-          <h1 className="heading-section text-4xl font-cinzel mb-4">
+          <h1 className="heading-section text-5xl font-cinzel mb-4 text-primary">
             {lookbook.title}
           </h1>
           {lookbook.introduction && (
-            <div className="prose prose-elegant max-w-2xl mx-auto">
+            <div className="prose prose-elegant max-w-2xl mx-auto text-lg">
               <PortableText value={lookbook.introduction} />
             </div>
           )}
@@ -34,54 +35,54 @@ export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
         {/* Lookbook Content */}
         <div className="space-y-24">
           {lookbook.looks.map((look, index) => (
-            <div key={index} className="grid md:grid-cols-2 gap-8">
-              {/* Look Image */}
-              <div className="relative aspect-[2/3] rounded-lg overflow-hidden">
-                {look.image.src ? (
-                  <Image
-                    src={look.image.src}
-                    alt={look.image.alt}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-muted flex items-center justify-center">
-                    <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
-                  </div>
-                )}
-              </div>
+            <React.Fragment key={index}>
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                {/* Look Image */}
+                <div className="relative aspect-[2/3] rounded-xl overflow-hidden shadow-lg border border-accent">
+                  {look.image.src ? (
+                    <Image
+                      src={look.image.src}
+                      alt={look.image.alt}
+                      fill
+                      className="object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                      <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
+                    </div>
+                  )}
+                  {look.image.caption && (
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 text-sm">
+                      {look.image.caption}
+                    </div>
+                  )}
+                </div>
 
-              {/* Look Details */}
-              <div className="space-y-6">
-                {look.image.caption && (
-                  <p className="text-lg font-light">{look.image.caption}</p>
-                )}
-
-                {/* Outfit Details */}
-                <div className="space-y-4">
-                  {look.outfitDetails.map((detail, detailIndex) => (
-                    <Card key={detailIndex}>
-                      <CardContent className="p-4">
-                        <div className="flex gap-4">
+                {/* Look Details */}
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-semibold text-primary mb-2">Outfit Details</h2>
+                  <div className="space-y-4">
+                    {look.outfitDetails.map((detail, detailIndex) => (
+                      <Card key={detailIndex} className="border border-accent/40 shadow-sm">
+                        <CardContent className="p-4 flex gap-4 items-center">
                           {/* Product Image */}
-                          <div className="relative w-24 h-24">
+                          <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-muted">
                             {detail.productLink.image.src ? (
                               <Image
                                 src={detail.productLink.image.src}
                                 alt={detail.productLink.image.alt}
                                 fill
-                                className="object-cover rounded"
+                                className="object-cover"
                               />
                             ) : (
-                              <div className="w-full h-full bg-muted rounded flex items-center justify-center">
+                              <div className="w-full h-full bg-muted flex items-center justify-center">
                                 <ImageIcon className="h-8 w-8 text-muted-foreground/30" />
                               </div>
                             )}
                           </div>
-
                           {/* Product Details */}
                           <div className="flex-1">
-                            <h3 className="font-medium mb-1">
+                            <h3 className="font-medium mb-1 text-lg text-primary">
                               {detail.name}
                             </h3>
                             {detail.description && (
@@ -90,18 +91,21 @@ export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
                               </p>
                             )}
                             <Link href={`/product/${detail.productLink.slug.current}`}>
-                              <Button variant="outline" size="sm">
+                              <Button variant="outline" size="sm" className="mt-2">
                                 View Product
                               </Button>
                             </Link>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+              {index < lookbook.looks.length - 1 && (
+                <div className="my-12 border-t border-dashed border-accent/30" />
+              )}
+            </React.Fragment>
           ))}
         </div>
       </div>
