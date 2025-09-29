@@ -4,18 +4,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { processSpecialOffersHome } from "@/lib/controllers/processHomepage/ProcessSpecialOffer";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
-import WishlistButton from "../product/WishlistButton";
 import AddToCartButton from "../product/AddToCartButton";
-import { Skeleton } from "@/components/ui/skeleton";
+import WishlistButton from "../product/WishlistButton";
 import FeaturedProductsFallback from "./FeaturedProductsFallback";
 
 const FeaturedProducts = async () => {
   try {
     const data = await processSpecialOffersHome();
     const offer = data?.find((offer) => offer.category === "featured");
-    if (!offer) return <FeaturedProductsFallback />;
+    if (!offer) return null;
     const dataProducts = offer.products;
-    if (!dataProducts || dataProducts.length <= 0) return <FeaturedProductsFallback />;
+    if (!dataProducts || dataProducts.length <= 0) return null;
 
   return (
     <section className="py-16 bg-secondary/30">

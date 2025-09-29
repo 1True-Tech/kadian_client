@@ -1,12 +1,11 @@
 import env from "@/lib/constants/env";
-import ping from "@/lib/utils/ping";
-import { DataResponse, GeneralResponse } from "@/types/structures";
-import { ParamsProps } from "@/types/structures";
-import { InventoryGetResponse, InventoryPutResponse } from "@/types/inventory";
-import { NextResponse } from "next/server";
-import { client } from "@/lib/utils/NSClient";
-import queries from "@/lib/queries";
 import { processProducts } from "@/lib/controllers/processShop/processProducts";
+import queries from "@/lib/queries";
+import { client } from "@/lib/utils/NSClient";
+import ping from "@/lib/utils/ping";
+import { InventoryGetResponse, InventoryPutResponse } from "@/types/inventory";
+import { GeneralResponse, ParamsProps } from "@/types/structures";
+import { NextResponse } from "next/server";
 
 type Params = ParamsProps<{ productId: string }>;
 
@@ -91,6 +90,8 @@ export async function PATCH(req: Request, { params }: Params) {
           [data.data].map(async (i) => {
             const itemData = await client.fetch(queries.productsByIdsQuery, {
               ids: i?.sanityProductId,
+            }, {
+              token: env.SANITY_STUDIO_UPDATE_TOKEN
             });
             return processProducts(itemData);
           })

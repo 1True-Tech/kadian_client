@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
     // Parse request body
     const body = await req.json();
-    const { orderId, items, customerEmail, customerName } = body;
+    const { orderId, items, customerEmail, customerName,shippingInfo } = body;
 
     if (!orderId || !items || items.length === 0) {
       const errorResponse: GeneralResponse = {
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
 
     // Create Stripe checkout session via server API
     const response = await fetch(
-      `${env.API_URL}/payments/stripe/create-checkout-session`,
+      `${env.API_URL}payments/stripe/create-checkout-session`,
       {
         method: "POST",
         headers: {
@@ -53,9 +53,11 @@ export async function POST(req: Request) {
             name: customerName || "",
           },
           metadata: { orderId },
+          shippingInfo
         }),
       }
     );
+    console.log(response)
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -72,10 +74,7 @@ export async function POST(req: Request) {
       statusCode: 200,
       success: true,
       message: "Stripe checkout session created successfully",
-      data: {
-        sessionId: stripeData.id,
-        url: stripeData.url,
-      }
+      data: stripeData.data
     };
 
     return NextResponse.json(successResponse, { status: 200 });

@@ -1,21 +1,23 @@
 import { OrdersResponseData } from "./order";
-import { ProductReady, ProductVariantReady, Size } from "./product";
+import { ProductVariantReady, Size } from "./product";
 import { AccountSettings } from "./settings";
 import { Color, ReadyImage } from "./structures";
 
 /**
  * User roles definition
  */
-export type UserRole = "admin" | "user";
+export type UserRole = "admin" | "user" | "superadmin";
 
 /**
  * Address type definition
  */
 export interface Address {
-  street: string;
+  id: string;
+  line1: string;
+  line2?: string;
   city: string;
   state: string;
-  postalCode: string;
+  postal: string;
   country: string;
 }
 
@@ -75,14 +77,25 @@ export interface Name {
   last: string;
 }
 
+export interface UserDataMini {
+    id: string;
+    email: string;
+    name: {
+        first: string;
+        last: string;
+    };
+    role: string;
+    isActive: boolean;
+    lastSeen: Date|null
+}
 /**
  * User data type definition
  */
 export interface UserData {
   /** User's email address (must match email format) */
   email: string;
-  /** Hashed password (min 8 chars, must include uppercase, number, and symbol) */
-  password: string;
+  /** User's username */
+  username: string;
   /** User's full name */
   name: Name;
   /** Phone number in E.164 format (optional) */
@@ -90,22 +103,23 @@ export interface UserData {
   /** List of user addresses */
   addresses: Address[];
   /** User's shopping cart items */
-  cart: CartItemReady[];
+  cart: CartItem[];
   /** User's wishlist items */
   wishList: WishlistItem[];
-  /** User's role ("user" or "admin") */
+  /** User's role ("user", "admin", or "superadmin") */
   role: UserRole;
-  /** Hashed reset password token (optional) */
-  resetPasswordTokenHash?: string;
-  /** Reset token expiration date (optional) */
-  resetPasswordExpires?: Date;
+  /** Whether the user's email is verified */
+  isVerified: boolean;
+  /** Last time the user was seen/active */
+  lastSeen: Date;
   /** Number of failed login attempts */
   loginAttempts: number;
   /** Account lock expiration timestamp */
   lockUntil?: number;
   /** MongoDB document ID */
   _id: string;
-  orders: OrdersResponseData[];
+  /** User's orders */
+  orders?: OrdersResponseData[];
 }
 
 // Legacy interfaces for backward compatibility

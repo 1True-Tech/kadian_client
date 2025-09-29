@@ -43,7 +43,6 @@ export async function createOrder(
   {body}: {body: CreateOrderBody}
 ): Promise<OrderCreateResponse & GeneralResponse> {
   const token = cookies.get("access_token") || "";
-  console.log(body.payment.proof !== undefined)
   const res = await fetch("/api/orders", {
     method: "POST",
     headers: {

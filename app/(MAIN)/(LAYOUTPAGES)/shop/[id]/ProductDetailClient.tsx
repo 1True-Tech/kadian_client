@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Heart,
   Share2,
@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Color } from "@/types/structures";
 import AddToCartButton from "@/components/product/AddToCartButton";
 import { useUserStore } from "@/store/user";
+import {Loader} from "@/components/ui/loaders";
 
 interface ProductDetailClientProps {
   product: ProductReady;
@@ -28,7 +29,17 @@ interface ProductDetailClientProps {
 
 const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  const [isLoading, setIsLoading] = useState(true);
   const {user} = useUserStore()
+  
+  useEffect(() => {
+    // Simulate loading of product details
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   // All variants are source of truth
   const sizes: Size[] = Array.from(
@@ -68,6 +79,14 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
     );
     if (variant) setSelectedVariant(variant);
   };
+
+  if (isLoading) {
+    return (
+      <div className="container h-fit mx-auto px-4 py-8 flex justify-center items-center min-h-[600px]">
+        <Loader loaderSize="parent" loader="flip-text-loader" text="Loading product details..." />
+      </div>
+    );
+  }
 
   return (
     <div className="container h-fit mx-auto px-4 py-8">

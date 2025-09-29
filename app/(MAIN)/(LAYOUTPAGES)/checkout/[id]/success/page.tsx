@@ -1,16 +1,18 @@
 "use client"
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCart } from '@/lib/hooks/useCart';
+import { CheckCircle } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function CheckoutSuccess() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { clearCart } = useCart();
   const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const [orderDetails, setOrderDetails] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
   const orderId = searchParams.get('order_id');
   const sessionId = searchParams.get('session_id');
@@ -21,14 +23,22 @@ export default function CheckoutSuccess() {
     
     // Fetch order details to display order number
     if (orderId) {
+      setIsLoading(true);
       fetch(`/api/orders/${orderId}`)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
             setOrderNumber(data.data.orderNumber);
+            setOrderDetails(data.data);
           }
+          setIsLoading(false);
         })
-        .catch(err => console.error('Error fetching order details:', err));
+        .catch(err => {
+          console.error('Error fetching order details:', err);
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
     }
   }, [orderId, clearCart]);
 

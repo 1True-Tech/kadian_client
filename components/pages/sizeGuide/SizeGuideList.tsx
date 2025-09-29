@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import type { SizeGuide } from "@/types/guides";
 import { ImageIcon } from "lucide-react";
+import { PortableText } from "next-sanity";
 import Image from "next/image";
 
 interface SizeGuideListProps {
@@ -22,9 +23,12 @@ export default function SizeGuideList({ initialGuides }: SizeGuideListProps) {
     <section className="py-16">
       <div className="px-container">
         <div className="text-center mb-12 animate-fade-up">
-          <h1 className="heading-section text-4xl font-cinzel mb-4">Size Guide</h1>
+          <h1 className="heading-section text-4xl font-cinzel mb-4">
+            Size Guide
+          </h1>
           <p className="text-elegant max-w-2xl mx-auto">
-            Find your perfect fit with our detailed size charts and measurement guides.
+            Find your perfect fit with our detailed size charts and measurement
+            guides.
           </p>
         </div>
 
@@ -54,7 +58,9 @@ export default function SizeGuideList({ initialGuides }: SizeGuideListProps) {
                   {/* Size Chart */}
                   <div className="md:w-2/3 space-y-6">
                     <div>
-                      <h2 className="text-2xl font-light mb-2">{guide.title}</h2>
+                      <h2 className="text-2xl font-light mb-2">
+                        {guide.title}
+                      </h2>
                       <p className="text-muted-foreground">
                         Category: {guide.category.name}
                       </p>
@@ -62,7 +68,7 @@ export default function SizeGuideList({ initialGuides }: SizeGuideListProps) {
 
                     {guide.measurementInstructions && (
                       <div className="prose prose-sm max-w-none">
-                        {guide.measurementInstructions}
+                        <PortableText value={guide.measurementInstructions} />
                       </div>
                     )}
 
@@ -71,24 +77,34 @@ export default function SizeGuideList({ initialGuides }: SizeGuideListProps) {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Size</TableHead>
-                            <TableHead>Chest ({guide.sizeChart.units})</TableHead>
-                            <TableHead>Waist ({guide.sizeChart.units})</TableHead>
-                            <TableHead>Hips ({guide.sizeChart.units})</TableHead>
-                            <TableHead>Inseam ({guide.sizeChart.units})</TableHead>
+                            <TableHead>
+                              Chest ({guide.sizeChart.units})
+                            </TableHead>
+                            <TableHead>
+                              Waist ({guide.sizeChart.units})
+                            </TableHead>
+                            <TableHead>
+                              Hips ({guide.sizeChart.units})
+                            </TableHead>
+                            <TableHead>
+                              Inseam ({guide.sizeChart.units})
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {guide.sizeChart.measurements.map((measurement, index) => (
-                            <TableRow key={index}>
-                              <TableCell className="font-medium">
-                                {measurement.sizeName}
-                              </TableCell>
-                              <TableCell>{measurement.chest}</TableCell>
-                              <TableCell>{measurement.waist}</TableCell>
-                              <TableCell>{measurement.hips}</TableCell>
-                              <TableCell>{measurement.inseam}</TableCell>
-                            </TableRow>
-                          ))}
+                          {guide.sizeChart.measurements.map(
+                            (measurement, index) => (
+                              <TableRow key={index}>
+                                <TableCell className="font-medium">
+                                  {measurement.sizeName}
+                                </TableCell>
+                                <TableCell>{measurement.chest}</TableCell>
+                                <TableCell>{measurement.waist}</TableCell>
+                                <TableCell>{measurement.hips}</TableCell>
+                                <TableCell>{measurement.inseam}</TableCell>
+                              </TableRow>
+                            )
+                          )}
                         </TableBody>
                       </Table>
                     </div>

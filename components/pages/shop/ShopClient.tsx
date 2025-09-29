@@ -205,7 +205,6 @@ const ShopClient = ({
         <div className="flex-1">
           <ProductGrid
             products={filteredProducts}
-            onAddToCart={(id) => console.log("Add to cart:", id)}
           />
         </div>
       </div>

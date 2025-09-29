@@ -1,7 +1,4 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Address } from "@/types/user";
-import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,9 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useUserStore } from "@/store/user";
+import { Label } from "@/components/ui/label";
+import { Address } from "@/types/user";
+import React, { useState } from "react";
 
 type Props = {
   address: Address;
@@ -54,15 +52,26 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="street">Street Address</Label>
+              <Label htmlFor="addressLine1">Address Line 1</Label>
               <Input
-                id="street"
-                value={editedAddress.street}
+                id="addressLine1"
+                value={editedAddress.line1}
                 onChange={(e) =>
-                  setEditedAddress({ ...editedAddress, street: e.target.value })
+                  setEditedAddress({ ...editedAddress, line1: e.target.value })
                 }
               />
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="addressLine2">Address Line 2</Label>
+              <Input
+                id="addressLine2"
+                value={editedAddress.line2}
+                onChange={(e) =>
+                  setEditedAddress({ ...editedAddress, line2: e.target.value })
+                }
+              />
+            </div>
+            
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="city">City</Label>
@@ -90,9 +99,9 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
                 <Label htmlFor="zipCode">Postal Code</Label>
                 <Input
                   id="postalCode"
-                  value={editedAddress.postalCode}
+                  value={editedAddress.postal}
                   onChange={(e) =>
-                    setEditedAddress({ ...editedAddress, postalCode: e.target.value })
+                    setEditedAddress({ ...editedAddress, postal: e.target.value })
                   }
                 />
               </div>
@@ -150,7 +159,6 @@ function DeleteAddressDialog({ isOpen, onClose, onConfirm }: {
 export default function AddressItem({ address }: Props) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const { actions } = useUserStore();
   const handleEdit = (updatedAddress: Address) => {
     // Here you would typically make an API call to update the address
     console.log('Update address:', updatedAddress);
@@ -171,8 +179,9 @@ export default function AddressItem({ address }: Props) {
               {/* {address. && <Badge variant="secondary">Default</Badge>} */}
             </div>
             <p className="text-sm text-muted-foreground">
-              {address.street}
+              {address.line1}
               <br />
+              {address.line2&&<><br/>{address.line2}</>}
               {address.city}, {address.state} {address.city}
               <br />
               {address.country}
