@@ -1,10 +1,9 @@
-import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { Lookbook } from "@/types/guides";
-import { imageAssetWithAlt } from "@/types/structures/image";
+import { ReadyImage } from "@/types/structures/image";
 
 type LookbookRaw = Omit<Lookbook, "looks"> & {
   looks: Array<{
-    image: imageAssetWithAlt;
+    image: ReadyImage&{caption:string};
     outfitDetails: Array<{
       name: string;
       description?: string;
@@ -13,7 +12,7 @@ type LookbookRaw = Omit<Lookbook, "looks"> & {
         name: string;
         slug: { current: string };
         price: number;
-        image: imageAssetWithAlt;
+        image: ReadyImage&{caption:string};
       };
     }>;
   }>;
@@ -21,13 +20,8 @@ type LookbookRaw = Omit<Lookbook, "looks"> & {
 
 export const processLookbook = (lookbook: LookbookRaw): Lookbook => {
   // Extract first paragraph from introduction for description if available
-  let description = "";
-  if (lookbook.introduction && lookbook.introduction.length > 0) {
-    const firstBlock = lookbook.introduction[0];
-    if (firstBlock.children && firstBlock.children.length > 0) {
-      description = firstBlock.children[0]?.text || "";
-    }
-  }
+  const description =lookbook.introduction;
+
 
   return {
     ...lookbook,
@@ -36,11 +30,8 @@ export const processLookbook = (lookbook: LookbookRaw): Lookbook => {
       ...look,
       image: {
         alt: look.image?.alt || "Lookbook image",
-        src: fashionImageBuilder([look.image?.asset], {
-          treatment: "lookbook",
-          quality: 100,
-          format: "webp",
-        })[0],
+        src: look.image?.src,
+        caption: look.image?.caption ||"",
       },
       outfitDetails: look.outfitDetails?.map((detail) => ({
         ...detail,
@@ -48,11 +39,8 @@ export const processLookbook = (lookbook: LookbookRaw): Lookbook => {
           ...detail.productLink,
           image: {
             alt: detail.productLink?.image?.alt || "Product image",
-            src: fashionImageBuilder([detail.productLink?.image?.asset], {
-              treatment: "catalog",
-              quality: 85,
-              format: "webp",
-            })[0],
+            src: detail.productLink?.image.src,
+            caption: detail.productLink?.image.caption || "",
           },
         },
       })) || [],

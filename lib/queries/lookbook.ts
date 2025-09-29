@@ -8,7 +8,7 @@ export const lookbookQuery = `*[_type == "lookbook"] | order(season.year desc) {
     image {
       alt,
       caption,
-      asset
+      "src": asset->url
     },
     outfitDetails[] {
       name,
@@ -19,7 +19,7 @@ export const lookbookQuery = `*[_type == "lookbook"] | order(season.year desc) {
         slug,
         price,
         image {
-          asset,
+         "src": asset->url,
           alt
         }
       }
@@ -37,7 +37,7 @@ export const lookbookBySlugQuery = `*[_type == "lookbook" && slug.current == $sl
     image {
       alt,
       caption,
-      asset
+      "src": asset->url
     },
     outfitDetails[] {
       name,
@@ -48,7 +48,7 @@ export const lookbookBySlugQuery = `*[_type == "lookbook" && slug.current == $sl
         slug,
         price,
         image {
-          asset,
+          "src": asset->url,
           alt
         }
       }

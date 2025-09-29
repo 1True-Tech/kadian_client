@@ -7,6 +7,7 @@ import { ParamsProps } from "@/types/structures";
 import { Suspense } from "react";
 import LookbookSkeleton from "@/components/pages/lookbook/LookbookSkeleton";
 import { Metadata } from "next";
+import PagesLayout from "@/components/layout/PagesLayout";
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -26,10 +27,10 @@ export async function generateMetadata({ params }: ParamsProps<{ slug: string }>
 
     return {
       title: `${lookbook.title} | Kadian Lookbook`,
-      description: lookbook.description || `Explore our ${lookbook.title} lookbook at Kadian.`,
+      description: `Explore our ${lookbook.title} lookbook at Kadian.`,
       openGraph: {
         title: `${lookbook.title} | Kadian Lookbook`,
-        description: lookbook.description || `Explore our ${lookbook.title} lookbook at Kadian.`,
+        description: `Explore our ${lookbook.title} lookbook at Kadian.`,
         images: lookbook.looks && lookbook.looks.length > 0 ? [{ url: lookbook.looks[0]?.image?.src, width: 800, height: 600, alt: lookbook.title }] : [],
       },
     };
@@ -56,11 +57,22 @@ export default async function LookbookPage({ params }: ParamsProps<{ slug: strin
     const lookbook = processLookbook(lookbookRaw);
 
     return (
-      <Suspense fallback={<LookbookSkeleton />}>
+      
+      <PagesLayout showBreadcrumbs breadcrumbItems={[
+        {
+          label: "Look book",
+          href: "/lookbook"
+        },
+        {
+          label: lookbook.title
+        }
+      ]}>
+        <Suspense fallback={<LookbookSkeleton />}>
         <div className="min-h-screen">
           <LookbookDetails lookbook={lookbook} />
         </div>
       </Suspense>
+      </PagesLayout>
     );
   } catch (error) {
     console.error("Error loading lookbook page:", error);

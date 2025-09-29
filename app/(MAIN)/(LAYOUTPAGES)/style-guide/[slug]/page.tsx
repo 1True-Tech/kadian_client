@@ -7,10 +7,13 @@ import { ParamsProps } from "@/types/structures";
 import { Suspense } from "react";
 import StyleGuideSkeleton from "@/components/pages/styleGuide/StyleGuideSkeleton";
 import { Metadata } from "next";
+import PagesLayout from "@/components/layout/PagesLayout";
 
 export const revalidate = 3600; // Revalidate every hour
 
-export async function generateMetadata({ params }: ParamsProps<{ slug: string }>): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ParamsProps<{ slug: string }>): Promise<Metadata> {
   try {
     const { slug } = await params;
     const styleGuideRaw = await client.fetch(styleGuideBySlugQuery, { slug });
@@ -26,13 +29,24 @@ export async function generateMetadata({ params }: ParamsProps<{ slug: string }>
 
     return {
       title: `${styleGuide.title} | Kadian Style Guide`,
-      description: styleGuide.description || `Explore our ${styleGuide.title} style guide at Kadian.`,
+      description: `Explore our ${styleGuide.title} style guide at Kadian.`,
       openGraph: {
         title: `${styleGuide.title} | Kadian Style Guide`,
-        description: styleGuide.description || `Explore our ${styleGuide.title} style guide at Kadian.`,
-        images: styleGuide.sections && styleGuide.sections.length > 0 && styleGuide.sections[0].styleImages && styleGuide.sections[0].styleImages.length > 0 
-          ? [{ url: styleGuide.sections[0].styleImages[0]?.src, width: 800, height: 600, alt: styleGuide.title }] 
-          : [],
+        description: `Explore our ${styleGuide.title} style guide at Kadian.`,
+        images:
+          styleGuide.sections &&
+          styleGuide.sections.length > 0 &&
+          styleGuide.sections[0].styleImages &&
+          styleGuide.sections[0].styleImages.length > 0
+            ? [
+                {
+                  url: styleGuide.sections[0].styleImages[0]?.src,
+                  width: 800,
+                  height: 600,
+                  alt: styleGuide.title,
+                },
+              ]
+            : [],
       },
     };
   } catch (error) {
@@ -44,12 +58,14 @@ export async function generateMetadata({ params }: ParamsProps<{ slug: string }>
   }
 }
 
-export default async function StyleGuidePage({ params }: ParamsProps<{slug:string}>) {
+export default async function StyleGuidePage({
+  params,
+}: ParamsProps<{ slug: string }>) {
   try {
-    const {slug} = await params;
+    const { slug } = await params;
 
     const styleGuideRaw = await client.fetch(styleGuideBySlugQuery, {
-      slug
+      slug,
     });
 
     if (!styleGuideRaw) {
@@ -59,11 +75,21 @@ export default async function StyleGuidePage({ params }: ParamsProps<{slug:strin
     const styleGuide = processStyleGuide(styleGuideRaw);
 
     return (
-      <Suspense fallback={<StyleGuideSkeleton />}>
-        <div className="min-h-screen">
-          <StyleGuideDetails styleGuide={styleGuide} />
-        </div>
-      </Suspense>
+      <PagesLayout showBreadcrumbs breadcrumbItems={[
+        {
+          label: "Style guide",
+          href: "/style-guide"
+        },
+        {
+          label: styleGuide.title
+        }
+      ]}>
+        <Suspense fallback={<StyleGuideSkeleton />}>
+          <div className="min-h-screen">
+            <StyleGuideDetails styleGuide={styleGuide} />
+          </div>
+        </Suspense>
+      </PagesLayout>
     );
   } catch (error) {
     console.error("Error loading style guide page:", error);
