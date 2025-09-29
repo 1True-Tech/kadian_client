@@ -8,7 +8,6 @@ import {
 } from "@/app/api/auth/register/route";
 import cookies from "@/lib/utils/cookies";
 import { GeneralResponse } from "@/types/structures";
-import handleAuthToken from "../handleAuthToken";
 import { UserData } from "@/types/user";
 
 /**
@@ -79,7 +78,7 @@ export async function register(
 export async function getMe({query}:{query: {include_orders:boolean}}): Promise<GeneralResponse & { data?: UserData }> {
   const token = cookies.get("access_token") || "";
   
-  let url = `/api/auth/me?include_orders=${query.include_orders}`;
+  const url = `/api/auth/me?include_orders=${query.include_orders}`;
 
   const res = await fetch(url, {
     headers: { authorization: "Bearer " + token, },
