@@ -1,53 +1,43 @@
 import env from "@/lib/constants/env";
-import queries from "@/lib/queries";
-import { client } from "@/lib/utils/NSClient";
 import ping from "@/lib/utils/ping";
 import { GeneralResponse } from "@/types/structures";
-import { UserData } from "@/types/user";
+import { UserData, Address } from "@/types/user";
 import { NextRequest, NextResponse } from "next/server";
 
-interface UserResponse extends GeneralResponse {
-  data?: UserData;
+interface AddressResponse extends GeneralResponse {
+  data?: Address | Address[];
 }
 
 /**
- * GET /api/v1/auth/me
- * Fetch the authenticated user's profile
+ * POST /api/v1/auth/me/address
+ * Add one or more addresses to the authenticated user
  */
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const isOnline = await ping();
 
   try {
-    // Make a single request to the server that includes orders
-    const res = await fetch(`${env.API_URL}auth/me?include_orders=true`, {
-      method: "GET",
+    const body = await req.json();
+
+    const res = await fetch(`${env.API_URL}auth/me/address`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         authorization: req.headers.get("authorization") || "",
       },
+      body: JSON.stringify(body),
     });
 
     const data = await res.json();
 
     if (res.ok && data.status === "good") {
-      const userData = data.data as UserData;
-      const products = await client.fetch(queries.productsOrdersQuery, {items: userData.orders?.flatMap(p => p.items)})
-      userData.orders = userData.orders?.map(order => ({
-        ...order,
-        items: order.items?.map(item => ({
-          ...item,
-          product: products.find((p: { _id: any; }) => p._id === item.productId)
-        }))
-      }))
-      const successResponse: UserResponse = {
+      const successResponse: AddressResponse = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
-        message: data.message || "User profile retrieved successfully.",
+        message: data.message || "Address added successfully",
         data: data.data,
       };
-
       return NextResponse.json(successResponse, { status: 200 });
     }
 
@@ -57,25 +47,24 @@ export async function GET(req: NextRequest) {
       success: false,
       status: error?.status ?? "bad",
       statusCode: error?.statusCode ?? 500,
-      message: error?.message || "Unable to fetch user profile",
+      message: error?.message || "Unable to add address",
       connectionActivity: isOnline ? "online" : "offline",
     };
-
     return NextResponse.json(errorData, { status: errorData.statusCode });
   }
 }
 
 /**
- * PATCH /api/v1/auth/me
- * Update authenticated user's profile
+ * PATCH /api/v1/auth/me/address
+ * Update one or more addresses by id
  */
-export async function PATCH(req: Request) {
+export async function PATCH(req: NextRequest) {
   const isOnline = await ping();
 
   try {
     const body = await req.json();
 
-    const res = await fetch(`${env.API_URL}auth/me`, {
+    const res = await fetch(`${env.API_URL}auth/me/address`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -87,15 +76,14 @@ export async function PATCH(req: Request) {
     const data = await res.json();
 
     if (res.ok && data.status === "good") {
-      const successResponse: UserResponse = {
+      const successResponse: AddressResponse = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
-        message: data.message || "User profile updated successfully.",
+        message: data.message || "Address updated successfully",
         data: data.data,
       };
-
       return NextResponse.json(successResponse, { status: 200 });
     }
 
@@ -105,28 +93,30 @@ export async function PATCH(req: Request) {
       success: false,
       status: error?.status ?? "bad",
       statusCode: error?.statusCode ?? 500,
-      message: error?.message || "Unable to update user profile",
+      message: error?.message || "Unable to update address",
       connectionActivity: isOnline ? "online" : "offline",
     };
-
     return NextResponse.json(errorData, { status: errorData.statusCode });
   }
 }
 
 /**
- * DELETE /api/v1/auth/me
- * Delete the authenticated user
+ * DELETE /api/v1/auth/me/address
+ * Remove an address by id
  */
-export async function DELETE(req: Request) {
+export async function DELETE(req: NextRequest) {
   const isOnline = await ping();
 
   try {
-    const res = await fetch(`${env.API_URL}auth/me`, {
+    const body = await req.json();
+
+    const res = await fetch(`${env.API_URL}auth/me/address`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         authorization: req.headers.get("authorization") || "",
       },
+      body: JSON.stringify(body), // expects { id: "addressId" }
     });
 
     const data = await res.json();
@@ -137,9 +127,8 @@ export async function DELETE(req: Request) {
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
-        message: data.message || "User deleted successfully.",
+        message: data.message || "Address removed successfully",
       };
-
       return NextResponse.json(successResponse, { status: 200 });
     }
 
@@ -149,10 +138,9 @@ export async function DELETE(req: Request) {
       success: false,
       status: error?.status ?? "bad",
       statusCode: error?.statusCode ?? 500,
-      message: error?.message || "Unable to delete user account",
+      message: error?.message || "Unable to remove address",
       connectionActivity: isOnline ? "online" : "offline",
     };
-
     return NextResponse.json(errorData, { status: errorData.statusCode });
   }
 }

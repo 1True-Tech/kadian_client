@@ -60,6 +60,7 @@ export interface SanityVariant {
   images: ProductImageRaw[];
   isBase: boolean;
   price: number;
+  discountPrice?: number;
   size: {
     label: string;
     description?: string;
@@ -77,6 +78,8 @@ export interface SanityVariant {
     unit: string;
     value: number;
   };
+  barcode?: string;
+  isActive?: boolean;
 }
 
 export interface ProductRaw {
@@ -89,6 +92,9 @@ export interface ProductRaw {
   description: string;
   details: string;
   basePrice: number;
+  discountPrice?: number;
+  discountPercentage?: number;
+  isOnSale?: boolean;
   brand: BrandRaw;
   category: Category;
   careInstructions: string[];
@@ -98,8 +104,17 @@ export interface ProductRaw {
   gallery: ProductImageRaw[];
   variants: SanityVariant[];
   sizeGuide: SizeGuide;
+  ratings?: {
+    average: number;
+    count: number;
+  };
   tags: string[];
-  isActive: boolean;
+   isActive: boolean;
+   inventory?: {
+     inStock: boolean;
+     quantity: number;
+     lowStockThreshold?: number;
+   };
 }
 
 // Processed types (after transformation)

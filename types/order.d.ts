@@ -11,7 +11,12 @@ export type OrderStatus =
 /**
  * Payment method type definition
  */
-export type PaymentMethod = "card" | "transfer" | "delivery" |"stripe"|"paypal";
+export type PaymentMethod =
+  | "card"
+  | "transfer"
+  | "delivery"
+  | "stripe"
+  | "paypal";
 
 /**
  * Proof of payment type definition
@@ -29,16 +34,55 @@ export interface PaymentProof {
 export interface Payment {
   /** Selected payment method */
   method: PaymentMethod;
+  /** Payment provider */
+  provider?: "stripe" | "paypal" | "transfer" | "delivery";
   /** Reference ID or transaction code */
   reference?: string;
   /** Paid amount */
   amount: number;
+  /** Currency code */
+  currency: string;
   /** Payment status */
   status: "initiated" | "pending" | "paid" | "failed" | "refunded";
   /** Proof of payment (for transfer) */
-  proof?: PaymentProof;
+  proof?: {
+    imageId?: string;
+    filename?: string;
+  };
+  /** Provider-specific IDs */
+  providerOrderId?: string;
+  providerPaymentId?: string;
+  providerCheckoutSessionId?: string;
+  providerClientSecret?: string;
+  /** Payment method details */
+  paymentMethod?: {
+    brand?: string;
+    last4?: string;
+    expMonth?: number;
+    expYear?: number;
+  };
+  /** Payer information */
+  payer?: {
+    email?: string;
+    id?: string;
+  };
+  /** Receipt URL */
+  receiptUrl?: string;
   /** Date paid */
   paidAt?: Date;
+  /** Idempotency key */
+  idempotencyKey?: string;
+  /** Webhook processed timestamp */
+  webhookProcessedAt?: Date;
+  /** Number of payment attempts */
+  attempts?: number;
+  /** Refund information */
+  refunds?: Array<{
+    id: string;
+    amount: number;
+    status: string;
+    createdAt: Date;
+  }>;
 }
 
 /**
@@ -92,9 +136,49 @@ export interface CustomerInfo {
  * Orders response data type definition
  */
 export interface OrdersResponseData {
-  /** Order ID */
-  id: string;
-  /** User ID */
+  /** MongoDB document ID */
+  _id: string;
+  /** User ID reference */
+  userId?: string;
+  /** Guest ID for non-registered users */
+  guestId?: string;
+  /** Order items */
+  items: OrderItem[];
+  /** Order status */
+  status: OrderStatus;
+  /** Payment information */
+  payment: Payment;
+  /** Payment history for audit trail */
+  paymentHistory?: Array<{
+    timestamp: Date;
+    status: string;
+    provider?: string;
+    amount?: number;
+    metadata?: any;
+    webhookEvent?: string;
+  }>;
+  /** Shipping address */
+  shippingAddress: ShippingAddress;
+  /** Customer information */
+  customer: CustomerInfo;
+  /** Total order amount */
+  totalAmount: number;
+  /** Currency code */
+  currency: string;
+  /** Order creation date */
+  createdAt: Date;
+  /** Order last update date */
+  updatedAt: Date;
+  /** Order tracking information */
+   tracking?: {
+     carrier?: string;
+     trackingNumber?: string;
+     trackingUrl?: string;
+     shippedAt?: Date;
+     estimatedDelivery?: Date;
+   };
+   /** Legacy ID field */
+   id?: string;
   userId: string;
   /** Total number of unique products */
   totalProducts: number;
@@ -192,7 +276,7 @@ export interface OrdersResponseDetails {
  */
 export interface OrderDetailResponse {
   /** Order details */
-  order?: OrdersResponseDetails;
+  data?: OrdersResponseDetails;
 }
 
 /**
@@ -205,20 +289,28 @@ export interface CreateOrderBody {
   shippingAddress: ShippingAddress;
   /** Customer information */
   customerInfo: CustomerInfo;
-  payment:{
-    method: PaymentMethod,
-    proof?: string
-  }
+  payment: {
+    method: PaymentMethod;
+    proof?: string;
+    idempotencyKey?: string;
+  };
 }
 
 /**
  * Order create response type definition
  */
 export interface OrderCreateResponse {
-  /** Created order ID */
-  orderId?: string;
-  /** Order status */
-  statusValue?: string;
+  data: {
+    /** Created order ID */
+    orderId?: string;
+    /** Order status */
+    statusValue?: string;
+    payment: {
+      method: PaymentMethod;
+      proof?: string;
+      idempotencyKey?: string;
+    };
+  };
 }
 
 /**

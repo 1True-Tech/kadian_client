@@ -5,6 +5,7 @@ import { useNavItems } from "@/store/navItems";
 import { HasSlot } from "@/types/structures";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import ErrorBoundary from "@/components/ui/error-boundary";
 
 export default function Layout({ children }: HasSlot) {
   const path = usePathname()
@@ -15,11 +16,15 @@ export default function Layout({ children }: HasSlot) {
 
   
 
-  return <>
-  {children}
-  <Loader loader="flip-text-loader" text="KADIAN" loaderSize="fullscreen">
-    <LoadUser/>
-  </Loader>
-  <aside id="mobile-nav" className="w-full sticky bottom-0 sm:pointer-events-none"></aside>
-  </>;
+  return (
+    <ErrorBoundary>
+      <>
+        {children}
+        <Loader loader="flip-text-loader" text="KADIAN" loaderSize="fullscreen">
+          <LoadUser/>
+        </Loader>
+        <aside id="mobile-nav" className="w-full sticky bottom-0 sm:pointer-events-none"></aside>
+      </>
+    </ErrorBoundary>
+  );
 }

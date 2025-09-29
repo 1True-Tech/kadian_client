@@ -1,14 +1,11 @@
-import queries from "@/lib/queries";
 import cookies from "@/lib/utils/cookies";
-import { client } from "@/lib/utils/NSClient";
 import {
   InventoryGetResponse,
   InventoryItem,
-  InventoryItemSanity,
   InventoryItemsResponse,
   InventoryPutResponse,
   InventoryStockUpdateResponse,
-  InventoryVariantResponse,
+  InventoryVariantResponse
 } from "@/types/inventory";
 import { GeneralResponse } from "@/types/structures";
 
@@ -32,16 +29,9 @@ export async function refreshInventory(): Promise<
   InventoryItemsResponse & GeneralResponse
 > {
   const token = cookies.get("access_token") || "";
-  const data: InventoryItemSanity[] = await client.fetch(
-    queries.productInventory
-  );
-
-  const res = await fetch("/api/inventory/_refresh", {
-    method: "POST",
+  const res = await fetch("/api/inventory_refresh", {
+    method: "GET",
     headers: { authorization: "Bearer " + token },
-    body: JSON.stringify({
-      data,
-    }),
   });
   return res.json();
 }

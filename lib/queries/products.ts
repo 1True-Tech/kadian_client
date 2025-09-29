@@ -313,12 +313,61 @@ export const productSearchQuery = groq`
     }
   }
 `;
+export const productsOrdersQuery = groq`
+  *[_type == "product" && _id in $items[].productId]{
+    _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    name,
+    "slug": slug.current,
+    description,
+    basePrice,
+
+    "brand": brand->{
+      name,
+      "slug": slug.current
+    },
+
+    category->{
+      name,
+      "slug": slug.current,
+      "parent": parent->{
+        name,
+        "slug": slug.current
+      }
+    },
+
+    "mainImage": images[primary == true][0]{
+      ${imageFragment}
+    },
+    "gallery": images[]{
+      ${imageFragment}
+    },
+
+    "firstVariant": variants[0]{
+      price,
+      sku,
+      stock,
+      stockThreshold
+    },
+
+    "variants": variants[sku in $items[productId == ^._id].variantSku][0] {
+      ${variantFragment}
+    },
+
+    rating,
+    tags,
+    isActive
+  }
+`;
 
 export const productsByIdsQuery = groq`
   *[_type == "product" && _id in $ids]{
     _id,
     _type,
     _createdAt,
+    _updatedAt,
     name,
     "slug": slug.current,
     description,
@@ -395,15 +444,15 @@ export const productCartItem = groq`
     "slug": slug.current,
     "price":basePrice,
     "image": images[primary == true][0]{
-      "src": asset->url,
+      "src": asset.asset -> url,
       alt,
     },
-    "variantSku": variants[sku == $vSku][0].sku,
-    "variant": variants[sku == $vSku][0] {
+    "variantSku": variants[sku in $vSku][0].sku,
+    "variant": variants[sku in $vSku][0] {
       ${variantFragment}
     },
-    "size": variants[sku == $vSku][0].size->{label, value},
-    "color": variants[sku == $vSku][0].color->{name,hex,rgba},
+    "size": variants[sku in $vSku][0].size->{label, value},
+    "color": variants[sku in $vSku][0].color->{name,hex,rgba},
   }
 `
 

@@ -11,23 +11,42 @@ import { getStatusColor } from "@/lib/utils/getStatusColor";
 import { useUserStore } from "@/store/user";
 import { Heart, MapPin, MoveRightIcon, Package } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import ErrorBoundary from "@/components/ui/error-boundary";
+import { Loader } from "@/components/ui/loaders";
 
 const Dashboard = () => {
+  return (
+    <ErrorBoundary>
+      <DashboardContent />
+    </ErrorBoundary>
+  );
+};
+
+const DashboardContent = () => {
   const { user } = useUserStore();
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault();
     setIsEditing(false);
     // Handle profile update
   };
-  console.log(user)
 
+  // Simulate loading completion after user data is available
+  useEffect(() => {
+    if (user) {
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  if (isLoading) {
+    return <Loader loaderSize="fullscreen" loader="flip-text-loader" text="Loading account information..." />;
+  }
 
   if (!user) return null;
   const {orders} = user
-
 
   return (
     <div className="flex-1">

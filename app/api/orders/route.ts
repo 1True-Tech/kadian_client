@@ -91,16 +91,13 @@ export async function POST(req: Request) {
     } = await res.json();
 
     if (res.ok && data.status === "good") {
-      const successResponse: DataResponse<OrderCreateResponse> = {
+      const successResponse: DataResponse<OrderCreateResponse["data"]> = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,
         success: true,
         message: data.message || "Order created successfully.",
-        data: {
-          orderId: data.orderId,
-          statusValue: data.statusValue,
-        },
+        data: data.data,
       };
 
       return NextResponse.json(successResponse, { status: 201 });

@@ -1,17 +1,23 @@
-export default async function ping(url = 'https://www.google.com', timeoutMs = 5000): Promise<boolean> {
-  try {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), timeoutMs)
+import https from "https";
 
-    const res = await fetch(url, {
-      method: 'HEAD',
-      cache: 'no-cache',
-      signal: controller.signal
-    })
+/**
+ * Checks if a web API is reachable over HTTP/HTTPS
+ * @param {string} url - The URL to test
+ * @param {number} timeoutMs - Timeout in milliseconds
+ * @returns {Promise<boolean>} True if reachable
+ */
+export default function checkHttpConnectivity(url: string = "https://example.com", timeoutMs: number = 5000): Promise<boolean> {
+  return new Promise((resolve) => {
+    const req = https.get(url, (res) => {
+      // Success if status code is 2xx or 3xx
+      resolve((res.statusCode||0) >= 200 && (res.statusCode||0) < 400);
+      res.destroy(); // Close the socket immediately
+    });
 
-    clearTimeout(timeout)
-    return res.ok
-  } catch {
-    return false
-  }
+    req.on("error", () => resolve(false));
+    req.setTimeout(timeoutMs, () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
 }

@@ -1,15 +1,15 @@
 "use client";
 
-import { DataTable } from "../components/data-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@/lib/server/client-hook";
-import { useEffect, useState } from "react";
+import { UserDataMini } from "@/types/user";
 import { Plus, RefreshCw } from "lucide-react";
-import Link from "next/link";
 import Head from "next/head";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { DataTable } from "../components/data-table";
 import { columns } from "../components/users-columns";
-import { UserData } from "@/types/user";
 
 const metaContentClient = {
   title: "Users Management | Admin Dashboard",
@@ -26,7 +26,7 @@ const Meta = ({placeHolder}:{placeHolder?:string}) => {
 };
 export default function UsersPage() {
   const { run, data, status, error } = useQuery("getUsers");
-  const [users, setUsers] = useState<UserData[]>([]);
+  const [users, setUsers] = useState<UserDataMini[]>([]);
 
   useEffect(() => {
     if (status === "idle") run();
@@ -68,9 +68,8 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="mx-auto p-6">
         <Meta/>
-
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Users Management</h1>
         <div className="flex gap-2">
@@ -94,7 +93,7 @@ export default function UsersPage() {
         </CardHeader>
         <CardContent>
           <DataTable 
-            columns={columns} 
+            columns={columns({setUsers})} 
             data={users} 
             searchKey="email" 
             placeholder="Search users by email..."

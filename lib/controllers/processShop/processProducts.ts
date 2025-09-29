@@ -86,7 +86,13 @@ export const processProducts = (products: ProductRaw[]): ProductReady[] => {
         percentage: m.percentage
       })) || [],
       slug: product.slug,
-      firstVariant:product.firstVariant
+      firstVariant:product.firstVariant,
+      createdAt: product._createdAt,
+      updatedAt: product._updatedAt,
+      basePrice: Math.min(...(processedVariants?.map(v => v.price) || [0])),
+      maxPrice: Math.max(...(processedVariants?.map(v => v.price) || [0])),
+      colors: Array.from(new Set(processedVariants?.map(v => v.color).filter(Boolean) as Color[]||[])),
+      sizes: Array.from(new Set(processedVariants?.map(v => v.size).filter(Boolean)||[]))
     };
   });
 };

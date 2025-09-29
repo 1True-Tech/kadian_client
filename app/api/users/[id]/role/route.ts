@@ -4,9 +4,10 @@ import { DataResponse, GeneralResponse } from "@/types/structures";
 import { Pagination, ParamsProps } from "@/types/structures";
 
 import { UserData } from "@/types/user";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-type Params = ParamsProps<{ userId: string }>;
+type Params = ParamsProps<{ id: string }>;
 
 interface UserRoleData {
   id: string;
@@ -19,15 +20,17 @@ type UserListResponse = DataResponse<UserRoleData>;
 
 export async function PATCH(req: Request, { params }: Params) {
   const isOnline = await ping();
-  const { userId } = await params;
-
+  const { id } = await params;
+  const { role } = await req.json();
+  const accessToken = (await cookies()).get("access_token")?.value || "";
   try {
-    const res = await fetch(`${env.API_URL}users/${userId}/role`, {
+    const res = await fetch(`${env.API_URL}users/${id}/role`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        authorization: req.headers.get("authorization") || "",
+        authorization: "Bearer " + accessToken,
       },
+      body: JSON.stringify({ role }),
     });
 
     const data: UserListResponse & {
