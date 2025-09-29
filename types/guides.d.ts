@@ -1,5 +1,6 @@
-import { Image } from "./structures";
+import { TypedObject } from "sanity";
 import { Product } from "./shop";
+import { ReadyImage } from "./structures";
 
 export interface Lookbook {
   _id: string;
@@ -9,10 +10,10 @@ export interface Lookbook {
     name: string;
     year: number;
   };
-  introduction: any[];
-  description?: string;
+  introduction: TypedObject[];
+  description?: TypedObject[];
   looks: {
-    image: Image;
+    image: (ReadyImage&{caption:string});
     outfitDetails: {
       name: string;
       description?: string;
@@ -26,12 +27,12 @@ export interface StyleGuide {
   title: string;
   slug: { current: string };
   category: string;
-  introduction: any[];
-  description?: string;
+  introduction: TypedObject[];
+  description?: TypedObject[];
   sections: {
     title: string;
     content: any[];
-    styleImages: Image[];
+    styleImages: (ReadyImage&{caption:string})[];
   }[];
 }
 
@@ -42,7 +43,7 @@ export interface SizeGuide {
     name: string;
     slug: { current: string };
   };
-  measurementInstructions?: any[];
+  measurementInstructions?: TypedObject[];
   sizeChart: {
     units: "cm" | "in";
     measurements: {
@@ -53,5 +54,5 @@ export interface SizeGuide {
       inseam: number;
     }[];
   };
-  images?: Image[];
+  images?: (ReadyImage&{caption:string})[];
 }

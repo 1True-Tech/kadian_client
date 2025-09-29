@@ -3,13 +3,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import type { StyleGuide } from "@/types/guides";
 import { ImageIcon } from "lucide-react";
+import { PortableText } from "next-sanity";
 import Image from "next/image";
 
 interface StyleGuideDetailsProps {
   styleGuide: StyleGuide;
 }
 
-export default function StyleGuideDetails({ styleGuide }: StyleGuideDetailsProps) {
+export default function StyleGuideDetails({
+  styleGuide,
+}: StyleGuideDetailsProps) {
   return (
     <section className="py-16">
       <div className="px-container">
@@ -23,7 +26,7 @@ export default function StyleGuideDetails({ styleGuide }: StyleGuideDetailsProps
           </h1>
           {styleGuide.introduction && (
             <div className="prose prose-elegant max-w-2xl mx-auto">
-              {styleGuide.introduction}
+              <PortableText value={styleGuide.introduction} />
             </div>
           )}
         </div>

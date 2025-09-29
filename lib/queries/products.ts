@@ -352,7 +352,7 @@ export const productsOrdersQuery = groq`
       stockThreshold
     },
 
-    "variants": variants[sku in $items[productId == ^._id].variantSku][0] {
+    "variants": variants[] {
       ${variantFragment}
     },
 

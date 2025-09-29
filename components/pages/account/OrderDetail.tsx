@@ -1,9 +1,8 @@
 "use client";
-import { mockProducts } from "@/assets/dummy-data/mockData";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/store/user";
-import { OrderItem, OrdersResponseData } from "@/types/order";
-import { CartItemReady, OrderPreviewReady } from "@/types/user";
+import { OrdersResponseData } from "@/types/order";
+import { CartItemReady } from "@/types/user";
 import { LoaderCircleIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,7 +48,7 @@ export default function OrderDetail(props: { id: string }) {
 
   useEffect(() => {
     if (user) {
-      const order = user.orders.find((o) => o.id === props.id);
+      const order = user.orders?.find((o) => o.id === props.id);
       if (!order) {
         setOrder(null);
         return;

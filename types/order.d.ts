@@ -1,3 +1,5 @@
+import { ProductReady } from "./product";
+
 /**
  * Order status type definition
  */
@@ -97,6 +99,7 @@ export interface OrderItem {
   quantity: number;
   /** Price per unit in kobo or cents */
   price: number;
+  product?:ProductReady
 }
 
 /**

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Lookbook } from "@/types/guides";
 import { ImageIcon } from "lucide-react";
+import { PortableText } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -25,7 +26,7 @@ export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
           </h1>
           {lookbook.introduction && (
             <div className="prose prose-elegant max-w-2xl mx-auto">
-              {lookbook.introduction}
+              <PortableText value={lookbook.introduction} />
             </div>
           )}
         </div>

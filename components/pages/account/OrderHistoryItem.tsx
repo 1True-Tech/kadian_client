@@ -2,10 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getStatusColor } from "@/lib/utils/getStatusColor";
 import { OrdersResponseData } from "@/types/order";
-import { OrderPreviewReady } from "@/types/user";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 export default function OrderHistoryItem(order: OrdersResponseData) {
     
@@ -27,12 +25,12 @@ export default function OrderHistoryItem(order: OrdersResponseData) {
         {order.items && order.items.map((item, index) => (
           <div key={index} className="flex gap-4">
             <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center">
-              {item.image ? (
+              {item.product?.mainImage?.src ? (
                 <Image
                   width={64}
                   height={64}
-                  src={item.image}
-                  alt={item.name || "Product image"}
+                  src={item.product?.mainImage?.src}
+                  alt={item.product?.mainImage?.alt || "Product image"}
                   className="w-16 h-16 object-cover rounded"
                 />
               ) : (
@@ -40,7 +38,7 @@ export default function OrderHistoryItem(order: OrdersResponseData) {
               )}
             </div>
             <div className="flex-1">
-              <h4 className="font-medium">{item.name}</h4>
+              <h4 className="font-medium">{item.product?.name}</h4>
               <p className="text-sm text-muted-foreground">
                 Qty: {item.quantity}
               </p>
