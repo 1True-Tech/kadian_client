@@ -63,7 +63,7 @@ const DashboardContent = () => {
             <Card>
               <CardContent className="p-6 text-center">
                 <Package className="h-8 w-8 mx-auto mb-2 text-accent" />
-                <h3 className="font-semibold text-2xl">{user.orders.length}</h3>
+                <h3 className="font-semibold text-2xl">{user.orders?.length}</h3>
                 <p className="text-muted-foreground">Total Orders</p>
               </CardContent>
             </Card>
@@ -96,7 +96,7 @@ const DashboardContent = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {user.orders.slice(0, 3).map((order) => (
+                {user.orders?.slice(0, 3).map((order) => (
                   <div
                     key={order.id}
                     className="flex items-center justify-between border-b pb-4"
@@ -128,7 +128,7 @@ const DashboardContent = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {orders.map((order, idx) => <OrderHistoryItem key={idx} {...order} />)}
+                {orders?.map((order, idx) => <OrderHistoryItem key={idx} {...order} />)}
               </div>
             </CardContent>
           </Card>
