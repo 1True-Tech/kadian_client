@@ -148,10 +148,10 @@ const AdminDashboardContent: React.FC = () => {
       ad.type === "orders"
         ? ShoppingCart
         : ad.type === "revenue"
-        ? DollarSign
-        : ad.type === "users"
-        ? Users
-        : TrendingUp,
+          ? DollarSign
+          : ad.type === "users"
+            ? Users
+            : TrendingUp,
     positive: ad.positive,
   }));
 
@@ -168,6 +168,8 @@ const AdminDashboardContent: React.FC = () => {
         return "warning";
       case "pending":
         return "secondary";
+      case "paid":
+        return "success";
       default:
         return "secondary";
     }
@@ -192,7 +194,7 @@ const AdminDashboardContent: React.FC = () => {
                     <p className="text-xs text-muted-foreground">
                       {stat.title}
                     </p>
-                    <AnimatedNumber value={Number(stat.value) || 0} />
+                    <AnimatedNumber value={Number(parseInt(stat.value.replace("$", ""))) || 0} />
                     <p className={`text-sm mt-2 ${stat.color}`}>
                       <TrendingUp className="h-3 w-3 inline mr-1" />
                       {stat.change}
@@ -220,10 +222,12 @@ const AdminDashboardContent: React.FC = () => {
           <CardHeader className="flex items-center justify-between">
             <CardTitle>Recent Orders</CardTitle>
             {recentOrders.length > 0 && (
-              <Button variant="outline" size="sm">
-                <Eye className="h-4 w-4 mr-2" />
-                View All
-              </Button>
+              <Link href="/admin/orders">
+                <Button variant="outline" size="sm">
+                  <Eye className="h-4 w-4 mr-2" />
+                  View All
+                </Button>
+              </Link>
             )}
           </CardHeader>
 
@@ -242,7 +246,9 @@ const AdminDashboardContent: React.FC = () => {
                     className="py-4 flex items-center justify-between"
                   >
                     <div className="shrink w-[60%]">
-                      <p className="font-medium truncate">{order.id}</p>
+                      <Link href={`/admin/orders/${order.id}`}>
+                        <p className="font-medium truncate">{order.id}</p>
+                      </Link>
                       <p className="text-sm text-muted-foreground truncate">
                         {order.customer}
                       </p>
@@ -253,11 +259,11 @@ const AdminDashboardContent: React.FC = () => {
                       <div className="flex items-center justify-end gap-2 mt-1">
                         <span
                           className={`w-2 h-2 rounded-full ${
-                            order.status === "delivered"
+                            order.status === "delivered" ||order.status === "paid"
                               ? "bg-green-500"
                               : order.status === "pending"
-                              ? "bg-amber-500"
-                              : "bg-red-500"
+                                ? "bg-amber-500"
+                                : "bg-red-500"
                           }`}
                         />
                         <Badge
@@ -296,7 +302,7 @@ const AdminDashboardContent: React.FC = () => {
                   Icon={Package}
                   navigateUrl={{
                     label: "Add Product",
-                    url:"/admin/cms-studio/structure/new-product"
+                    url: "/admin/cms-studio/structure/new-product",
                   }}
                 />
               ) : (
@@ -335,7 +341,7 @@ const AdminDashboardContent: React.FC = () => {
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-[repeat(auto-fit,_minmax(10rem,_1fr))] md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-[repeat(auto-fit,_minmax(10rem,_1fr))] gap-4 w-full">
             <Link href="/admin/cms-studio/structure/new-product">
               <Button
                 className="h-20 flex-col gap-2 rounded-xl shadow-sm hover:shadow-md transition transform hover:-translate-y-1"

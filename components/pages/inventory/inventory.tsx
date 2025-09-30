@@ -30,7 +30,6 @@ export default function Inventory({ items }: InventoryProps) {
   } | null>(null);
   const refInvent = useQuery("refreshInventory");
   const refreshInventory = () => refInvent.run();
-  console.log(items)
 
   return (
     <>

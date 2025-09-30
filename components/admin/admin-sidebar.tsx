@@ -1,3 +1,4 @@
+"use client";
 import { Home, LogOut, Package, ShoppingCart, Users } from "lucide-react"
 import Link from "next/link"
 import {
@@ -14,6 +15,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import Profile from "@/app/(ADMIN)/admin/(pages)/components/profile"
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const navigationItems = [
   { label: "Dashboard", href: "/admin", icon: Home },
@@ -22,17 +25,18 @@ const navigationItems = [
   { label: "Customers", href: "/admin/users", icon: Users },
 ]
 
-interface AdminSidebarProps {
-  pathname: string;
-}
 
-export function AdminSidebar({ pathname }: AdminSidebarProps) {
+
+export function AdminSidebar() {
+  const pathname = usePathname()
   const isActive = (href: string) => {
     if (href === "/admin") {
       return pathname === "/admin"
     }
     return pathname.startsWith(href)
   }
+
+  
 
   return (
     <Sidebar className="z-50 sticky top-0 min-h-[100dvh] min-w-3xs">

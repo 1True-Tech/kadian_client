@@ -3,6 +3,9 @@ import ping from "@/lib/utils/ping";
 import { GeneralResponse, ParamsProps } from "@/types/structures";
 import { OrderDetailResponse, OrderUpdateBody } from "@/types/order";
 import { NextResponse } from "next/server";
+import { client } from "@/lib/utils/NSClient";
+import queries from "@/lib/queries";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 
 type Params = ParamsProps<{ id: string }>;
 
@@ -28,8 +31,42 @@ export async function GET(req: Request, { params }: Params) {
       message?: string;
       success: boolean;
     } = await res.json();
+    if(!data.data){
+      throw { ...data, statusCode: res.status };
+    }
 
     if (res.ok && data.status === "good") {
+      const products = await client.fetch(queries.productsOrdersQuery, {
+        items: data.data?.items,
+      });
+      
+      data.data = {
+        ...data.data,
+        items: data.data?.items?.map((item) => {
+          const foundProduct = products.find(
+            (p: { _id: any }) => p._id === item.productId
+          );
+          const foundVariant = foundProduct.variants
+            .filter((p: { sku: string }) => p.sku === item.variantSku)
+            .map((item: any) => ({
+              ...item,
+              images: item.images.map((img: any) => ({
+                alt: img.alt || foundProduct.name || "Product image",
+                src: fashionImageBuilder([img.asset], {
+                  quality: 80,
+                  width: 400,
+                })[0],
+              })),
+            }));
+          return {
+            ...item,
+            product: {
+              ...foundProduct,
+              variants: foundVariant,
+            },
+          };
+        }),
+      };
       const successResponse: OrderDetailResponse & GeneralResponse = {
         status: "good",
         connectionActivity: "online",

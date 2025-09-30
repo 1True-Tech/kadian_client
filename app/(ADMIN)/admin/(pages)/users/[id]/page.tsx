@@ -160,14 +160,14 @@ export default function UserDetailPage() {
 
   if (!isNewUser && userStatus === "loading") {
     return (
-      <div className="container mx-auto p-6 flex items-center justify-center h-[60vh]">
+      <div className="mx-auto p-4 flex items-center justify-center h-[60vh]">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="mx-auto p-4">
       <div className="flex items-center mb-8">
         <Button variant="ghost" onClick={() => router.push("/admin/users")} className="mr-4">
           <ArrowLeft className="h-4 w-4 mr-2" />

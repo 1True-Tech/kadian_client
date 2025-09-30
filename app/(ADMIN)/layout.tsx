@@ -25,6 +25,7 @@ const AdminOnly = ({ children }: AdminLayoutProps) => {
         loader="flip-text-loader"
         text="KADIAN ADMIN"
         loaderSize="fullscreen"
+        type="content-loader"
       />
     );
   }
