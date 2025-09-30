@@ -37,7 +37,7 @@ const SignIn = () => {
     });
 
     if (successfulSignIn?.status === "good" && successfulSignIn.success) {
-      const userData = await getUser.run();
+      const userData = await getUser.run({query: {include_orders: "true"}});
       if (userData?.success && userData.data) {
         actions.setUser(userData.data);
         push(redirect);

@@ -37,16 +37,6 @@ export default function Footer() {
               </Link>
             </li>
             <li className="footer-nav-list-item">
-              <Link href="/legal/terms" className="footer-nav-list-item-link">
-                Terms & Conditions
-              </Link>
-            </li>
-            <li className="footer-nav-list-item">
-              <Link href="/legal/privacy" className="footer-nav-list-item-link">
-                Privacy Policy
-              </Link>
-            </li>
-            <li className="footer-nav-list-item">
               <Link href="/lookbook" className="footer-nav-list-item-link">
                 Lookbook
               </Link>

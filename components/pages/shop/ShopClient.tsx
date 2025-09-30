@@ -1,6 +1,6 @@
 "use client";
 
-import ProductGrid from "@/components/product/ProductGrid";
+import ProductListContainer from "@/components/product/ProductGrid";
 import FiltersSidebar from "@/components/shop/FiltersSidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -152,7 +152,7 @@ const ShopClient = ({
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("grid")}
-                className="rounded-r-none"
+                className="rounded-r-none rounded-l-lg duration-300"
               >
                 <Grid3X3 className="h-4 w-4" />
               </Button>
@@ -160,7 +160,7 @@ const ShopClient = ({
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("list")}
-                className="rounded-l-none"
+                className="rounded-l-none rounded-r-lg duration-300"
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -203,8 +203,9 @@ const ShopClient = ({
 
         {/* Products */}
         <div className="flex-1">
-          <ProductGrid
+          <ProductListContainer
             products={filteredProducts}
+            display={viewMode}
           />
         </div>
       </div>
