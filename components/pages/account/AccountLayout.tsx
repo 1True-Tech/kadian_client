@@ -91,7 +91,7 @@ export default function AccountSidebar({
                     Account Settings
                   </Button>
                 </Link>
-                {user?.role === "admin" && (
+                {(user?.role === "admin" ||user?.role === "superadmin" ) && (
                   <Link href={"/admin"} className="w-full flex">
                     <Button variant="ghost" className="w-full justify-start">
                       <Settings2Icon className="h-4 w-4 mr-3" />

@@ -16,10 +16,10 @@ export interface CartItem {
 
 export function useCart() {
   const { user, actions } = useUserStore();
-  const { run: fetchCart } = useQuery("getCart");
-  const { run: updateCart } = useQuery("updateCart");
-  const { run: deleteCartItem } = useQuery("deleteCartItem");
-  const { run: updateCartItem } = useQuery("updateCartItem");
+  const { run: fetchCart, status: fetchStatus, error: fetchError } = useQuery("getCart");
+  const { run: updateCart, status: addStatus, error: addError } = useQuery("updateCart");
+  const { run: deleteCartItem, status: removeStatus, error: removeError } = useQuery("deleteCartItem");
+  const { run: updateCartItem, status: updateStatus, error: updateError } = useQuery("updateCartItem");
 
   const addToCart = useCallback(async (item: Omit<CartItem, "addedAt" | "updatedAt">) => {
     const response = await updateCart({
@@ -34,7 +34,6 @@ export function useCart() {
         ],
       },
     });
-
     if (response?.data && user) {
       actions.setUser({
         ...user,
@@ -44,9 +43,8 @@ export function useCart() {
         ],
       });
     }
-
-    return response;
-  }, [updateCart, user, actions]);
+    return { response, status: addStatus, error: addError };
+  }, [updateCart, user, actions, addStatus, addError]);
 
   const removeFromCart = useCallback(async (itemId: string) => {
     const response = await deleteCartItem({
@@ -54,27 +52,22 @@ export function useCart() {
         id: itemId,
       },
     });
-
     if (user) {
       actions.setUser({
         ...user,
         cart: user.cart.filter(item => item._id !== itemId),
       });
     }
-
-    return response;
-  }, [deleteCartItem, user, actions]);
+    return { response, status: removeStatus, error: removeError };
+  }, [deleteCartItem, user, actions, removeStatus, removeError]);
 
   const updateQuantity = useCallback(async (itemId: string, increment: number) => {
     const cartItem = user?.cart.find(item => item._id === itemId);
-    
     if (!cartItem) return null;
-    
     // If decrementing to zero or below, remove the item
     if (cartItem.quantity + increment <= 0) {
       return removeFromCart(itemId);
     }
-    
     const response = await updateCartItem({
       params: {
         id: itemId,
@@ -85,7 +78,6 @@ export function useCart() {
         },
       },
     });
-
     if (response?.data && user) {
       const updatedItem = response.data;
       actions.setUser({
@@ -96,9 +88,8 @@ export function useCart() {
         ],
       });
     }
-
-    return response;
-  }, [updateCartItem, user, actions, removeFromCart]);
+    return { response, status: updateStatus, error: updateError };
+  }, [updateCartItem, user, actions, removeFromCart, updateStatus, updateError]);
 
   const clearCart = useCallback(async () => {
     if (!user) return;
@@ -128,6 +119,12 @@ export function useCart() {
     removeFromCart,
     updateQuantity,
     clearCart,
+    addStatus,
+    addError,
+    removeStatus,
+    removeError,
+    updateStatus,
+    updateError,
     isInCart: (productId: string, variantSku?: string) => {
       return user?.cart.some(item => 
         item.productId === productId && (!variantSku || item.variantSku === variantSku)
