@@ -370,7 +370,7 @@ const CheckoutContent = () => {
       }
       if (paymentMethod === "delivery") {
         clearCart();
-        router.push(`/checkout/success?order_id=${orderId}`);
+        router.push(`/checkout/${orderId}/success?order_id=${orderId}`);
       }
     } catch (error: any) {
       toast({

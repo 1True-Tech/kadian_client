@@ -16,7 +16,7 @@ const AdminOnly = ({ children }: AdminLayoutProps) => {
   const { run, data: userData, error, status } = useQuery("getMe");
   const hasCookie = cookies.get("access_token");
   if (status === "idle") {
-    run();
+    run({query: {include_orders: "true"}});
   }
   if (!userData || status === "loading") {
     return (

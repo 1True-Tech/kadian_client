@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader } from "@/components/ui/loaders";
 import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/lib/hooks/useCart";
 import { useQuery } from "@/lib/server/client-hook";
 import { useUserStore } from "@/store/user";
-import { ImageIcon, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { ImageIcon, Loader2Icon, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const empty = (
   <div className="container mx-auto px-4 py-16">
@@ -25,17 +26,24 @@ const empty = (
   </div>
 );
 const Cart = () => {
-  // Mock cart items
   const { user } = useUserStore();
+  const { cart:cartItems, removeFromCart, updateQuantity, removeStatus, removeError, updateStatus, updateError } = useCart();
   const { run, data, status } = useQuery("getCart");
+  const [currentUpdatedItem, setCurrentUpdatedItem] = useState<string[]>([]);
 
   useEffect(() => {
     run();
   }, [run]);
 
+
   if (status === "loading")
     return (
-      <Loader loader="flip-text-loader" text="CART" loaderSize="fullscreen" />
+      <Loader
+        loader="flip-text-loader"
+        type="content-loader"
+        text="CART"
+        loaderSize="fullscreen"
+      />
     );
 
   if (!user) return empty;
@@ -49,16 +57,38 @@ const Cart = () => {
     return empty;
   }
 
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity === 0) {
-      removeItem(id);
+  async function handleRemoveFromCart(product: { sku: string; pid: string }) {
+    const cartItem = user?.cart.find(
+      (i) => i.productId === product.pid && i.variantSku === product.sku
+    );
+    if (!cartItem || !cartItem._id) return;
+    setCurrentUpdatedItem((prev) => [...prev, String(cartItem._id)]);
+  await removeFromCart(cartItem._id);
+  await run(); // Re-fetch cart after removal
+  setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(cartItem._id)));
+  }
+  const cartItem = (product: { sku: string; pid: string }) =>
+    user.cart.find(
+      (c) => c._id === product.pid && c.variantSku === product.sku
+    );
+  async function handleUpdateQuantity(
+    action: "ADD" | "REMOVE",
+    product: { sku: string; pid: string }
+  ) {
+    const item = cartItem(product);
+    if (!item || !item._id) return;
+    setCurrentUpdatedItem((prev) => [...prev, String(item._id)]);
+    if (action === "REMOVE" && item.quantity <= 1) {
+      await handleRemoveFromCart(product);
+      setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(item._id)));
       return;
     }
-  };
+  await updateQuantity(item._id, action === "ADD" ? 1 : -1);
+  await run(); // Re-fetch cart after update
+  setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(item._id)));
+  }
 
-  const removeItem = (id: string) => {};
-
-  const subtotal = cart.totalAmount;
+  const subtotal = cart?.totalAmount || 0;
   const shipping = subtotal > 75 ? 0 : 9.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
@@ -70,7 +100,7 @@ const Cart = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
-          {cart.items.map((item) => (
+          {cart?.items?.map((item: any) => (
             <Card key={item.id}>
               <CardContent className="p-6">
                 <div className="flex gap-4">
@@ -101,11 +131,20 @@ const Cart = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => removeItem(item.id)}
+                        onClick={() =>
+                          handleRemoveFromCart({
+                            pid: item.id,
+                            sku: item.variantSku,
+                          })
+                        }
                         className="text-muted-foreground hover:text-destructive"
+                        disabled={currentUpdatedItem.includes(String(item.id)) || removeStatus === "loading"}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
+                      {removeError && currentUpdatedItem.includes(String(item.id)) && (
+                        <span className="text-destructive text-xs ml-2">Error removing item</span>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -114,24 +153,39 @@ const Cart = () => {
                           variant="outline"
                           size="sm"
                           onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1)
+                            handleUpdateQuantity("REMOVE", {
+                              pid: item.id,
+                              sku: item.variantSku,
+                            })
                           }
+                          disabled={currentUpdatedItem.includes(String(item.id))}
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
                         <span className="px-3 py-1 border rounded min-w-12 text-center">
-                          {item.quantity}
+                          {currentUpdatedItem.includes(String(item.id)) ? (
+                            <Loader2Icon className="size-3 animate-spin" />
+                          ) : (
+                            item.quantity
+                          )}
                         </span>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
+                            handleUpdateQuantity("ADD", {
+                              pid: item.id,
+                              sku: item.variantSku,
+                            })
                           }
+                          disabled={currentUpdatedItem.includes(String(item.id))}
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
                       </div>
+                      {updateError && currentUpdatedItem.includes(String(item.id)) && (
+                        <span className="text-destructive text-xs ml-2">Error updating quantity</span>
+                      )}
 
                       <span className="font-semibold">
                         ${(item.price * item.quantity).toFixed(2)}

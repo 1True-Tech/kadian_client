@@ -111,7 +111,7 @@ const DashboardContent = () => {
                       <Badge variant={getStatusColor(order.status) as any}>
                         {order.status}
                       </Badge>
-                      <p className="text-sm mt-1">${order.totalAmount}</p>
+                      <p className="text-sm mt-1">${Math.floor(order.totalAmount)}</p>
                     </div>
                   </div>
                 ))}
