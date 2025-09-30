@@ -6,12 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function OrderHistoryItem(order: OrdersResponseData) {
-    
   return (
     <div key={order.id} className="border rounded-lg p-6">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="font-medium">Order #{order.id}</h3>
+          <Link href={`/account/order-history/${order.id}`} className="font-medium text-lg">
+           <h3 className="font-medium">Order #{order.id}</h3>
+          </Link>
           <p className="text-sm text-muted-foreground">
             Placed on {new Date(order.createdAt).toLocaleDateString()}
           </p>
@@ -52,7 +53,7 @@ export default function OrderHistoryItem(order: OrdersResponseData) {
       </div>
 
       <div className="flex justify-between items-center mt-4 pt-4 border-t">
-        <span className="font-semibold">Total: ${order.totalAmount}</span>
+        <span className="font-semibold">Total: ${order.totalAmount.toFixed(2)}</span>
         <Link href={`/account/order-history/${order.id}`}>
         <Button variant="outline" size="sm">
           View Details

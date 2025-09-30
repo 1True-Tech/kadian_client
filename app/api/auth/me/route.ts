@@ -1,5 +1,6 @@
 import env from "@/lib/constants/env";
 import queries from "@/lib/queries";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
 import { client } from "@/lib/utils/NSClient";
 import ping from "@/lib/utils/ping";
 import { GeneralResponse } from "@/types/structures";
@@ -31,20 +32,33 @@ export async function GET(req: NextRequest) {
 
     if (res.ok && data.status === "good") {
       const userData = data.data as UserData;
-      const products = await client.fetch(queries.productsOrdersQuery, {items: userData.orders?.flatMap(p => p.items)})
-      userData.orders = userData.orders?.map(order => ({
+      const products = await client.fetch(queries.productsOrdersQuery, {
+        items: userData.orders?.flatMap((p) => p.items),
+      });
+      userData.orders = userData.orders?.map((order) => ({
         ...order,
-        items: order.items?.map(item => {
-          const foundProduct = products.find((p: { _id: any; }) => p._id === item.productId)
-          const foundVariant = foundProduct.variants.filter((p: { sku: string; })=> p.sku === item.variantSku)
-          return ({
-          ...item,
-          product: {
-            ...foundProduct,
-            variants:foundVariant
-          }
-        })})
-      }))
+        items: order.items?.map((item) => {
+          const foundProduct = products.find(
+            (p: { _id: any }) => p._id === item.productId
+          );
+          const foundVariant = foundProduct.variants
+            .filter((p: { sku: string }) => p.sku === item.variantSku)
+            .map((item: any) => ({
+              ...item,
+              images: item.images.map((img: any) => ({
+                alt: img.alt || foundProduct.name || "Product image",
+                src: fashionImageBuilder([img.asset], {quality: 80, width: 400})[0],
+              })),
+            }));
+          return {
+            ...item,
+            product: {
+              ...foundProduct,
+              variants: foundVariant,
+            },
+          };
+        }),
+      }));
       const successResponse: UserResponse = {
         status: "good",
         connectionActivity: "online",

@@ -1,16 +1,14 @@
 import env from "@/lib/constants/env";
+import queries from "@/lib/queries";
+import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
+import { client } from "@/lib/utils/NSClient";
 import ping from "@/lib/utils/ping";
 import {
-  DataResponse,
-  GeneralResponse,
-} from "@/types/structures";
-import {
-  OrderListResponse,
-  OrderDetailResponse,
-  OrderCreateResponse,
   CreateOrderBody,
+  OrderCreateResponse,
+  OrderListResponse,
 } from "@/types/order";
-import { Pagination } from "@/types/structures";
+import { DataResponse, GeneralResponse, Pagination } from "@/types/structures";
 
 import { NextResponse } from "next/server";
 
@@ -38,6 +36,36 @@ export async function GET(req: Request) {
     } = await res.json();
 
     if (res.ok && data.status === "good") {
+      const products = await client.fetch(queries.productsOrdersQuery, {
+        items: data.data?.flatMap((p) => p.items),
+      });
+      data.data = data.data?.map((order) => ({
+        ...order,
+        items: order.items?.map((item) => {
+          const foundProduct = products.find(
+            (p: { _id: any }) => p._id === item.productId
+          );
+          const foundVariant = foundProduct.variants
+            .filter((p: { sku: string }) => p.sku === item.variantSku)
+            .map((item: any) => ({
+              ...item,
+              images: item.images.map((img: any) => ({
+                alt: img.alt || foundProduct.name || "Product image",
+                src: fashionImageBuilder([img.asset], {
+                  quality: 80,
+                  width: 400,
+                })[0],
+              })),
+            }));
+          return {
+            ...item,
+            product: {
+              ...foundProduct,
+              variants: foundVariant,
+            },
+          };
+        }),
+      }));
       const successResponse: DataResponse<any> = {
         status: "good",
         connectionActivity: "online",
@@ -74,7 +102,7 @@ export async function POST(req: Request) {
   try {
     const body: CreateOrderBody = await req.json();
 
-    console.log(body.payment.proof !== undefined)
+    console.log(body.payment.proof !== undefined);
     const res = await fetch(`${env.API_URL}orders`, {
       method: "POST",
       headers: {
