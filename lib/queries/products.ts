@@ -8,6 +8,11 @@ const imageFragment = groq`
   crop,
   hotspot
 `;
+export const imageReadyFragment = groq`
+  "src": asset.asset->url,
+  alt,
+  "primary": coalesce(primary, false),
+`;
 
 // SEO fields fragment
 const seoFragment = groq`
@@ -339,10 +344,10 @@ export const productsOrdersQuery = groq`
     },
 
     "mainImage": images[primary == true][0]{
-      ${imageFragment}
+      ${imageReadyFragment}
     },
     "gallery": images[]{
-      ${imageFragment}
+      ${imageReadyFragment}
     },
 
     "firstVariant": variants[0]{

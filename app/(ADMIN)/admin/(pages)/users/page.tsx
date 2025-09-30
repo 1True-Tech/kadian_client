@@ -44,7 +44,7 @@ export default function UsersPage() {
 
   if (status === "loading" || status === "idle") {
     return (
-      <div className="container mx-auto p-6">
+      <div className="mx-auto p-4">
         <Meta placeHolder={"loading"}/>
         <h1 className="text-3xl font-bold mb-8">Users Management</h1>
         <div className="flex items-center justify-center h-[60vh]">
@@ -56,7 +56,7 @@ export default function UsersPage() {
 
   if (status === "error") {
     return (
-      <div className="container mx-auto p-6">
+      <div className="mx-auto p-4">
         <Meta placeHolder={"Something went wrong"}/>
         <h1 className="text-3xl font-bold mb-8">Users Management</h1>
         <p className="text-red-500">Failed to load users data: {String(error)}</p>

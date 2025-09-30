@@ -42,11 +42,17 @@ const DashboardContent = () => {
   }, [user]);
 
   if (isLoading) {
-    return <Loader loaderSize="fullscreen" loader="flip-text-loader" text="Loading account information..." />;
+    return (
+      <Loader
+        loaderSize="fullscreen"
+        loader="flip-text-loader"
+        text="Loading account information..."
+      />
+    );
   }
 
   if (!user) return null;
-  const {orders} = user
+  const { orders } = user;
 
   return (
     <div className="flex-1">
@@ -63,7 +69,9 @@ const DashboardContent = () => {
             <Card>
               <CardContent className="p-6 text-center">
                 <Package className="h-8 w-8 mx-auto mb-2 text-accent" />
-                <h3 className="font-semibold text-2xl">{user.orders?.length}</h3>
+                <h3 className="font-semibold text-2xl">
+                  {user.orders?.length}
+                </h3>
                 <p className="text-muted-foreground">Total Orders</p>
               </CardContent>
             </Card>
@@ -102,7 +110,12 @@ const DashboardContent = () => {
                     className="flex items-center justify-between border-b pb-4"
                   >
                     <div>
-                      <p className="font-medium">Order #{order.id}</p>
+                      <Link
+                        href={`/account/order-history/${order.id}`}
+                        className="text-sm text-muted-foreground hover:underline"
+                      >
+                        <p className="font-medium">Order #{order.id}</p>
+                      </Link>
                       <p className="text-sm text-muted-foreground">
                         {new Date(order.createdAt).toLocaleDateString()}
                       </p>
@@ -111,7 +124,9 @@ const DashboardContent = () => {
                       <Badge variant={getStatusColor(order.status) as any}>
                         {order.status}
                       </Badge>
-                      <p className="text-sm mt-1">${Math.floor(order.totalAmount)}</p>
+                      <p className="text-sm mt-1">
+                        ${order.totalAmount.toFixed(2)}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -124,11 +139,19 @@ const DashboardContent = () => {
           <Card>
             <CardHeader className="flex justify-between w-full flex-row">
               <CardTitle>Order History</CardTitle>
-              <Link href="/account/order-history" className="w-fit flex gap-small items-center"> See all orders <MoveRightIcon/> </Link>
+              <Link
+                href="/account/order-history"
+                className="w-fit flex gap-small items-center"
+              >
+                {" "}
+                See all orders <MoveRightIcon />{" "}
+              </Link>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {orders?.map((order, idx) => <OrderHistoryItem key={idx} {...order} />)}
+                {orders?.map((order, idx) => (
+                  <OrderHistoryItem key={idx} {...order} />
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -221,7 +244,10 @@ const DashboardContent = () => {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Saved Addresses</CardTitle>
               <div className="flex gap-4 items-center">
-                <Link href="/account/addresses" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2">
+                <Link
+                  href="/account/addresses"
+                  className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2"
+                >
                   See all addresses <MoveRightIcon className="h-4 w-4" />
                 </Link>
                 <Button variant="outline">Add New Address</Button>
@@ -230,7 +256,7 @@ const DashboardContent = () => {
             <CardContent>
               <div className="space-y-4">
                 {user.addresses.slice(0, 3).map((address, idx) => (
-                  <AddressItem key={idx} address={address}/>
+                  <AddressItem key={idx} address={address} />
                 ))}
               </div>
             </CardContent>

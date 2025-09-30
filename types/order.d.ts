@@ -163,7 +163,7 @@ export interface OrdersResponseData {
   /** Shipping address */
   shippingAddress: ShippingAddress;
   /** Customer information */
-  customer: CustomerInfo;
+  customerInfo: CustomerInfo;
   /** Total order amount */
   totalAmount: number;
   /** Currency code */

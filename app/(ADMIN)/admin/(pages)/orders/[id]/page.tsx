@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { OrdersResponseDetails } from "@/types/order";
+import type { OrdersResponseDetails, OrderStatus } from "@/types/order";
 import { ImageViewer } from "@/components/ui/imageViewer";
 import { Button } from "@/components/ui/button";
 import { 
@@ -23,22 +23,36 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Loader2Icon } from "lucide-react";
 
 export default function OrderDetailsPage() {
   const { id } = useParams() as {id:string}; // expects /orders/[id]
   const { data, run, status } = useQuery("getOrder");
+  const updateOrder = useQuery("updateOrder");
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
+
+  console.log(data)
   
   const orderStatuses = ["initiated", "processing", "shipped", "delivered", "cancelled", "paid"];
 
   if (status === "idle") run({params:{id}});
     
-  if (!data?.success || !data.data) {
+  if ((!data?.success || !data.data) && status === "error") {
     return (
-      <div className="container mx-auto p-6">
+      <div className="mx-auto p-4">
         <h1 className="text-3xl font-bold mb-6">Order Details</h1>
         <p className="text-red-500">Failed to load order data.</p>
+      </div>
+    );
+  }
+  
+  if (status === "loading" || !data?.data) {
+    return (
+      <div className="mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-8">Orders Management</h1>
+        <p>Loading orders...</p>
+        <Loader2Icon className="animate-spin h-6 w-6 text-gray-500 mt-4" />
       </div>
     );
   }
@@ -55,22 +69,21 @@ export default function OrderDetailsPage() {
     
     setIsUpdating(true);
     try {
-      const response = await fetch(`/api/orders/${id}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: selectedStatus }),
-      });
+      const response = await updateOrder.run({
+        params: { id },
+        body:{
+          status: selectedStatus as OrderStatus
+        }
+      })
       
-      const result = await response.json();
+      const result = response;
       
-      if (result.success) {
+      if (result?.success) {
         toast.success(`Order status updated to ${selectedStatus}`);
         // Refresh order data
         run({params:{id}});
       } else {
-        toast.error(result.message || 'Failed to update order status');
+        toast.error(result?.message || 'Failed to update order status');
       }
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -81,7 +94,7 @@ export default function OrderDetailsPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="mx-auto p-4 space-y-6">
       <h1 className="text-3xl font-bold">Order #{order.id}</h1>
 
       {/* Summary */}
@@ -143,7 +156,7 @@ export default function OrderDetailsPage() {
       </Card>
 
       {/* Shipping Address */}
-      <Card>
+      {order.shippingAddress && <Card>
         <CardContent className="p-4 space-y-1">
           <h2 className="font-semibold mb-2">Shipping Address</h2>
           <p>{order.shippingAddress.line1}</p>
@@ -154,7 +167,7 @@ export default function OrderDetailsPage() {
           </p>
           <p>{order.shippingAddress.country}</p>
         </CardContent>
-      </Card>
+      </Card>}
 
       {/* Payment */}
       <Card>
@@ -178,11 +191,11 @@ export default function OrderDetailsPage() {
               {order.payment.reference}
             </p>
           )}
-          {order.payment.proof && (
-            <p>
+          {order.payment.proof && order.payment.method !== "card" && (
+            <div>
               <span className="font-semibold">Proof:</span>{" "}
               <ImageViewer src={`/api/images/${order.payment.proof.imageId}`} alt={order.payment.proof.filename}/>
-            </p>
+            </div>
           )}
         </CardContent>
       </Card>
