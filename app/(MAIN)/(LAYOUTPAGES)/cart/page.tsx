@@ -66,11 +66,12 @@ const Cart = () => {
     if (!cartItem || !cartItem._id) return;
     setCurrentUpdatedItem((prev) => [...prev, String(cartItem._id)]);
     const res = await removeFromCart(cartItem._id);
+    const id = "removed-item-id"
     if (res?.response?.success) {
-      toast.success("Item removed from cart.");
+      toast.success("Item removed from cart.", {id});
       await run(); // Re-fetch cart after removal
     } else {
-      toast.error("Failed to remove item: " + (res?.response?.message || "Unknown error"));
+      toast.error("Failed to remove item: " + (res?.response?.message || "Unknown error"), {id});
     }
     setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(cartItem._id)));
   }
@@ -165,7 +166,6 @@ const Cart = () => {
                           variant="outline"
                           size="sm"
                           onClick={async () => {
-                            toast.loading("Updating cart...");
                             await handleUpdateQuantity("REMOVE", {
                               pid: item.id,
                               sku: item.variantSku,
