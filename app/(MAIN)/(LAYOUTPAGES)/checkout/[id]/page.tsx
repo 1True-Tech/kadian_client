@@ -4,6 +4,7 @@ import { UserInfoForm } from "@/components/pages/checkout/CustomerInfoForm";
 import { OrderReview, OrderSummary } from "@/components/pages/checkout/OrderSummary";
 import { PaymentMethodForm } from "@/components/pages/checkout/PaymentSection";
 import { Loader } from "@/components/ui/loaders";
+import { FaCreditCard, FaMoneyCheckAlt, FaTruck } from "react-icons/fa";
 import ErrorBoundary from "@/components/ui/error-boundary";
 import { toast } from "@/components/ui/use-toast";
 import { buildCreateOrderBody } from "@/lib/controllers/buildOrdersBody";
@@ -103,10 +104,26 @@ const CheckoutContent = () => {
             addressLine2:addr.line2 || ""
           });
         }
-      } else {
+        setIsLoading(false);
+        return;
+      }
+      // Only fetch order if orderId is not set and currentStep is 'user-info'
+      if (!orderId && currentStep === "user-info") {
         const orderData = await getOrder.run({ params: { id } });
-        if (orderData?.data?.status === "pending") {
-          setCurrentStep("payment");
+        // Redirect if cancelled
+        if (!orderData?.data || orderData.data.status === "cancelled") {
+          router.replace(`/checkout/${id}/cancel`);
+          return;
+        }
+        // Redirect to success if order has payment method
+        if (orderData.data.payment?.method) {
+          router.replace(`/checkout/${id}/success`);
+          return;
+        }
+        // Redirect to success if not pending (already paid, shipped, etc)
+        if (orderData.data.status !== "pending") {
+          router.replace(`/checkout/${id}/success`);
+          return;
         }
         if (orderData?.data?.items?.length) {
           const loadOrderProduct: CartItemReady[] = await client.fetch(
@@ -142,11 +159,11 @@ const CheckoutContent = () => {
             addressLine2:""
           });
         }
+        setIsLoading(false);
       }
-      setIsLoading(false); // Turn off loading when data is loaded
     }
     loadData();
-  }, [id]);
+  }, [id, getOrder, router, currentStep, orderId, cart, user]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
@@ -157,9 +174,7 @@ const CheckoutContent = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleRemoveItem = (sku: string) => {
-    setItemsForOrder((prev) => prev.filter((item) => item.variantSku !== sku));
-  };
+
 
   const totals = useMemo(() => {
     const subtotal = itemsForOrder.reduce(
@@ -227,6 +242,9 @@ const CheckoutContent = () => {
         body: { ...body, payment: { ...body.payment, idempotencyKey } },
       });
       if (res?.data.orderId) {
+        clearCart({
+          itemsOnOrder: itemsForOrder.map(i => ({pid:i.productId, vsku:i.variantSku}))
+        })
         const newId = res.data.orderId;
         setOrderId(newId);
         router.push(`/checkout/${newId}`);
@@ -301,7 +319,7 @@ const CheckoutContent = () => {
       }
       
       return true;
-    } catch (error) {
+    } catch {
       toast({
         title: "Inventory Check Failed",
         description: "Unable to verify product availability. Please try again.",
@@ -369,7 +387,7 @@ const CheckoutContent = () => {
         }
       }
       if (paymentMethod === "delivery") {
-        clearCart();
+        
         router.push(`/checkout/${orderId}/success?order_id=${orderId}`);
       }
     } catch (error: any) {
@@ -392,8 +410,11 @@ const CheckoutContent = () => {
   if (currentStep === "cancelled") redirect(`/checkout/${id}/cancel`);
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[50vh]">
-        <Loader loader="flip-text-loader" loaderSize="parent" text={loadingMessage} />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] w-full bg-background animate-pulse">
+        <div className="flex flex-col items-center gap-4">
+          <FaCreditCard className="text-primary animate-spin" size={48} />
+          <div className="text-lg font-semibold text-muted-foreground">{loadingMessage}</div>
+        </div>
       </div>
     );
   }
@@ -430,6 +451,11 @@ const CheckoutContent = () => {
         handleFileUpload={handleFileUpload}
         handleProcessPayment={handleProcessPayment}
         handlePreviousStep={handlePreviousStep}
+        icons={{
+          card: <FaCreditCard className="inline-block mr-2 text-primary" size={20} />, 
+          transfer: <FaMoneyCheckAlt className="inline-block mr-2 text-primary" size={20} />, 
+          delivery: <FaTruck className="inline-block mr-2 text-primary" size={20} />
+        }}
       />
     )}
   </div>

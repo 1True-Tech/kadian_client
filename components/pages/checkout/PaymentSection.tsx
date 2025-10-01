@@ -11,9 +11,14 @@ interface Props {
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleProcessPayment: () => void;
   handlePreviousStep: () => void;
+  icons?: {
+    card?: React.ReactNode;
+    transfer?: React.ReactNode;
+    delivery?: React.ReactNode;
+  };
 }
 
-export const PaymentMethodForm = ({ paymentMethod, setPaymentMethod, proofFile, handleFileUpload, handleProcessPayment, handlePreviousStep }: Props) => {
+export const PaymentMethodForm = ({ paymentMethod, setPaymentMethod, handleFileUpload, handleProcessPayment, handlePreviousStep, icons }: Props) => {
   return (
     <Card>
       <CardHeader>
@@ -22,15 +27,18 @@ export const PaymentMethodForm = ({ paymentMethod, setPaymentMethod, proofFile, 
       <CardContent className="space-y-4">
         <div className="flex flex-col space-y-2">
           <label className="flex items-center gap-2">
-            <input type="radio" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("stripe")} />
+            <input type="radio" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("stripe")}/>
+            {icons?.card}
             Credit/Debit Card (Stripe)
           </label>
           <label className="flex items-center gap-2">
-            <input type="radio" checked={paymentMethod === "transfer"} onChange={() => setPaymentMethod("transfer")} />
+            <input type="radio" checked={paymentMethod === "transfer"} onChange={() => setPaymentMethod("transfer")}/>
+            {icons?.transfer}
             Bank Transfer / Upload Proof
           </label>
           <label className="flex items-center gap-2">
-            <input type="radio" checked={paymentMethod === "delivery"} onChange={() => setPaymentMethod("delivery")} />
+            <input type="radio" checked={paymentMethod === "delivery"} onChange={() => setPaymentMethod("delivery")}/>
+            {icons?.delivery}
             Pay on Delivery
           </label>
         </div>
