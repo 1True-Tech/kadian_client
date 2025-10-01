@@ -6,24 +6,44 @@ import { useUserStore } from "@/store/user";
 import { ProductReady, ProductVariant } from "@/types/product";
 import { MinusIcon, PlusIcon, ShoppingBagIcon } from "lucide-react";
 import { Button, ButtonProps } from "../ui/button";
+import { useEffect } from "react";
+// import { toast } from "sonner";
 
 interface AddToCartButtonProps extends ButtonProps {
   product: ProductReady;
   productVariant: ProductVariant;
   quantityChangerPositionClassName?: string;
+  cartActionStatus?: {
+    onAddStatusChange?: (status: "idle"|"loading"|"success"|"error", context?: any) => void;
+    onRemoveStatusChange?: (status: "idle"|"loading"|"success"|"error", context?: any) => void;
+    onUpdateStatusChange?: (status: "idle"|"loading"|"success"|"error", context?: any) => void;
+  }
 }
 
 export default function AddToCartButton({
   product,
   productVariant,
   quantityChangerPositionClassName,
+  cartActionStatus,
   ...props
 }: AddToCartButtonProps) {
   const { user, actions } = useUserStore();
-  const { run } = useQuery("updateCart");
+  const { run, status } = useQuery("updateCart");
   const removeFromCart = useQuery("deleteCartItem");
   const modQuantity = useQuery("updateCartItem");
 
+  useEffect(() => {
+    if (cartActionStatus?.onRemoveStatusChange) {
+      cartActionStatus.onRemoveStatusChange(removeFromCart.status, { error: removeFromCart.error });
+    }
+    if (cartActionStatus?.onUpdateStatusChange) {
+      cartActionStatus.onUpdateStatusChange(modQuantity.status, { error: modQuantity.error });
+    }
+    if (cartActionStatus?.onAddStatusChange) {
+      cartActionStatus.onAddStatusChange(status, { error: undefined });
+    }
+  }, [removeFromCart.status, modQuantity.status, status, removeFromCart.error, modQuantity.error, cartActionStatus]);
+  
   if (!user) return null;
 
   const cartItem = user.cart.find(
@@ -31,6 +51,7 @@ export default function AddToCartButton({
   );
 
   async function handleAddToCart() {
+    if (cartActionStatus?.onAddStatusChange) cartActionStatus.onAddStatusChange("loading");
     const added = await run({
       body: {
         updateData: [
@@ -48,14 +69,17 @@ export default function AddToCartButton({
         ...user,
         cart: [...user.cart, ...added.data.items],
       });
+      if (cartActionStatus?.onAddStatusChange) cartActionStatus.onAddStatusChange("success");
+    } else {
+      if (cartActionStatus?.onAddStatusChange) cartActionStatus.onAddStatusChange("error");
     }
   }
 
   async function handleRemoveFromCart() {
+    if (cartActionStatus?.onRemoveStatusChange) cartActionStatus.onRemoveStatusChange("loading");
     const cartItem = user?.cart.find(
       (i) => i.productId === product._id && i.variantSku === productVariant.sku
     );
-
     if (!cartItem) return;
     removeFromCart.run({
       params: {
@@ -67,14 +91,18 @@ export default function AddToCartButton({
         ...user,
         cart: user.cart.filter((i) => i._id !== cartItem._id),
       });
+      if (cartActionStatus?.onRemoveStatusChange) cartActionStatus.onRemoveStatusChange("success");
+    } else {
+      if (cartActionStatus?.onRemoveStatusChange) cartActionStatus.onRemoveStatusChange("error");
     }
   }
 
   async function changeQuantity(action: "ADD" | "REMOVE") {
+    if (cartActionStatus?.onUpdateStatusChange) cartActionStatus.onUpdateStatusChange("loading");
     if (!cartItem) return;
 
     if (action === "REMOVE" && cartItem.quantity <= 1) {
-      handleRemoveFromCart();
+      await handleRemoveFromCart();
       return;
     }
 
@@ -91,6 +119,9 @@ export default function AddToCartButton({
           updated.data,
         ],
       });
+      if (cartActionStatus?.onUpdateStatusChange) cartActionStatus.onUpdateStatusChange("success");
+    } else {
+      if (cartActionStatus?.onUpdateStatusChange) cartActionStatus.onUpdateStatusChange("error");
     }
   }
 

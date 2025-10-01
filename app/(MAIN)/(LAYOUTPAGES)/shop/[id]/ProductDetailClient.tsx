@@ -1,27 +1,26 @@
 "use client";
-import { useState, useEffect } from "react";
+import { lBPtComponents } from "@/components/feautures/PortableText";
+import AddToCartButton from "@/components/product/AddToCartButton";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader } from "@/components/ui/loaders";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useUserStore } from "@/store/user";
+import { ProductReady } from "@/types/product";
 import {
   Heart,
-  Share2,
-  Truck,
-  RotateCcw,
-  Shield,
-  Plus,
-  Minus,
   ImageIcon,
+  RotateCcw,
+  Share2,
+  Shield,
+  Truck
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
-import { ProductReady, Size } from "@/types/product";
 import { PortableText } from "next-sanity";
-import { lBPtComponents } from "@/components/feautures/PortableText";
-import { Badge } from "@/components/ui/badge";
-import { Color } from "@/types/structures";
-import AddToCartButton from "@/components/product/AddToCartButton";
-import { useUserStore } from "@/store/user";
-import {Loader} from "@/components/ui/loaders";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface ProductDetailClientProps {
   product: ProductReady;
@@ -30,6 +29,7 @@ interface ProductDetailClientProps {
 const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
   const [isLoading, setIsLoading] = useState(true);
+  const [variantSheetOpen, setVariantSheetOpen] = useState(false);
   const {user} = useUserStore()
   
   useEffect(() => {
@@ -41,44 +41,17 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
     return () => clearTimeout(timer);
   }, []);
 
-  // All variants are source of truth
-  const sizes: Size[] = Array.from(
-    new Map(product.variants.map((v) => [v.size.label, v.size])).values()
+  // Remove size/color selection logic. Variants are selected directly.
+
+  // All possible images, unique by src
+  const allImages = Array.from(
+    new Map(
+      [...selectedVariant.images, ...product.gallery].map((img) => [img.src, img])
+    ).values()
   );
-  const colors: Color[] = Array.from(
-    new Set(product.variants.map((v) => v.color!))
-  );
-
-  // Restrict options based on current selection
-  const availableSizes: Size[] = product.variants
-    .filter((v) => v.color === selectedVariant.color)
-    .map((v) => v.size);
-
-  const availableColors: Color[] = product.variants
-    .filter((v) => v.size.label === selectedVariant.size.label)
-    .map((v) => v.color!);
-
-  // All possible images
-  const allImages = [
-    ...new Set([...selectedVariant.images, ...product.gallery]),
-  ];
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const handleSizeChange = (size: Size) => {
-    const variant = product.variants.find(
-      (v) => v.size.label === size.label && v.color === selectedVariant.color
-    );
-    if (variant) setSelectedVariant(variant);
-  };
-
-  const handleColorChange = (colorName: string) => {
-    const variant = product.variants.find(
-      (v) =>
-        v.color?.name === colorName &&
-        v.size.label === selectedVariant.size.label
-    );
-    if (variant) setSelectedVariant(variant);
-  };
+  // No size/color change handlers needed.
 
   if (isLoading) {
     return (
@@ -154,81 +127,165 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
             {product.description}
           </p>
 
-          {/* Sizes */}
+          {/* Variant Selector */}
           <div>
-            <h3 className="font-medium mb-3">Size</h3>
+            <h3 className="font-medium mb-3">Select Variant</h3>
             <div className="flex flex-wrap gap-2">
-              {sizes.map((size, idx) => {
-                const available = availableSizes.some(
-                  (s) => s.label === size.label
-                );
-                return (
-                  <Button
-                    key={idx}
-                    variant={
-                      selectedVariant.size.label === size.label
-                        ? "default"
-                        : "outline"
-                    }
-                    onClick={() => handleSizeChange(size)}
-                    disabled={!available}
-                    className="min-w-12"
-                  >
-                    {size.label}
-                  </Button>
-                );
-              })}
+              {product.variants.map((variant, idx) => (
+                <Button
+                  key={variant.sku + idx}
+                  variant={selectedVariant.sku === variant.sku ? "default" : "outline"}
+                  onClick={() => setSelectedVariant(variant)}
+                  className="min-w-24 flex flex-col items-center"
+                >
+                  <span className="font-semibold">{variant.sku}</span>
+                </Button>
+              ))}
             </div>
           </div>
 
-          {/* Colors */}
-          <div>
-            <h3 className="font-medium mb-3">
-              Color: {selectedVariant.color?.name}
-            </h3>
-            <div className="flex gap-2">
-              {colors.map((color, idx) => {
-                const available = availableColors.includes(color);
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => handleColorChange(color.name)}
-                    disabled={!available}
-                    className={`w-8 h-8 rounded-full border-2 ${
-                      selectedVariant.color === color
-                        ? "border-primary"
-                        : "border-border"
-                    } ${!available ? "opacity-40 cursor-not-allowed" : ""}`}
-                    style={{ backgroundColor: color.hex || color.rgba }}
-                    title={color.name}
-                  />
-                );
-              })}
-            </div>
-          </div>
+          {/* Variant Info Sheet Trigger */}
+          <Sheet open={variantSheetOpen} onOpenChange={setVariantSheetOpen}>
+            <SheetTrigger asChild>
+              <Button variant="secondary" className="mt-2" onClick={() => setVariantSheetOpen(true)}>
+                View Variant Info
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="max-w-md w-full rounded-t-2xl">
+              <SheetHeader>
+                <SheetTitle>Variant Information</SheetTitle>
+              </SheetHeader>
+              <div className="mt-4 space-y-4 text-sm">
+                <div className="grid grid-cols-2 gap-2">
+                  {selectedVariant.sku && <>
+                    <span className="font-medium">SKU:</span>
+                    <span>{selectedVariant.sku}</span>
+                  </>}
+                  {selectedVariant.size?.label && <>
+                    <span className="font-medium">Size:</span>
+                    <span>{selectedVariant.size.label}</span>
+                  </>}
+                  {selectedVariant.size?.description && <>
+                    <span className="font-medium">Size Description:</span>
+                    <span>{selectedVariant.size.description}</span>
+                  </>}
+                  {selectedVariant.size?.measurements && (
+                    <>
+                      <span className="font-medium">Measurements:</span>
+                      <span>
+                        {selectedVariant.size.measurements.chest !== undefined && <>Chest: {selectedVariant.size.measurements.chest}</>}
+                        {selectedVariant.size.measurements.waist !== undefined && <>, Waist: {selectedVariant.size.measurements.waist}</>}
+                        {selectedVariant.size.measurements.hips !== undefined && <>, Hips: {selectedVariant.size.measurements.hips}</>}
+                        {selectedVariant.size.measurements.length !== undefined && <>, Length: {selectedVariant.size.measurements.length}</>}
+                      </span>
+                    </>
+                  )}
+                  {selectedVariant.color && <>
+                    <span className="font-medium">Color:</span>
+                    <span>{selectedVariant.color.name} <span className="inline-block w-4 h-4 rounded-full border ml-2 align-middle" style={{background:selectedVariant.color.hex||selectedVariant.color.rgba}} title={selectedVariant.color.name}></span></span>
+                  </>}
+                  {selectedVariant.price !== undefined && <>
+                    <span className="font-medium">Price:</span>
+                    <span>${selectedVariant.price}</span>
+                  </>}
+                  {selectedVariant.stock !== undefined && <>
+                    <span className="font-medium">Stock:</span>
+                    <span>{selectedVariant.stock}</span>
+                  </>}
+                  {selectedVariant.stockThreshold !== undefined && <>
+                    <span className="font-medium">Stock Threshold:</span>
+                    <span>{selectedVariant.stockThreshold}</span>
+                  </>}
+                  {selectedVariant.weight && selectedVariant.weight.value !== undefined && selectedVariant.weight.unit && <>
+                    <span className="font-medium">Weight:</span>
+                    <span>{selectedVariant.weight.value} {selectedVariant.weight.unit}</span>
+                  </>}
+                </div>
+                {selectedVariant.images && selectedVariant.images.length > 0 && (
+                  <div>
+                    <span className="font-medium block mb-1">Images:</span>
+                    <div className="flex gap-2 flex-wrap">
+                      {selectedVariant.images.map((img, i) => (
+                        <Image key={i} src={img.src} alt={img.alt || ""} width={60} height={60} className="rounded border" />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
 
 
           {/* Actions */}
-          {user&&<div className="space-y-3 pt-4">
-            <AddToCartButton
-              productVariant={selectedVariant}
-              product={product}
-              size="lg"
-              variant="glow"
-              className="w-full btn-hero"
-            >
-              Add to Cart
-            </AddToCartButton>
-            <div className="flex gap-3">
-              <Button variant="secondary" size="lg" className="flex-1">
-                <Heart className="h-4 w-4 mr-2" />
-                Save to Wishlist
-              </Button>
-              <Button variant="outline" size="lg">
-                <Share2 className="h-4 w-4" />
-              </Button>
+          {user && (
+            <div className="space-y-3 pt-4">
+              <AddToCartButton
+                productVariant={selectedVariant}
+                product={product}
+                size="lg"
+                variant="glow"
+                className="w-full btn-hero"
+                cartActionStatus={{
+                  onAddStatusChange(status, context) {
+                    const toastId = "cart-add-loading";
+                    if (status === "loading") {
+                      toast.loading("Adding item to cart...", { id: toastId });
+                    } else if (status === "success") {
+                      toast.dismiss(toastId);
+                      toast.success(
+                        `${context.quantity} x ${product.name} (${selectedVariant.sku}) added to cart.`,
+                        { duration: 4000 }
+                      );
+                    } else if (status === "error") {
+                      toast.dismiss(toastId);
+                      toast.error("Failed to add item to cart. Please try again.", { duration: 3500 });
+                    }
+                  },
+                  onRemoveStatusChange(status, context) {
+                    const toastId = "cart-remove-loading";
+                    if (status === "loading") {
+                      toast.loading("Removing item from cart...", { id: toastId });
+                    } else if (status === "success") {
+                      toast.dismiss(toastId);
+                      toast.success(
+                        `${context.quantity} x ${product.name} (${selectedVariant.sku}) removed from cart.`,
+                        { duration: 4000 }
+                      );
+                    } else if (status === "error") {
+                      toast.dismiss(toastId);
+                      toast.error("Failed to remove item from cart. Please try again.", { duration: 3500 });
+                    }
+                  },
+                  onUpdateStatusChange(status, context) {
+                    const toastId = "cart-update-loading";
+                    if (status === "loading") {
+                      toast.loading("Updating cart item...", { id: toastId });
+                    } else if (status === "success") {
+                      toast.dismiss(toastId);
+                      toast.success(
+                        `Updated ${product.name} (${selectedVariant.sku}) quantity to ${context.newQuantity}.`,
+                        { duration: 4000 }
+                      );
+                    } else if (status === "error") {
+                      toast.dismiss(toastId);
+                      toast.error("Failed to update cart item. Please try again.", { duration: 3500 });
+                    }
+                  },
+                }}
+              >
+                Add to Cart
+              </AddToCartButton>
+              <div className="flex gap-3">
+                <Button variant="secondary" size="lg" className="flex-1">
+                  <Heart className="h-4 w-4 mr-2" />
+                  Save to Wishlist
+                </Button>
+                <Button variant="outline" size="lg">
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
-          </div>}
+          )}
 
           {/* Trust info */}
           <div className="grid grid-cols-1 gap-4 pt-6 border-t">
@@ -325,7 +382,7 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                             </tr>
                           </thead>
                           <tbody>
-                            {product.sizeGuide.sizeChart.measurements.map(
+                            {product.sizeGuide.sizeChart.measurements&&product.sizeGuide.sizeChart.measurements.map(
                               (measurement, index) => (
                                 <tr key={index} className="border-b">
                                   <td className="py-2">

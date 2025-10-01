@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -51,8 +52,13 @@ const SignUp = () => {
       const userData = await getUser.run({query: {include_orders: "true"}});
       if (userData?.success && userData.data) {
         actions.setUser(userData.data);
+        toast.success("Account created and signed in!");
         push(redirect);
+      } else {
+        toast.error("User information failed to load: " + (userData?.message || "Unknown error"));
       }
+    } else {
+      toast.error("Sign Up Failed: " + (res?.message || "Unknown error"));
     }
   };
 

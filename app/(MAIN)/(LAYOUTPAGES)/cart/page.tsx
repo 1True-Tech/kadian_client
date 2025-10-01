@@ -1,4 +1,6 @@
 "use client";
+
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader } from "@/components/ui/loaders";
@@ -27,7 +29,7 @@ const empty = (
 );
 const Cart = () => {
   const { user } = useUserStore();
-  const { cart:cartItems, removeFromCart, updateQuantity, removeStatus, removeError, updateStatus, updateError } = useCart();
+  const { removeFromCart, updateQuantity, removeStatus, removeError, updateStatus, updateError } = useCart();
   const { run, data, status } = useQuery("getCart");
   const [currentUpdatedItem, setCurrentUpdatedItem] = useState<string[]>([]);
 
@@ -63,9 +65,14 @@ const Cart = () => {
     );
     if (!cartItem || !cartItem._id) return;
     setCurrentUpdatedItem((prev) => [...prev, String(cartItem._id)]);
-  await removeFromCart(cartItem._id);
-  await run(); // Re-fetch cart after removal
-  setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(cartItem._id)));
+    const res = await removeFromCart(cartItem._id);
+    if (res?.response?.success) {
+      toast.success("Item removed from cart.");
+      await run(); // Re-fetch cart after removal
+    } else {
+      toast.error("Failed to remove item: " + (res?.response?.message || "Unknown error"));
+    }
+    setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(cartItem._id)));
   }
   const cartItem = (product: { sku: string; pid: string }) =>
     user.cart.find(
@@ -83,9 +90,14 @@ const Cart = () => {
       setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(item._id)));
       return;
     }
-  await updateQuantity(item._id, action === "ADD" ? 1 : -1);
-  await run(); // Re-fetch cart after update
-  setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(item._id)));
+    const res = await updateQuantity(item._id, action === "ADD" ? 1 : -1);
+    if (res?.response?.success) {
+      toast.success("Cart updated.");
+      await run(); // Re-fetch cart after update
+    } else {
+      toast.error("Failed to update cart: " + (res?.response?.message || "Unknown error"));
+    }
+    setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(item._id)));
   }
 
   const subtotal = cart?.totalAmount || 0;
@@ -152,12 +164,13 @@ const Cart = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() =>
-                            handleUpdateQuantity("REMOVE", {
+                          onClick={async () => {
+                            toast.loading("Updating cart...");
+                            await handleUpdateQuantity("REMOVE", {
                               pid: item.id,
                               sku: item.variantSku,
-                            })
-                          }
+                            });
+                          }}
                           disabled={currentUpdatedItem.includes(String(item.id))}
                         >
                           <Minus className="h-4 w-4" />
@@ -172,12 +185,13 @@ const Cart = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() =>
-                            handleUpdateQuantity("ADD", {
+                          onClick={async () => {
+                            toast.loading("Updating cart...");
+                            await handleUpdateQuantity("ADD", {
                               pid: item.id,
                               sku: item.variantSku,
-                            })
-                          }
+                            });
+                          }}
                           disabled={currentUpdatedItem.includes(String(item.id))}
                         >
                           <Plus className="h-4 w-4" />
