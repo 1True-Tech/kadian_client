@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader } from "@/components/ui/loaders";
 import { Separator } from "@/components/ui/separator";
 import { useUserStore } from "@/store/user";
 import { HasSlot } from "@/types/structures";
@@ -23,10 +24,14 @@ export default function AccountSidebar({
   children,
   mainHeader,
 }: HasSlot & { mainHeader: ReactNode }) {
-  const { user, actions } = useUserStore();
+  const { user, actions, status } = useUserStore();
     const pathname = usePathname(); // current URL path
-  
-  if (!user)
+  if(status !== "done" && !user)  return (
+    <div className="w-5 h-5 animate-spin text-muted-foreground hidden sm:flex items-center justify-center">
+      <Loader unLoad={!(true && !user)} type="content-loader" loader="flip-text-loader" text="Loading User ..." loaderSize="fullscreen" />
+    </div>
+  );
+  if (!user && status === "done")
     return (
       <section className="w-full max-w-md mx-auto text-center py-16 px-6">
         <h2 className="text-2xl font-semibold mb-4">Access Your Account</h2>
@@ -61,9 +66,9 @@ export default function AccountSidebar({
                 <UserIcon className="h-10 w-10 text-rose-gold-foreground" />
               </div>
               <CardTitle className="text-xl font-light">
-                {user.name.first} {user.name.last}
+                {user?.name.first} {user?.name.last}
               </CardTitle>
-              <p className="text-muted-foreground">{user.email}</p>
+              <p className="text-muted-foreground">{user?.email}</p>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">

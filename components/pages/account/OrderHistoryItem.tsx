@@ -9,15 +9,18 @@ export default function OrderHistoryItem(order: OrdersResponseData) {
   return (
     <div key={order.id} className="border rounded-lg p-6">
       <div className="flex justify-between items-start mb-4">
-        <div>
-          <Link href={`/account/order-history/${order.id}`} className="font-medium text-lg">
-           <h3 className="font-medium">Order #{order.id}</h3>
+        <div className="shrink min-w-0 max-w-full">
+          <Link href={`/account/order-history/${order.id}`} className="font-medium text-lg block w-full">
+            <h3 className="font-medium flex items-center gap-1 min-w-0 w-full">
+              Order
+              <em className="truncate block min-w-0 max-w-full text-ellipsis overflow-hidden align-middle">#{order.id}</em>
+            </h3>
           </Link>
           <p className="text-sm text-muted-foreground">
             Placed on {new Date(order.createdAt).toLocaleDateString()}
           </p>
         </div>
-        <Badge variant={getStatusColor(order.status) as any}>
+        <Badge className="shrink-0" variant={getStatusColor(order.status) as any}>
           {order.status}
         </Badge>
       </div>

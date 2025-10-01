@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/lib/hooks/use-toast";
+import { toast } from "sonner";
 import { useQuery } from "@/lib/server/client-hook";
 import { useUserStore } from "@/store/user";
 import { Eye, EyeOff } from "lucide-react";
@@ -40,20 +40,13 @@ const SignIn = () => {
       const userData = await getUser.run({query: {include_orders: "true"}});
       if (userData?.success && userData.data) {
         actions.setUser(userData.data);
+        toast.success("Signed in successfully!");
         push(redirect);
-      }
-      {
-        toast({
-          title: "User information failed to load",
-          description: userData?.message,
-        });
+      } else {
+        toast.error("User information failed to load: " + (userData?.message || "Unknown error"));
       }
     } else {
-      toast({
-        title: "Sign In Failed",
-        description: successfulSignIn?.message,
-        variant: "destructive",
-      });
+      toast.error("Sign In Failed: " + (successfulSignIn?.message || "Unknown error"));
     }
     // Handle sign in
   };

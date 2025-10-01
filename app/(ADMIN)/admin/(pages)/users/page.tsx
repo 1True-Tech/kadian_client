@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,8 +36,11 @@ export default function UsersPage() {
   useEffect(() => {
     if (data?.data) {
       setUsers(data.data);
+      toast.success("Users loaded successfully.");
+    } else if (status === "error") {
+      toast.error("Failed to load users: " + (error || "Unknown error"));
     }
-  }, [data]);
+  }, [data, status, error]);
 
   const handleRefresh = () => {
     run();

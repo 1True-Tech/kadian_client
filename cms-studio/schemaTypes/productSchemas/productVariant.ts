@@ -24,7 +24,46 @@ export const variantType = defineField({
           name: "sku",
           title: "SKU",
           type: "string",
-          description: "Unique Stock Keeping Unit",
+          description: "Unique Stock Keeping Unit. Auto-generated from product slug initials and a sequence number.",
+          initialValue: async (context: any): Promise<string> => {
+            const productSlug: string | undefined = context?.document?.slug?.current;
+            if (!productSlug) return "";
+            const initials = productSlug
+              .split("-")
+              .map((word: string) => word[0]?.toUpperCase())
+              .join("");
+            if (!initials) return "";
+            let maxNum = 0;
+            if (context && context.getClient) {
+              const client = context.getClient({ apiVersion: "2023-01-01" });
+              const query = '*[_type == "product" && slug.current == $slug][0].variants[].sku';
+              const params = { slug: productSlug };
+              const skus: string[] = (await client.fetch(query, params)) || [];
+              skus.forEach((sku: string) => {
+                const match = sku && sku.match(new RegExp(`^${initials}-(\\d{4})$`));
+                if (match) {
+                  const num = parseInt(match[1], 10);
+                  if (num > maxNum) maxNum = num;
+                }
+              });
+            }
+            const nextNum = (maxNum + 1).toString().padStart(4, "0");
+            return `${initials}-${nextNum}`;
+          },
+          validation: (Rule: any) => Rule.required().custom(async (sku: string, context: any) => {
+            if (!sku) return "SKU is required";
+            // Check uniqueness across all products' variants
+            if (context && context.getClient) {
+              const client = context.getClient({ apiVersion: "2023-01-01" });
+              const query = '*[variants[].sku == $sku][0]._id';
+              const params = { sku };
+              const found = await client.fetch(query, params);
+              if (found && context.document && found !== context.document._id) {
+                return "SKU must be unique across all products.";
+              }
+            }
+            return true;
+          }),
         }),
         imageGallery({
           name: "images",
