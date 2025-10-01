@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "sonner";
 import ProductGrid from "@/components/product/ProductGrid";
 import { Button } from "@/components/ui/button";
 import { processProducts } from "@/lib/controllers/processShop/processProducts";
@@ -29,13 +30,18 @@ const Wishlist = () => {
 
 
   async function clearAll() {
-    await clearWishlist.run();
-    setWishlistProducts([]);
-    if (user) {
-      actions.setUser({
-        ...user,
-        wishList: [],
-      });
+    const res = await clearWishlist.run();
+    if (res?.success) {
+      setWishlistProducts([]);
+      if (user) {
+        actions.setUser({
+          ...user,
+          wishList: [],
+        });
+      }
+      toast.success("Wishlist cleared!");
+    } else {
+      toast.error("Failed to clear wishlist: " + (res?.message || "Unknown error"));
     }
   }
   // if (wishlistProducts.length === 0) {
