@@ -186,7 +186,6 @@ const Cart = () => {
                           variant="outline"
                           size="sm"
                           onClick={async () => {
-                            toast.loading("Updating cart...");
                             await handleUpdateQuantity("ADD", {
                               pid: item.id,
                               sku: item.variantSku,

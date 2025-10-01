@@ -118,7 +118,9 @@ export default function OrderDetail(props: { id: string }) {
       )}
 
       <div className="mt-6 text-right">
-        <Button variant="default">Track Package</Button>
+        <Link href={`/account/order-history/${id}/tracking`}>
+          <Button variant="default">Track Package</Button>
+        </Link>
       </div>
     </div>
   );

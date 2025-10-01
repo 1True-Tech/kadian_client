@@ -91,11 +91,14 @@ export function useCart() {
     return { response, status: updateStatus, error: updateError };
   }, [updateCartItem, user, actions, removeFromCart, updateStatus, updateError]);
 
-  const clearCart = useCallback(async () => {
+  const clearCart = useCallback(async ({itemsOnOrder}:{itemsOnOrder:{pid:string, vsku:string}[]}) => {
     if (!user) return;
     
+    const cartItems = user.cart.filter(item => 
+      itemsOnOrder.some(orderItem => item.productId === orderItem.pid && item.variantSku === orderItem.vsku)
+    );
     // Remove all items one by one
-    const promises = user.cart.map(item => 
+    const promises = cartItems.map(item => 
       deleteCartItem({
         params: {
           id: item._id as string,
