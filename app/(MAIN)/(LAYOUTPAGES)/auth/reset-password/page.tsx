@@ -22,15 +22,37 @@ const ResetPassword = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match");
+      setError("Passwords do not match");
       return;
     }
-    console.log("Reset password with token:", token);
-    setIsReset(true);
-    // Handle password reset
+    
+    try {
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          token, 
+          password: formData.password 
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to reset password");
+      }
+      
+      setIsReset(true);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to reset password");
+    }
   };
 
   if (!token) {

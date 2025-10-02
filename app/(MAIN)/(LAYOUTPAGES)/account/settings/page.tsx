@@ -14,19 +14,122 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 export default function SettingsPage() {
   const { user } = useUserStore();
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [notificationSettings, setNotificationSettings] = useState({
     orderUpdates: true,
     promotions: true,
     newsletter: false,
     productAlerts: true,
   });
+  const [notificationLoading, setNotificationLoading] = useState(false);
+  const [notificationSuccess, setNotificationSuccess] = useState("");
+  const [notificationError, setNotificationError] = useState("");
 
   if (!user) return null;
 
-  const handlePasswordChange = (e: React.FormEvent) => {
+  const saveNotificationSettings = async () => {
+    setNotificationLoading(true);
+    setNotificationError("");
+    setNotificationSuccess("");
+    
+    try {
+      const response = await fetch("/api/auth/me/notifications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify(notificationSettings),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update notification settings");
+      }
+      
+      setNotificationSuccess("Notification preferences updated successfully");
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setNotificationSuccess("");
+      }, 3000);
+    } catch (error) {
+      setNotificationError(error instanceof Error ? error.message : "Failed to update notification settings");
+      
+      // Clear error message after 3 seconds
+      setTimeout(() => {
+        setNotificationError("");
+      }, 3000);
+    } finally {
+      setNotificationLoading(false);
+    }
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Implement password change logic
-    setIsPasswordDialogOpen(false);
+    setError("");
+    setSuccess("");
+    
+    // Validate passwords
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError("New passwords do not match");
+      return;
+    }
+    
+    if (passwordData.newPassword.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+    
+    if (!/(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])/.test(passwordData.newPassword)) {
+      setError("Password must contain at least one uppercase letter, one number, and one special character");
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch("/api/auth/me/password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to change password");
+      }
+      
+      setSuccess("Password changed successfully");
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      
+      setTimeout(() => {
+        setIsPasswordDialogOpen(false);
+      }, 2000);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to change password");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -69,7 +172,7 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      {/* Notification Preferences */}
+      {/* Notification Settings */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -149,6 +252,26 @@ export default function SettingsPage() {
               }
             />
           </div>
+          
+          {notificationSuccess && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative mt-4" role="alert">
+              <span className="block sm:inline">{notificationSuccess}</span>
+            </div>
+          )}
+          
+          {notificationError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+              <span className="block sm:inline">{notificationError}</span>
+            </div>
+          )}
+          
+          <Button 
+            onClick={saveNotificationSettings} 
+            disabled={notificationLoading}
+            className="mt-4"
+          >
+            {notificationLoading ? "Saving..." : "Save Notification Preferences"}
+          </Button>
         </CardContent>
       </Card>
 
@@ -191,26 +314,59 @@ export default function SettingsPage() {
               Enter your current password and choose a new one
             </DialogDescription>
           </DialogHeader>
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative" role="alert">
+              <span className="block sm:inline">{success}</span>
+            </div>
+          )}
           <form onSubmit={handlePasswordChange}>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="current">Current Password</Label>
-                <Input id="current" type="password" />
+                <Input 
+                  id="current" 
+                  type="password" 
+                  value={passwordData.currentPassword}
+                  onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="new">New Password</Label>
-                <Input id="new" type="password" />
+                <Input 
+                  id="new" 
+                  type="password" 
+                  value={passwordData.newPassword}
+                  onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">
+                  Password must be at least 8 characters with an uppercase letter, number, and special character.
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm">Confirm New Password</Label>
-                <Input id="confirm" type="password" />
+                <Input 
+                  id="confirm" 
+                  type="password" 
+                  value={passwordData.confirmPassword}
+                  onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                  required
+                />
               </div>
             </div>
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => setIsPasswordDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Change Password</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Changing..." : "Change Password"}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
