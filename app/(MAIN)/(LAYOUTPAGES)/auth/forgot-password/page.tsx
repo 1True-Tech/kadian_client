@@ -11,11 +11,26 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Reset password for:", email);
-    setIsSubmitted(true);
-    // Handle password reset
+    try {
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to send reset email");
+      }
+      
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error sending reset email:", error);
+      // You could add toast notification here
+    }
   };
 
   return (
