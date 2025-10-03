@@ -66,7 +66,7 @@ export default function OrderDetail(props: { id: string }) {
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow">
       <header className="mb-6">
-        <h2 className="text-xl font-semibold">Order {id}</h2>
+        <h2 className="text-base sm:text-lg md:text-xl font-semibold truncate">Order <em className="not-italic text-foreground/70">{id}</em></h2>
         <p className="text-sm">Date: {new Date(createdAt).toLocaleDateString()}</p>
         <p className="text-sm capitalize">Status: {status}</p>
       </header>

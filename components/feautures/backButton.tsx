@@ -37,7 +37,7 @@ export default function BackButton({
         }
       }}
       aria-label="Go back to previous page"
-      className={cn("inline-flex items-center gap-1 !px-0 w-fit",className)}
+      className={cn("inline-flex items-center text-sm sm:text-base md:text-lg gap-1 !px-0 w-fit",className)}
     >
       <ArrowLeft className="w-4 h-4" />
       {text && <span>{text}</span>}

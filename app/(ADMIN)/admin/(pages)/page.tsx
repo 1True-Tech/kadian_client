@@ -220,7 +220,7 @@ const AdminDashboardContent: React.FC = () => {
         {/* Recent Orders */}
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <CardTitle>Recent Orders</CardTitle>
+            <CardTitle className="text-base sm:text-lg md:text-xl">Recent Orders</CardTitle>
             {recentOrders.length > 0 && (
               <Link href="/admin/orders">
                 <Button variant="outline" size="sm">
@@ -284,7 +284,7 @@ const AdminDashboardContent: React.FC = () => {
         {/* Top Products */}
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <CardTitle>Top Products</CardTitle>
+            <CardTitle className="text-base sm:text-lg md:text-xl">Top Products</CardTitle>
             {topProducts.length > 0 && (
               <Button variant="outline" size="sm">
                 <Eye className="h-4 w-4 mr-2" />
@@ -338,7 +338,7 @@ const AdminDashboardContent: React.FC = () => {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+          <CardTitle className="text-base sm:text-lg md:text-xl">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-[repeat(auto-fit,_minmax(10rem,_1fr))] gap-4 w-full">

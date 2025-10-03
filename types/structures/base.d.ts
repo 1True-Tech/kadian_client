@@ -62,9 +62,10 @@ export type NonPlainObject<T> = T extends
   | boolean
   | bigint
   | symbol
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  |Function
   | null
   | undefined
-  | Function
   | Date
   | any[]
   ? true
@@ -102,3 +103,46 @@ export type DotNestedKeys<T> = T extends object
         : K | `${K}.${DotNestedKeys<T[K]>}`;
     }[Extract<keyof T, string>]
   : never;
+
+
+  type Primitive = string | number | boolean | bigint | symbol | null | undefined;
+
+type IsTuple<T> = T extends [any, ...any[]] ? true : false;
+
+export type DeepPartial<T> =
+  // primitives and functions stay as-is
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  T extends Primitive | Function ? T :
+  // tuples
+  IsTuple<T> extends true ? {
+    [K in keyof T]?: DeepPartial<T[K]>;
+  } :
+  // arrays
+  T extends Array<infer U> ? Array<DeepPartial<U>> :
+  // readonly arrays
+  T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>> :
+  // objects
+  T extends object ? {
+    [K in keyof T]?: DeepPartial<T[K]>;
+  } :
+  // fallback
+  T;
+
+  export type DeepRequired<T> =
+  // primitives and functions stay the same
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  T extends Primitive | Function ? T :
+  // tuples
+  IsTuple<T> extends true ? {
+    [K in keyof T]-?: DeepRequired<T[K]>;
+  } :
+  // arrays
+  T extends Array<infer U> ? Array<DeepRequired<U>> :
+  // readonly arrays
+  T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepRequired<U>> :
+  // objects
+  T extends object ? {
+    [K in keyof T]-?: DeepRequired<T[K]>;
+  } :
+  // fallback
+  T;

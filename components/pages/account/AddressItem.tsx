@@ -9,29 +9,64 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useQuery } from "@/lib/server/client-hook";
+import { useUserStore } from "@/store/user";
 import { Address } from "@/types/user";
+import { LoaderIcon } from "lucide-react";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 type Props = {
   address: Address;
 };
 
-function EditAddressDialog({ address, isOpen, onClose, onSave }: { 
-  address: Address; 
-  isOpen: boolean; 
+function EditAddressDialog({
+  address,
+  isOpen,
+  onClose,
+}: {
+  address: Address;
+  isOpen: boolean;
   onClose: () => void;
-  onSave: (address: Address) => void;
 }) {
+  const { user, actions } = useUserStore();
   const [editedAddress, setEditedAddress] = useState(address);
+  const updateAddress = useQuery("updateAddresses");
+  const [opened, setOpened] = useState(isOpen);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  React.useEffect(() => {
+    setOpened(isOpen);
+  }, [isOpen]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(editedAddress);
-    onClose();
+    console.log(1);
+    try {
+      const res = await updateAddress.run({
+        body: {
+          updateData: [editedAddress],
+        },
+      });
+      if (!res?.success || !res?.data) {
+        throw new Error("Failed to update address");
+      }
+
+      actions.setUser({
+        ...user!,
+        addresses: res.data,
+      });
+      toast.success("Address updated successfully");
+      setOpened(false);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update address: " + (error as Error).message);
+    } finally {
+      onClose();
+    }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={opened} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Address</DialogTitle>
@@ -47,7 +82,10 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
                 id="name"
                 value={editedAddress.country}
                 onChange={(e) =>
-                  setEditedAddress({ ...editedAddress, country: e.target.value })
+                  setEditedAddress({
+                    ...editedAddress,
+                    country: e.target.value,
+                  })
                 }
               />
             </div>
@@ -71,7 +109,7 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
                 }
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="city">City</Label>
@@ -89,7 +127,10 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
                   id="state"
                   value={editedAddress.state}
                   onChange={(e) =>
-                    setEditedAddress({ ...editedAddress, state: e.target.value })
+                    setEditedAddress({
+                      ...editedAddress,
+                      state: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -101,7 +142,10 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
                   id="postalCode"
                   value={editedAddress.postal}
                   onChange={(e) =>
-                    setEditedAddress({ ...editedAddress, postal: e.target.value })
+                    setEditedAddress({
+                      ...editedAddress,
+                      postal: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -111,17 +155,27 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
                   id="country"
                   value={editedAddress.country}
                   onChange={(e) =>
-                    setEditedAddress({ ...editedAddress, country: e.target.value })
+                    setEditedAddress({
+                      ...editedAddress,
+                      country: e.target.value,
+                    })
                   }
                 />
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" type="button" onClick={onClose}>
+            <Button
+              disabled={updateAddress.isLoading}
+              variant="outline"
+              type="button"
+              onClick={onClose}
+            >
               Cancel
             </Button>
-            <Button type="submit">Save changes</Button>
+            <Button disabled={updateAddress.isLoading} type="submit">
+              {updateAddress.isLoading ? "Saving..." : "Save Changes"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -129,26 +183,76 @@ function EditAddressDialog({ address, isOpen, onClose, onSave }: {
   );
 }
 
-function DeleteAddressDialog({ isOpen, onClose, onConfirm }: {
+function DeleteAddressDialog({
+  isOpen,
+  onClose,
+  id,
+}: {
   isOpen: boolean;
+  id: string;
   onClose: () => void;
-  onConfirm: () => void;
 }) {
+  const { user, actions } = useUserStore();
+  const deleteAddress = useQuery("deleteAddress");
+
+  const handleConfirm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await deleteAddress.run({
+        body: {
+          addressId: id,
+        },
+      });
+      if (!res?.success) {
+        throw new Error("Failed to delete address");
+      }
+      if (user) {
+        actions.setUser({
+          ...user,
+          addresses: user.addresses.filter((addr) => addr.id !== id),
+        });
+      }
+
+      toast.success("Address Deleted successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete address: " + (error as Error).message);
+    }
+    onClose();
+  };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Delete Address</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this address? This action cannot be undone.
+            Are you sure you want to delete this address? This action cannot be
+            undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button
+            disabled={deleteAddress.isLoading}
+            variant="outline"
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onConfirm}>
-            Delete
+          <Button
+            disabled={deleteAddress.isLoading}
+            variant="destructive"
+            onClick={handleConfirm}
+          >
+            {deleteAddress.isLoading && (
+              <LoaderIcon
+                className="size-5 animate-spin"
+                style={{
+                  animationDuration: "1.5s",
+                }}
+              />
+            )}
+
+            {deleteAddress.isLoading ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -159,15 +263,6 @@ function DeleteAddressDialog({ isOpen, onClose, onConfirm }: {
 export default function AddressItem({ address }: Props) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const handleEdit = (updatedAddress: Address) => {
-    // Here you would typically make an API call to update the address
-    console.log('Update address:', updatedAddress);
-  };
-
-  const handleDelete = () => {
-    // Here you would typically make an API call to delete the address
-    setIsDeleteDialogOpen(false);
-  };
 
   return (
     <>
@@ -181,7 +276,12 @@ export default function AddressItem({ address }: Props) {
             <p className="text-sm text-muted-foreground">
               {address.line1}
               <br />
-              {address.line2&&<><br/>{address.line2}</>}
+              {address.line2 && (
+                <>
+                  <br />
+                  {address.line2}
+                </>
+              )}
               {address.city}, {address.state} {address.city}
               <br />
               {address.country}
@@ -211,13 +311,12 @@ export default function AddressItem({ address }: Props) {
         address={address}
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
-        onSave={handleEdit}
       />
 
       <DeleteAddressDialog
+        id={address.id}
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={handleDelete}
       />
     </>
   );

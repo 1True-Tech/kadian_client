@@ -116,6 +116,7 @@ export interface UserData {
   loginAttempts: number;
   /** Account lock expiration timestamp */
   lockUntil?: number;
+  settings?: AccountSettings;
   /** MongoDB document ID */
   _id: string;
   /** User's orders */
