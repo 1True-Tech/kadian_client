@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("Received forgot password request");
     const body = await request.json();
     
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/forgot-password`, {

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { toast } from "sonner";
 import { ArrowLeft, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,9 +11,11 @@ import Link from "next/link";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch("/api/auth/forgot-password", {
         method: "POST",
@@ -21,15 +24,18 @@ const ForgotPassword = () => {
         },
         body: JSON.stringify({ email }),
       });
-      
       if (!response.ok) {
+        toast.error("Failed to send reset email.");
         throw new Error("Failed to send reset email");
       }
-      
       setIsSubmitted(true);
-    } catch (error) {
-      console.error("Error sending reset email:", error);
-      // You could add toast notification here
+      toast.success(
+        "If an account with that email exists, a reset link has been sent."
+      );
+    } catch{
+      toast.error("Error sending reset email.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,8 +60,9 @@ const ForgotPassword = () => {
                   <Mail className="h-8 w-8 text-success" />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  If an account with that email exists, we&apos;ve sent you a link to
-                  reset your password. Please check your inbox and spam folder.
+                  If an account with that email exists, we&apos;ve sent you a
+                  link to reset your password. Please check your inbox and spam
+                  folder.
                 </p>
                 <div className="space-y-3">
                   <Button size="lg" className="w-full" asChild>
@@ -85,8 +92,35 @@ const ForgotPassword = () => {
                   />
                 </div>
 
-                <Button type="submit" size="lg" className="w-full btn-hero">
-                  Send Reset Link
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full btn-hero"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8z"
+                        />
+                      </svg>
+                      Sending...
+                    </span>
+                  ) : (
+                    "Send Reset Link"
+                  )}
                 </Button>
 
                 <div className="text-center">
