@@ -9,9 +9,13 @@ export const createTransporter = (): Transporter => {
     secure: false,
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
 };
+
+const transporter = createTransporter();
+
+export { transporter };
 
 

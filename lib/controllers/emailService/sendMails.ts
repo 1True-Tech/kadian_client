@@ -1,5 +1,5 @@
 import nodemailer, { SentMessageInfo } from "nodemailer";
-import { createTransporter } from "./transporter";
+import { createTransporter, transporter } from "./transporter";
 
 interface EmailResult {
   success: boolean;
@@ -66,7 +66,6 @@ export const sendNotificationEmail = async (
   data: NotificationData
 ): Promise<EmailResult> => {
   try {
-    const transporter = createTransporter();
 
     let htmlContent = "";
 
