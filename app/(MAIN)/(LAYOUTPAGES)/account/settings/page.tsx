@@ -1,15 +1,17 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useUserStore } from "@/store/user";
-import { Switch } from "@/components/ui/switch";
-import { useState } from "react";
-import { Separator } from "@/components/ui/separator";
-import { BellIcon, KeyIcon, ShieldIcon, UserIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { InputPassword } from "@/components/ui/InputPassword";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import cookies from "@/lib/utils/cookies";
+import { useUserStore } from "@/store/user";
+import { BellIcon, ShieldIcon, UserIcon } from "lucide-react";
+import { useState } from "react";
 
 export default function SettingsPage() {
   const { user } = useUserStore();
@@ -44,7 +46,6 @@ export default function SettingsPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify(notificationSettings),
       });
@@ -328,9 +329,8 @@ export default function SettingsPage() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="current">Current Password</Label>
-                <Input 
+                <InputPassword
                   id="current" 
-                  type="password" 
                   value={passwordData.currentPassword}
                   onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
                   required
@@ -338,9 +338,8 @@ export default function SettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="new">New Password</Label>
-                <Input 
+                <InputPassword 
                   id="new" 
-                  type="password" 
                   value={passwordData.newPassword}
                   onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
                   required
@@ -351,9 +350,8 @@ export default function SettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm">Confirm New Password</Label>
-                <Input 
+                <InputPassword 
                   id="confirm" 
-                  type="password" 
                   value={passwordData.confirmPassword}
                   onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
                   required
