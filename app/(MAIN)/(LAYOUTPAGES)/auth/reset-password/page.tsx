@@ -1,9 +1,9 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, Eye, EyeOff } from "lucide-react";
+import { CheckCircle, Eye, EyeOff, LoaderIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isReset, setIsReset] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -23,7 +24,6 @@ const ResetPassword = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
@@ -31,14 +31,15 @@ const ResetPassword = () => {
       return;
     }
     try {
+      setIsLoading(true);
       const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          token, 
-          password: formData.password 
+        body: JSON.stringify({
+          token,
+          password: formData.password,
         }),
       });
       if (!response.ok) {
@@ -47,9 +48,11 @@ const ResetPassword = () => {
       setIsReset(true);
       toast.success("Password reset successfully. You can now sign in.");
     } catch {
-        toast.error("Failed to reset password");
+      toast.error("Failed to reset password");
 
       // toast already shown above for error
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -147,8 +150,14 @@ const ResetPassword = () => {
                   </div>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full btn-hero">
-                  Reset Password
+                <Button
+                  disabled={isLoading}
+                  type="submit"
+                  size="lg"
+                  className="w-full btn-hero"
+                >
+                  {isLoading&&<LoaderIcon className="animate-spin h-4 w-4 mr-2" />}
+                  {isLoading ? "Resetting..." : "Reset Password"}
                 </Button>
               </form>
             )}
