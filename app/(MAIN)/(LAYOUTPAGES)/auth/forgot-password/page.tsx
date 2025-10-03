@@ -25,7 +25,6 @@ const ForgotPassword = () => {
         body: JSON.stringify({ email }),
       });
       if (!response.ok) {
-        toast.error("Failed to send reset email.");
         throw new Error("Failed to send reset email");
       }
       setIsSubmitted(true);
