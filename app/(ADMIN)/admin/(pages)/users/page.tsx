@@ -90,7 +90,7 @@ export default function UsersPage() {
       
       <Card>
         <CardHeader>
-          <CardTitle>All Users</CardTitle>
+          <CardTitle className="text-base sm:text-lg md:text-xl">All Users</CardTitle>
           <CardDescription>
             Manage and monitor user accounts across the platform
           </CardDescription>

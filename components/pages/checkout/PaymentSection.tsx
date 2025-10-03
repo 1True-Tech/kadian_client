@@ -27,7 +27,7 @@ export const PaymentMethodForm = ({ paymentMethod, setPaymentMethod, handleFileU
       <CardContent className="space-y-4">
         <div className="flex flex-col space-y-2">
           <label className="flex items-center gap-2">
-            <input type="radio" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("stripe")}/>
+            <input type="radio" checked={paymentMethod === "card"} onChange={() => setPaymentMethod("card")}/>
             {icons?.card}
             Credit/Debit Card (Stripe)
           </label>

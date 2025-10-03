@@ -8,7 +8,14 @@ import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/lib/hooks/useCart";
 import { useQuery } from "@/lib/server/client-hook";
 import { useUserStore } from "@/store/user";
-import { ImageIcon, Loader2Icon, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import {
+  ImageIcon,
+  Loader2Icon,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Trash2,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -29,14 +36,20 @@ const empty = (
 );
 const Cart = () => {
   const { user } = useUserStore();
-  const { removeFromCart, updateQuantity, removeStatus, removeError, updateStatus, updateError } = useCart();
+  const {
+    removeFromCart,
+    updateQuantity,
+    removeStatus,
+    removeError,
+    updateStatus,
+    updateError,
+  } = useCart();
   const { run, data, status } = useQuery("getCart");
   const [currentUpdatedItem, setCurrentUpdatedItem] = useState<string[]>([]);
 
   useEffect(() => {
     run();
   }, [run]);
-
 
   if (status === "loading")
     return (
@@ -66,14 +79,19 @@ const Cart = () => {
     if (!cartItem || !cartItem._id) return;
     setCurrentUpdatedItem((prev) => [...prev, String(cartItem._id)]);
     const res = await removeFromCart(cartItem._id);
-    const id = "removed-item-id"
+    const id = "removed-item-id";
     if (res?.response?.success) {
-      toast.success("Item removed from cart.", {id});
+      toast.success("Item removed from cart.", { id });
       await run(); // Re-fetch cart after removal
     } else {
-      toast.error("Failed to remove item: " + (res?.response?.message || "Unknown error"), {id});
+      toast.error(
+        "Failed to remove item: " + (res?.response?.message || "Unknown error"),
+        { id }
+      );
     }
-    setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(cartItem._id)));
+    setCurrentUpdatedItem((prev) =>
+      prev.filter((id) => id !== String(cartItem._id))
+    );
   }
   const cartItem = (product: { sku: string; pid: string }) =>
     user.cart.find(
@@ -88,7 +106,9 @@ const Cart = () => {
     setCurrentUpdatedItem((prev) => [...prev, String(item._id)]);
     if (action === "REMOVE" && item.quantity <= 1) {
       await handleRemoveFromCart(product);
-      setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(item._id)));
+      setCurrentUpdatedItem((prev) =>
+        prev.filter((id) => id !== String(item._id))
+      );
       return;
     }
     const res = await updateQuantity(item._id, action === "ADD" ? 1 : -1);
@@ -96,9 +116,13 @@ const Cart = () => {
       toast.success("Cart updated.");
       await run(); // Re-fetch cart after update
     } else {
-      toast.error("Failed to update cart: " + (res?.response?.message || "Unknown error"));
+      toast.error(
+        "Failed to update cart: " + (res?.response?.message || "Unknown error")
+      );
     }
-    setCurrentUpdatedItem((prev) => prev.filter((id) => id !== String(item._id)));
+    setCurrentUpdatedItem((prev) =>
+      prev.filter((id) => id !== String(item._id))
+    );
   }
 
   const subtotal = cart?.totalAmount || 0;
@@ -115,92 +139,125 @@ const Cart = () => {
         <div className="lg:col-span-2 space-y-4">
           {cart?.items?.map((item: any) => (
             <Card key={item.id}>
-              <CardContent className="p-6">
-                <div className="flex gap-4">
-                  <div className="w-24 h-24 rounded-lg overflow-hidden isolate flex-shrink-0">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col min-[498px]:flex-row gap-4">
+                  {/* Product Image */}
+                  <div className="w-full min-[498px]:w-24 h-48 min-[498px]:h-24 rounded-lg overflow-hidden isolate flex-shrink-0 mx-auto sm:mx-0">
                     {item.image?.src ? (
                       <Image
                         width={720}
                         height={480}
-                        src={item.image?.src || ""}
+                        src={item.image.src}
                         alt={item.image.alt}
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <ImageIcon />
+                      <ImageIcon className="w-full h-full text-muted-foreground" />
                     )}
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-medium text-foreground">
+                  {/* Product Details & Actions */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    {/* Title & Remove */}
+                    <div className="flex flex-col min-[498px]:flex-row justify-between items-start sm:items-center mb-2">
+                      <div className="min-w-0">
+                        <h3 className="font-medium text-foreground truncate">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Size: {item.size?.label} • Color: {item.color.name}
+                        <p className="text-sm text-muted-foreground flex items-center gap-2 truncate">
+                          Size: {item.size?.label} • Color:
+                          <span
+                            className="w-3 h-3 rounded-full border"
+                            style={{
+                              backgroundColor:
+                                item.color.hex || item.color.rgba,
+                            }}
+                          />
+                          {item.color.name}
                         </p>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          handleRemoveFromCart({
-                            pid: item.id,
-                            sku: item.variantSku,
-                          })
-                        }
-                        className="text-muted-foreground hover:text-destructive"
-                        disabled={currentUpdatedItem.includes(String(item.id)) || removeStatus === "loading"}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                      {removeError && currentUpdatedItem.includes(String(item.id)) && (
-                        <span className="text-destructive text-xs ml-2">Error removing item</span>
-                      )}
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    {/* Quantity & Price & Remove */}
+                    <div className="flex flex-col min-[498px]:flex-row min-[498px]:justify-between min-[498px]:items-center gap-2">
                       <div className="flex items-center gap-2">
+                        {/* Quantity Controls */}
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={async () => {
-                            await handleUpdateQuantity("REMOVE", {
+                          onClick={async () =>
+                            handleUpdateQuantity("REMOVE", {
                               pid: item.id,
                               sku: item.variantSku,
-                            });
-                          }}
-                          disabled={currentUpdatedItem.includes(String(item.id))}
+                            })
+                          }
+                          disabled={currentUpdatedItem.includes(
+                            String(item.id)
+                          )}
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
-                        <span className="px-3 py-1 border rounded min-w-12 text-center">
+
+                        <span className="px-3 py-1 border rounded min-w-[2.5rem] flex items-center justify-center text-center">
                           {currentUpdatedItem.includes(String(item.id)) ? (
-                            <Loader2Icon className="size-3 animate-spin" />
+                            <Loader2Icon className="h-4 w-4 animate-spin" />
                           ) : (
                             item.quantity
                           )}
                         </span>
+
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={async () => {
-                            await handleUpdateQuantity("ADD", {
+                          onClick={async () =>
+                            handleUpdateQuantity("ADD", {
                               pid: item.id,
                               sku: item.variantSku,
-                            });
-                          }}
-                          disabled={currentUpdatedItem.includes(String(item.id))}
+                            })
+                          }
+                          disabled={currentUpdatedItem.includes(
+                            String(item.id)
+                          )}
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
-                      </div>
-                      {updateError && currentUpdatedItem.includes(String(item.id)) && (
-                        <span className="text-destructive text-xs ml-2">Error updating quantity</span>
-                      )}
 
-                      <span className="font-semibold">
+                        {/* Delete Button */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            handleRemoveFromCart({
+                              pid: item.id,
+                              sku: item.variantSku,
+                            })
+                          }
+                          className="text-muted-foreground hover:text-destructive ml-2"
+                          disabled={
+                            currentUpdatedItem.includes(String(item.id)) ||
+                            removeStatus === "loading"
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+
+                        {/* Error Messages */}
+                        {updateError &&
+                          currentUpdatedItem.includes(String(item.id)) && (
+                            <span className="text-destructive text-xs ml-2">
+                              Error updating quantity
+                            </span>
+                          )}
+                        {removeError &&
+                          currentUpdatedItem.includes(String(item.id)) && (
+                            <span className="text-destructive text-xs ml-2">
+                              Error removing item
+                            </span>
+                          )}
+                      </div>
+
+                      {/* Price */}
+                      <span className="font-semibold text-right sm:text-left">
                         ${(item.price * item.quantity).toFixed(2)}
                       </span>
                     </div>

@@ -1,12 +1,17 @@
 "use client";
-import { CheckoutStep, CheckoutSteps } from "@/components/pages/checkout/CheckoutSteps";
+import {
+  CheckoutStep,
+  CheckoutSteps,
+} from "@/components/pages/checkout/CheckoutSteps";
 import { UserInfoForm } from "@/components/pages/checkout/CustomerInfoForm";
-import { OrderReview, OrderSummary } from "@/components/pages/checkout/OrderSummary";
+import {
+  OrderReview,
+  OrderSummary,
+} from "@/components/pages/checkout/OrderSummary";
 import { PaymentMethodForm } from "@/components/pages/checkout/PaymentSection";
 import { Loader } from "@/components/ui/loaders";
 import { FaCreditCard, FaMoneyCheckAlt, FaTruck } from "react-icons/fa";
 import ErrorBoundary from "@/components/ui/error-boundary";
-import { toast } from "@/components/ui/use-toast";
 import { buildCreateOrderBody } from "@/lib/controllers/buildOrdersBody";
 import { useCart } from "@/lib/hooks/useCart";
 import queries from "@/lib/queries";
@@ -20,6 +25,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { redirect, useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 
 // Initialize Stripe with publishable key
 const stripe = await loadStripe(
@@ -51,7 +57,7 @@ const CheckoutContent = () => {
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [idempotencyKey] = useState<string>(uuidv4());
   const [itemsForOrder, setItemsForOrder] = useState<CartItemReady[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("delivery");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -60,17 +66,22 @@ const CheckoutContent = () => {
     lastName: "",
     city: "",
     state: "",
-    "addressLine1": "",
-      "addressLine2": "",
+    addressLine1: "",
+    addressLine2: "",
     zipCode: "",
     country: "United States",
     saveAddress: false,
   });
 
+  const [formInitialized, setFormInitialized] = useState(false);
+  const [itemsInitialized, setItemsInitialized] = useState(false);
+
   useEffect(() => {
-    async function loadData() {
+    const loadData = async () => {
+      // CREATE ORDER CHECKOUT
       if (id === "create-order-checkout") {
-        if (cart?.length) {
+        // Initialize items for order once
+        if (cart?.length && !itemsInitialized) {
           const loadCartProduct: CartItemReady[] = await client.fetch(
             queries.productCartItem,
             {
@@ -78,74 +89,79 @@ const CheckoutContent = () => {
               vSku: cart.map((c) => c.variantSku),
             }
           );
-          setItemsForOrder(
-            loadCartProduct.map((item) => ({
-              ...item,
-              quantity:
-                cart.find((c) => c.variantSku === item.variantSku)?.quantity ||
-                1,
-              variantSku: item.variantSku,
-            }))
-          );
+
+          const newItems = loadCartProduct.map((item) => ({
+            ...item,
+            quantity:
+              cart.find((c) => c.variantSku === item.variantSku)?.quantity || 1,
+            variantSku: item.variantSku,
+          }));
+
+          setItemsForOrder(newItems);
+          setItemsInitialized(true);
         }
-        if (user) {
-          const addr = user.addresses?.[0];
+
+        // Initialize form data once
+        if (user && !formInitialized) {
+          const addr = user.addresses?.[0] || {};
           setFormData({
             email: user.email || "",
             phone: user.phone || "",
             firstName: user.name.first || "",
             lastName: user.name.last || "",
-            city: addr?.city || "",
-            state: addr?.state || "",
-            zipCode: addr?.postal || "",
-            country: addr?.country || "United States",
+            city: addr.city || "",
+            state: addr.state || "",
+            zipCode: addr.postal || "",
+            country: addr.country || "United States",
             saveAddress: false,
-            addressLine1:addr.line1 || "",
-            addressLine2:addr.line2 || ""
+            addressLine1: addr.line1 || "",
+            addressLine2: addr.line2 || "",
           });
+          setFormInitialized(true);
         }
+
         setIsLoading(false);
         return;
-      }
-      // Only fetch order if orderId is not set and currentStep is 'user-info'
-      if (!orderId && currentStep === "user-info") {
+      }else if(id !== "undefined" && id !== "null" && id !== "create-order-checkout") {
         const orderData = await getOrder.run({ params: { id } });
-        // Redirect if cancelled
+
         if (!orderData?.data || orderData.data.status === "cancelled") {
           router.replace(`/checkout/${id}/cancel`);
           return;
         }
-        // Redirect to success if order has payment method
-        if (orderData.data.payment?.method) {
+
+        if (
+          orderData.data.status !== "pending"
+        ) {
+          console.log(orderData.data.status)
           router.replace(`/checkout/${id}/success`);
           return;
         }
-        // Redirect to success if not pending (already paid, shipped, etc)
-        if (orderData.data.status !== "pending") {
-          router.replace(`/checkout/${id}/success`);
-          return;
-        }
-        if (orderData?.data?.items?.length) {
+
+        // Initialize items for order once from existing order
+        if (orderData?.data?.items?.length && !itemsInitialized) {
           const loadOrderProduct: CartItemReady[] = await client.fetch(
             queries.productCartItem,
             {
-              ids: orderData?.data?.items.map((c) => c.productId),
-              vSku: orderData?.data?.items.map((c) => c.variantSku),
+              ids: orderData.data.items.map((c) => c.productId),
+              vSku: orderData.data.items.map((c) => c.variantSku),
             }
           );
-          setItemsForOrder(
-            loadOrderProduct.map((item) => ({
-              ...item,
-              quantity:
-                cart.find((c) => c.variantSku === item.variantSku)?.quantity ||
-                1,
-              variantSku: item.variantSku,
-            }))
-          );
+
+          const newItems = loadOrderProduct.map((item) => ({
+            ...item,
+            quantity:
+              cart.find((c) => c.variantSku === item.variantSku)?.quantity || 1,
+            variantSku: item.variantSku,
+          }));
+
+          setItemsForOrder(newItems);
+          setItemsInitialized(true);
         }
-        if (orderData?.data) {
-          setOrderId(orderData.data.id);
-          setFormData({
+
+        // Initialize form data once from existing order
+        if (orderData?.data && !formInitialized) {
+          const newForm = {
             email: orderData.data.customerInfo.email || "",
             phone: orderData.data.customerInfo.phone || "",
             firstName: orderData.data.customerInfo.name.first || "",
@@ -155,15 +171,21 @@ const CheckoutContent = () => {
             zipCode: orderData.data.shippingAddress?.postal || "",
             country: orderData.data.shippingAddress?.country || "United States",
             saveAddress: false,
-            addressLine1:"",
-            addressLine2:""
-          });
+            addressLine1: "",
+            addressLine2: "",
+          };
+
+          setFormData(newForm);
+          setFormInitialized(true);
         }
+
+        if (orderData?.data) setOrderId(orderData.data.id);
         setIsLoading(false);
       }
-    }
+    };
+
     loadData();
-  }, [id, getOrder, router, currentStep, orderId, cart, user]);
+  }, [id, currentStep, orderId, cart]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
@@ -173,8 +195,6 @@ const CheckoutContent = () => {
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
-
 
   const totals = useMemo(() => {
     const subtotal = itemsForOrder.reduce(
@@ -189,48 +209,35 @@ const CheckoutContent = () => {
 
   const validateUserInfo = () => {
     // Basic required fields for all payment methods
-    const basicRequired = [
-      "email",
-      "phone",
-      "firstName",
-      "lastName",
-    ];
-    
+    const basicRequired = ["email", "phone", "firstName", "lastName"];
+
     // Only require shipping fields for transfer or delivery payment methods
-    const requiredFields = paymentMethod === 'card' 
-      ? basicRequired 
-      : [
-          ...basicRequired,
-          "addressLine1",
-          "city",
-          "state",
-          "zipCode",
-          "country",
-        ];
-    
+    const requiredFields =
+      paymentMethod === "card"
+        ? basicRequired
+        : [
+            ...basicRequired,
+            "city",
+            "state",
+            "zipCode",
+            "country",
+          ];
+
     const missing = requiredFields.filter(
       (f) => !formData[f as keyof typeof formData]
     );
-    
+
     if (missing.length) {
-      toast({
-        title: "Missing Information",
-        description: `Fill required fields: ${missing.join(", ")}`,
-        variant: "destructive",
-      });
+      toast.error(`Fill required fields: ${missing.join(", ")}`);
       return false;
     }
-    
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      toast({
-        title: "Invalid Email",
-        description: "Enter a valid email address",
-        variant: "destructive",
-      });
+      toast.error(`Enter a valid email address`);
       return false;
     }
-    
+
     return true;
   };
 
@@ -242,9 +249,12 @@ const CheckoutContent = () => {
         body: { ...body, payment: { ...body.payment, idempotencyKey } },
       });
       if (res?.data.orderId) {
-        clearCart({
-          itemsOnOrder: itemsForOrder.map(i => ({pid:i.productId, vsku:i.variantSku}))
-        })
+        // clearCart({
+        //   itemsOnOrder: itemsForOrder.map((i) => ({
+        //     pid: i.productId,
+        //     vsku: i.variantSku,
+        //   })),
+        // });
         const newId = res.data.orderId;
         setOrderId(newId);
         router.push(`/checkout/${newId}`);
@@ -252,11 +262,7 @@ const CheckoutContent = () => {
       }
       throw new Error("Failed to create order");
     } catch {
-      toast({
-        title: "Error",
-        description: "Failed to create order",
-        variant: "destructive",
-      });
+      toast.error("Failed to create order");
       return null;
     } finally {
       setIsLoading(false);
@@ -267,8 +273,13 @@ const CheckoutContent = () => {
     if (currentStep === "user-info") {
       if (validateUserInfo()) setCurrentStep("review");
     } else if (currentStep === "review") {
-      const newOrderId = await createOrderAndGetId();
-      if (newOrderId) setCurrentStep("payment");
+      if(id === "create-order-checkout"){
+        const newOrderId = await createOrderAndGetId();
+        if (newOrderId) setCurrentStep("payment");
+      }else if(id !== "create-order-checkout" && id !== "undefined" && id !== "null"){
+        setCurrentStep("payment");
+      }
+      
     }
   };
 
@@ -282,49 +293,52 @@ const CheckoutContent = () => {
       // Check inventory for each item
       const inventoryChecks = await Promise.all(
         items.map(async (item) => {
-          const response = await fetch(`/api/inventory/${item.productId}/${item.variantSku}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          });
-          
+          const response = await fetch(
+            `/api/inventory/${item.productId}/${item.variantSku}`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+
           if (!response.ok) {
             return { available: false, item };
           }
-          
+
           const data = await response.json();
-          const available = data.data?.stock >= item.quantity;
-          return { 
-            available, 
+          const available = data.data?.currentStock >= data.data?.stockThreshold;
+          return {
+            available,
             item,
-            currentStock: data.data?.stock || 0
+            currentStock: data.data?.stock || 0,
           };
         })
       );
-      
+      console.log(inventoryChecks);
+
       // Find any unavailable items
-      const unavailableItems = inventoryChecks.filter(check => !check.available);
-      
+      const unavailableItems = inventoryChecks.filter(
+        (check) => !check.available
+      );
+
       if (unavailableItems.length > 0) {
-        const itemNames = unavailableItems.map(
-          check => `${check.item.name} (${check.currentStock} available, ${check.item.quantity} requested)`
-        ).join(", ");
-        
-        toast({
-          title: "Inventory Error",
-          description: `Some items are no longer available in the requested quantity: ${itemNames}`,
-          variant: "destructive",
-        });
-        
+        const itemNames = unavailableItems
+          .map(
+            (check) =>
+              `${check.item.name} (${check.currentStock} available, ${check.item.quantity} requested)`
+          )
+          .join(", ");
+        toast.error(
+          `Some items are no longer available in the requested quantity: ${itemNames}`
+        );
+
         return false;
       }
-      
+
       return true;
     } catch {
-      toast({
-        title: "Inventory Check Failed",
-        description: "Unable to verify product availability. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Unable to verify product availability. Please try again.");
+
       return false;
     }
   };
@@ -333,14 +347,15 @@ const CheckoutContent = () => {
     setIsLoading(true);
     try {
       if (!orderId) throw new Error("Order ID missing");
-      
+
       // Check inventory availability before processing payment
-      const inventoryAvailable = await checkInventoryAvailability(itemsForOrder);
+      const inventoryAvailable =
+        await checkInventoryAvailability(itemsForOrder);
       if (!inventoryAvailable) {
         setIsLoading(false);
         return;
       }
-      
+
       if (paymentMethod === "transfer" && proofFile) {
         const proof = await fileToBase64(proofFile);
         await fetch(`/api/orders/${orderId}`, {
@@ -350,7 +365,7 @@ const CheckoutContent = () => {
         });
         router.push(`/checkout/${id}/success?order_id=${orderId}`);
       }
-      if (paymentMethod === "stripe") {
+      if (paymentMethod === "card") {
         const res = await fetch(
           `/api/payments/stripe/create-checkout-session`,
           {
@@ -387,15 +402,10 @@ const CheckoutContent = () => {
         }
       }
       if (paymentMethod === "delivery") {
-        
         router.push(`/checkout/${orderId}/success?order_id=${orderId}`);
       }
     } catch (error: any) {
-      toast({
-        title: "Payment Error",
-        description: error.message || "Payment failed. Please try again.",
-        variant: "destructive",
-      });
+      toast.error(error.message || "Payment failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -413,7 +423,9 @@ const CheckoutContent = () => {
       <div className="flex flex-col items-center justify-center min-h-[60vh] w-full bg-background animate-pulse">
         <div className="flex flex-col items-center gap-4">
           <FaCreditCard className="text-primary animate-spin" size={48} />
-          <div className="text-lg font-semibold text-muted-foreground">{loadingMessage}</div>
+          <div className="text-lg font-semibold text-muted-foreground">
+            {loadingMessage}
+          </div>
         </div>
       </div>
     );
@@ -425,46 +437,61 @@ const CheckoutContent = () => {
 
       <CheckoutSteps currentStep={currentStep} />
 
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-  <div className="col-span-2 space-y-6">
-    {currentStep === "user-info" && (
-      <UserInfoForm
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleNextStep={handleNextStep}
-      />
-    )}
-    {currentStep === "review" && (
-      <OrderReview
-        itemsForOrder={itemsForOrder}
-        formData={formData}
-        totals={totals}
-        handlePreviousStep={handlePreviousStep}
-        handleNextStep={handleNextStep}
-      />
-    )}
-    {currentStep === "payment" && (
-      <PaymentMethodForm
-        paymentMethod={paymentMethod}
-        setPaymentMethod={setPaymentMethod}
-        proofFile={proofFile}
-        handleFileUpload={handleFileUpload}
-        handleProcessPayment={handleProcessPayment}
-        handlePreviousStep={handlePreviousStep}
-        icons={{
-          card: <FaCreditCard className="inline-block mr-2 text-primary" size={20} />, 
-          transfer: <FaMoneyCheckAlt className="inline-block mr-2 text-primary" size={20} />, 
-          delivery: <FaTruck className="inline-block mr-2 text-primary" size={20} />
-        }}
-      />
-    )}
-  </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="col-span-2 space-y-6">
+          {currentStep === "user-info" && (
+            <UserInfoForm
+              formData={formData}
+              handleInputChange={handleInputChange}
+              handleNextStep={handleNextStep}
+            />
+          )}
+          {currentStep === "review" && (
+            <OrderReview
+              loading={createOrder.isLoading}
+              itemsForOrder={itemsForOrder}
+              formData={formData}
+              totals={totals}
+              handlePreviousStep={handlePreviousStep}
+              handleNextStep={handleNextStep}
+            />
+          )}
+          {currentStep === "payment" && (
+            <PaymentMethodForm
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+              proofFile={proofFile}
+              handleFileUpload={handleFileUpload}
+              handleProcessPayment={handleProcessPayment}
+              handlePreviousStep={handlePreviousStep}
+              icons={{
+                card: (
+                  <FaCreditCard
+                    className="inline-block mr-2 text-primary"
+                    size={20}
+                  />
+                ),
+                transfer: (
+                  <FaMoneyCheckAlt
+                    className="inline-block mr-2 text-primary"
+                    size={20}
+                  />
+                ),
+                delivery: (
+                  <FaTruck
+                    className="inline-block mr-2 text-primary"
+                    size={20}
+                  />
+                ),
+              }}
+            />
+          )}
+        </div>
 
-  <div className="hidden lg:block">
-    <OrderSummary itemsForOrder={itemsForOrder} totals={totals} />
-  </div>
-</div>
-
+        <div className="hidden lg:block">
+          <OrderSummary itemsForOrder={itemsForOrder} totals={totals} />
+        </div>
+      </div>
     </div>
   );
 };

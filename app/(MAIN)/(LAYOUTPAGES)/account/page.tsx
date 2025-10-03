@@ -4,16 +4,18 @@ import OrderHistoryItem from "@/components/pages/account/OrderHistoryItem";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ErrorBoundary from "@/components/ui/error-boundary";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loader } from "@/components/ui/loaders";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { updateMe } from "@/lib/server/handlers";
 import { getStatusColor } from "@/lib/utils/getStatusColor";
 import { useUserStore } from "@/store/user";
 import { Heart, MapPin, MoveRightIcon, Package } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import ErrorBoundary from "@/components/ui/error-boundary";
-import { Loader } from "@/components/ui/loaders";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   return (
@@ -24,14 +26,109 @@ const Dashboard = () => {
 };
 
 const DashboardContent = () => {
-  const { user } = useUserStore();
+  const { user, actions, userInfoStatus } = useUserStore();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState({
+    firstName: user?.name.first || "",
+    lastName: user?.name.last || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+  });
 
-  const handleProfileUpdate = (e: React.FormEvent) => {
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsEditing(false);
-    // Handle profile update
+
+    // E.164 regex: starts with +, then 1–15 digits
+    const e164Regex = /^\+\d{1,15}$/;
+
+    if (userInfo.phone && !e164Regex.test(userInfo.phone)) {
+      actions.setUserInfoStatus("phone", {
+        error: true,
+        isLoading: false,
+        message: "Phone must be in E.164 format (+123456789)",
+      });
+      toast.error("Phone number must be in E.164 format, e.g. +123456789");
+      return;
+    }
+
+    try {
+      actions.setUserInfoStatus("email", {
+        error: false,
+        isLoading: true,
+        message: "",
+      });
+      actions.setUserInfoStatus("name", {
+        error: false,
+        isLoading: true,
+        message: "",
+      });
+      actions.setUserInfoStatus("phone", {
+        error: false,
+        isLoading: true,
+        message: "",
+      });
+
+      const updatedUser = await updateMe({
+        body: {
+          name: { first: userInfo.firstName, last: userInfo.lastName },
+          email: userInfo.email,
+          phone: userInfo.phone,
+        },
+      });
+
+      if (!updatedUser.success) {
+        actions.setUserInfoStatus("email", {
+          error: true,
+          isLoading: false,
+          message: updatedUser.message || "Failed to update profile",
+        });
+        actions.setUserInfoStatus("name", {
+          error: true,
+          isLoading: false,
+          message: updatedUser.message || "Failed to update profile",
+        });
+        actions.setUserInfoStatus("phone", {
+          error: true,
+          isLoading: false,
+          message: updatedUser.message || "Failed to update profile",
+        });
+
+        toast.error(updatedUser.message || "Failed to update profile");
+      }
+
+      if (updatedUser.success && updatedUser.data) {
+        actions.setUser({
+          ...user!,
+          name: {
+            first: userInfo.firstName,
+            last: userInfo.lastName,
+          },
+          email: userInfo.email,
+          phone: userInfo.phone,
+        });
+        toast.success("Profile updated successfully");
+      }
+    } catch {
+      toast.error("Unexpected error while updating profile");
+    } finally {
+      actions.setUserInfoStatus("email", {
+        error: false,
+        isLoading: false,
+        message: "",
+      });
+      actions.setUserInfoStatus("name", {
+        error: false,
+        isLoading: false,
+        message: "",
+      });
+      actions.setUserInfoStatus("phone", {
+        error: false,
+        isLoading: false,
+        message: "",
+      });
+      setIsEditing(false);
+    }
   };
 
   // Simulate loading completion after user data is available
@@ -100,7 +197,7 @@ const DashboardContent = () => {
           {/* Recent Orders */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Orders</CardTitle>
+              <CardTitle className="text-base sm:text-lg md:text-xl">Recent Orders</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -138,7 +235,7 @@ const DashboardContent = () => {
         <TabsContent value="orders" className="mt-8">
           <Card>
             <CardHeader className="flex justify-between w-full flex-row">
-              <CardTitle>Order History</CardTitle>
+              <CardTitle className="text-base sm:text-lg md:text-xl">Order History</CardTitle>
               <Link
                 href="/account/order-history"
                 className="w-fit flex gap-small items-center"
@@ -160,7 +257,7 @@ const DashboardContent = () => {
         <TabsContent value="profile" className="mt-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Profile Information</CardTitle>
+              <CardTitle className="text-base sm:text-lg md:text-xl">Profile Information</CardTitle>
               <Button
                 variant="outline"
                 onClick={() => setIsEditing(!isEditing)}
@@ -175,22 +272,28 @@ const DashboardContent = () => {
                     <Label htmlFor="firstName">First Name</Label>
                     <Input
                       id="firstName"
-                      value={user.name.first}
+                      value={userInfo.firstName}
                       disabled={!isEditing}
-                      // onChange={(e) =>
-                      //   setUser({ ...user, firstName: e.target.value })
-                      // }
+                      onChange={(e) =>
+                        setUserInfo((prev) => ({
+                          ...prev,
+                          firstName: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div>
                     <Label htmlFor="lastName">Last Name</Label>
                     <Input
                       id="lastName"
-                      value={user.name.last}
+                      value={userInfo.lastName}
                       disabled={!isEditing}
-                      // onChange={(e) =>
-                      //   setUser({ ...user, lastName: e.target.value })
-                      // }
+                      onChange={(e) =>
+                        setUserInfo((prev) => ({
+                          ...prev,
+                          lastName: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -200,11 +303,14 @@ const DashboardContent = () => {
                   <Input
                     id="email"
                     type="email"
-                    value={user.email}
+                    value={userInfo.email}
                     disabled={!isEditing}
-                    // onChange={(e) =>
-                    //   setUser({ ...user, email: e.target.value })
-                    // }
+                    onChange={(e) =>
+                      setUserInfo((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
                   />
                 </div>
 
@@ -212,18 +318,33 @@ const DashboardContent = () => {
                   <Label htmlFor="phone">Phone Number</Label>
                   <Input
                     id="phone"
-                    value={user.phone || ""}
+                    value={userInfo.phone}
                     disabled={!isEditing}
-                    // onChange={(e) =>
-                    //   setUser({ ...user, phone: e.target.value })
-                    // }
+                    onChange={(e) =>
+                      setUserInfo((prev) => ({
+                        ...prev,
+                        phone: e.target.value,
+                      }))
+                    }
                   />
                 </div>
 
                 {isEditing && (
                   <div className="flex gap-4">
-                    <Button type="submit" className="btn-hero">
-                      Save Changes
+                    <Button
+                      type="submit"
+                      disabled={
+                        userInfoStatus?.name?.isLoading ||
+                        userInfoStatus?.email?.isLoading ||
+                        userInfoStatus?.phone?.isLoading
+                      }
+                      className="btn-hero"
+                    >
+                      {userInfoStatus?.name?.isLoading ||
+                      userInfoStatus?.email?.isLoading ||
+                      userInfoStatus?.phone?.isLoading
+                        ? "Saving..."
+                        : "Save Changes"}
                     </Button>
                     <Button
                       type="button"
@@ -242,15 +363,14 @@ const DashboardContent = () => {
         <TabsContent value="addresses" className="mt-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Saved Addresses</CardTitle>
+              <CardTitle className="text-base sm:text-lg md:text-xl">Saved Addresses</CardTitle>
               <div className="flex gap-4 items-center">
                 <Link
                   href="/account/addresses"
                   className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2"
                 >
-                  See all addresses <MoveRightIcon className="h-4 w-4" />
+                  See all <MoveRightIcon className="h-4 w-4" />
                 </Link>
-                <Button variant="outline">Add New Address</Button>
               </div>
             </CardHeader>
             <CardContent>

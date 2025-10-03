@@ -1,12 +1,12 @@
 @keyframes scaleIn {
-	from {
-		opacity: 0;
-		transform: scale(0);
-	}
-	to {
-		opacity: 1;
-		transform: scale(1);
-	}
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 @keyframes bounce-self {
   0% {
@@ -29,5 +29,33 @@
     transform: scale(1);
   }
 }
-
-
+@keyframes truck-back-and-forth {
+    0% {
+      transform: translateX(-300%) scaleX(1) scaleY(1) skewX(0deg);
+    }
+    15% {
+      transform: translateX(-150%) scaleX(1.05) scaleY(0.95) skewX(-5deg);
+    }
+    25% {
+      transform: translateX(0%) scaleX(1.1) scaleY(0.9) skewX(-10deg);
+    }
+    50% {
+      transform: translateX(300%) scaleX(1) scaleY(1) skewX(0deg);
+    }
+    50.01% {
+      transform: translateX(300%) scaleX(-1) scaleY(1) skewX(0deg);
+    }
+    65% {
+      transform: translateX(150%) scaleX(-1.05) scaleY(0.95) skewX(5deg);
+    }
+    75% {
+      transform: translateX(0%) scaleX(-1.1) scaleY(0.9) skewX(-10deg);
+    }
+    100% {
+      transform: translateX(-300%) scaleX(-1) scaleY(1) skewX(0deg);
+    }
+  }
+   @keyframes road-dash {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 0; }
+  }

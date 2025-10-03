@@ -7,7 +7,7 @@ import {
   RegisterSuccessResponse,
 } from "@/app/api/auth/register/route";
 import cookies from "@/lib/utils/cookies";
-import { GeneralResponse } from "@/types/structures";
+import { DeepPartial, GeneralResponse } from "@/types/structures";
 import { UserData } from "@/types/user";
 
 /**
@@ -90,8 +90,8 @@ export async function getMe({query}:{query: {include_orders:boolean}}): Promise<
  * Update current user
  */
 export async function updateMe(
-  {body}:{body: Partial<Omit<UserData, "_id" | "id" | "role">>}
-): Promise<GeneralResponse> {
+  {body}:{body: DeepPartial<Omit<UserData, "_id" | "id" | "role">>}
+): Promise<GeneralResponse & { data?: UserData }> {
   const token = cookies.get("access_token") || "";
 
   const res = await fetch("/api/auth/me", {
@@ -100,7 +100,7 @@ export async function updateMe(
       "Content-Type": "application/json",
       authorization: "Bearer " + token,
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({updateData: body}),
   });
   return res.json();
 }

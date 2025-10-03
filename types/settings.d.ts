@@ -7,7 +7,7 @@ export interface NotificationSettings {
 
 export interface SecuritySettings {
   twoFactorEnabled: boolean;
-  lastPasswordChange: string;
+  // lastPasswordChange: string;
 }
 
 export interface AccountSettings {

@@ -39,7 +39,7 @@ export const UserInfoForm = ({ formData, handleInputChange, handleNextStep }: Pr
                 type="phone"
                 value={formData.phone}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
-                placeholder="20333102"
+                placeholder="+2037933102"
                 required
               />
             </div>
