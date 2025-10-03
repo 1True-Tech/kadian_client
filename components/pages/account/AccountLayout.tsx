@@ -27,7 +27,7 @@ export default function AccountSidebar({
   const { user, actions, status } = useUserStore();
     const pathname = usePathname(); // current URL path
   if(status !== "done" && !user)  return (
-    <div className="w-5 h-5 animate-spin text-muted-foreground hidden sm:flex items-center justify-center">
+    <div className="w-5 h-5 text-muted-foreground hidden sm:flex items-center justify-center">
       <Loader unLoad={!(true && !user)} type="content-loader" loader="flip-text-loader" text="Loading User ..." loaderSize="fullscreen" />
     </div>
   );

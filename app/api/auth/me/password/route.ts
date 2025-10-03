@@ -1,26 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import env from "@/lib/constants/env";
+import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
   try {
     const { currentPassword, newPassword } = await request.json();
-    const authHeader = request.headers.get("Authorization");
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    const access_token = (await cookies()).get("access_token")?.value;
+    if (!access_token) {
       return NextResponse.json(
         { message: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const token = authHeader.split(" ")[1];
 
     // Forward the request to the backend
     const response = await fetch(`${env.API_URL}auth/me/password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        "authorization": "Bearer " + access_token,
       },
       body: JSON.stringify({
         currentPassword,
