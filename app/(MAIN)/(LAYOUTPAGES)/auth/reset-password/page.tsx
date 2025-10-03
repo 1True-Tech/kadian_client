@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { CheckCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { notFound, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { useState } from "react";
 const ResetPassword = () => {
   const searchParams = useSearchParams();
@@ -22,15 +23,13 @@ const ResetPassword = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
-    
     try {
       const response = await fetch("/api/auth/reset-password", {
         method: "POST",
@@ -42,16 +41,17 @@ const ResetPassword = () => {
           password: formData.password 
         }),
       });
-      
       const data = await response.json();
-      
       if (!response.ok) {
+        toast.error(data.message || "Failed to reset password");
         throw new Error(data.message || "Failed to reset password");
       }
-      
       setIsReset(true);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to reset password");
+      toast.success("Password reset successfully. You can now sign in.");
+    } catch {
+        toast.error("Failed to reset password");
+
+      // toast already shown above for error
     }
   };
 
