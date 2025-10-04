@@ -20,13 +20,12 @@ export async function handleCreateOrder({
     orderProcessData: {
       itemsForOrder,
       userInfo,
-      paymentMethod,
       idempotencyKey: ipk,
     },
   } = state;
   actions.setLoaders("create-order");
   try {
-    const body = buildCreateOrderBody(itemsForOrder, userInfo, paymentMethod);
+    const body = buildCreateOrderBody(itemsForOrder, userInfo);
     const idempotencyKey = ipk || uuidv4();
 
     const res = await createOrder({
