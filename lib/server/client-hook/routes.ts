@@ -4,7 +4,7 @@ import { CartItemResponse } from "@/app/api/auth/me/cart/[id]/route";
 import { CartResponse } from "@/app/api/auth/me/cart/route";
 import { RegisterRequestBody, RegisterSuccessResponse } from "@/app/api/auth/register/route";
 import { InventoryGetResponse, InventoryItem, InventoryItemsResponse, InventoryPutResponse, InventoryStockUpdateResponse, InventoryVariantResponse } from "@/types/inventory";
-import { CreateOrderBody, OrderCreateResponse, OrderDetailResponse, OrderListResponse, OrderUpdateBody } from "@/types/order";
+import { CreateOrderBody, OrderCreateResponse, OrderDetailResponse, OrderListResponse, OrderUpdateBody, ProcessPaymentBody } from "@/types/order";
 import { GeneralResponse } from "@/types/structures";
 import { Address, CartItem, UserData, UserDataMini } from "@/types/user";
 import { AddressDeleteRequest, AddressRequestBody } from "../handlers/address";
@@ -154,6 +154,13 @@ export const routes = {
     path: "/api/orders/:id",
     params: {} as { id: string },
     body: {} as OrderUpdateBody,
+    response: {} as GeneralResponse,
+  },
+  processPayment: {
+    method: "POST",
+    path: "/api/orders/:id/payment",
+    params: {} as { id: string },
+    body: {} as ProcessPaymentBody,
     response: {} as GeneralResponse,
   },
   cancelOrder: {

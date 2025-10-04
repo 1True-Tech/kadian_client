@@ -99,7 +99,7 @@ export interface OrderItem {
   quantity: number;
   /** Price per unit in kobo or cents */
   price: number;
-  product?:ProductReady
+  product?: ProductReady;
 }
 
 /**
@@ -173,15 +173,15 @@ export interface OrdersResponseData {
   /** Order last update date */
   updatedAt: Date;
   /** Order tracking information */
-   tracking?: {
-     carrier?: string;
-     trackingNumber?: string;
-     trackingUrl?: string;
-     shippedAt?: Date;
-     estimatedDelivery?: Date;
-   };
-   /** Legacy ID field */
-   id?: string;
+  tracking?: {
+    carrier?: string;
+    trackingNumber?: string;
+    trackingUrl?: string;
+    shippedAt?: Date;
+    estimatedDelivery?: Date;
+  };
+  /** Legacy ID field */
+  id?: string;
   userId: string;
   /** Total number of unique products */
   totalProducts: number;
@@ -292,11 +292,18 @@ export interface CreateOrderBody {
   shippingAddress: ShippingAddress;
   /** Customer information */
   customerInfo: CustomerInfo;
+  idempotencyKey:string;
+
+}
+
+export interface ProcessPaymentBody {
   payment: {
     method: PaymentMethod;
     proof?: string;
     idempotencyKey?: string;
   };
+  customerInfo: CustomerInfo;
+  idempotencyKey:string;
 }
 
 /**

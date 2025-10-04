@@ -235,8 +235,15 @@
   /* Animation Presets */
   --animate-scale-in: scaleIn 0.5s ease-out;
   --animate-bounce-self: bounce-self 0.5s ease-out;
+  --animate-truck-back-and-forth: truck-back-and-forth 5s linear infinite;
+  --animate-road-dash: road-dash 1s linear infinite;
 }
 
+.animate-road-dash {
+    background-image: repeating-linear-gradient(to right, #facc15 0 20px, transparent 20px 40px);
+    background-size: 40px 1px;
+    animation: road-dash 1s linear infinite;
+  }
 /* ─── BASE STYLES ──────────────────────────────────────────────────────────── */
 @layer base {
   *,

@@ -2,6 +2,6 @@ import { GroupDefinition } from '../lib/plugins/desk'
 
 export const deliveryInfoStructure: GroupDefinition = {
   title: 'Delivery information',
-  schemaTypes: ['shipping_states', 'shipping_zone'],
+  schemaTypes: ['shipping_states', 'shipping_zone', 'shipping_countries'],
   builders: () => [],
 }

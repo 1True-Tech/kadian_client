@@ -181,7 +181,7 @@ export default function UserDetailPage() {
           <div className="md:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>User Information</CardTitle>
+                <CardTitle className="text-base sm:text-lg md:text-xl">User Information</CardTitle>
                 <CardDescription>Manage user&lsquo;s personal information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -236,7 +236,7 @@ export default function UserDetailPage() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Account Settings</CardTitle>
+                <CardTitle className="text-base sm:text-lg md:text-xl">Account Settings</CardTitle>
                 <CardDescription>Manage user&lsquo;s role and status</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

@@ -21,8 +21,15 @@ export default function TrackingPage() {
         <div className="w-full max-w-2xl mx-auto text-center">
           <AlertCircle className="h-16 w-16 text-destructive mb-4" />
           <p className="text-xl font-bold mb-2">No Order Selected</p>
-          <p className="text-muted-foreground mb-6">Please select an order to track.</p>
-          <Button onClick={() => router.push("/account/order-history")} size="lg">Go to Order History</Button>
+          <p className="text-muted-foreground mb-6">
+            Please select an order to track.
+          </p>
+          <Button
+            onClick={() => router.push("/account/order-history")}
+            size="lg"
+          >
+            Go to Order History
+          </Button>
         </div>
       </div>
     );
@@ -32,7 +39,16 @@ export default function TrackingPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh] w-full px-4 py-12">
         <div className="w-full max-w-2xl mx-auto text-center">
-          <Truck className="h-16 w-16 text-primary animate-spin mb-4" />
+          <span className="overflow-hidden block w-full relative isolate h-24">
+            {/* Road */}
+            <div className="absolute w-full h-6 bg-gray-800 bottom-4 skew-y-0.5 shadow-inner"></div>
+
+            {/* Truck */}
+            <Truck className="h-16 w-16 text-primary inline-block z-10 fill-white animate-truck-back-and-forth absolute bottom-4" />
+
+            {/* Optional road markings */}
+            <div className="absolute w-full h-1 bg-yellow-400 bottom-7 bg-dashed animate-road-dash"></div>
+          </span>
           <p className="text-xl">Loading tracking info...</p>
         </div>
       </div>
@@ -45,8 +61,16 @@ export default function TrackingPage() {
         <div className="w-full max-w-2xl mx-auto text-center">
           <AlertCircle className="h-16 w-16 text-destructive mb-4" />
           <p className="text-xl font-bold mb-2">Order Not Found</p>
-          <p className="text-muted-foreground mb-6">We couldn&rsquo;t find your order. Please check your order link or contact support.</p>
-          <Button onClick={() => router.push("/account/order-history")} size="lg">Go to Order History</Button>
+          <p className="text-muted-foreground mb-6">
+            We couldn&rsquo;t find your order. Please check your order link or
+            contact support.
+          </p>
+          <Button
+            onClick={() => router.push("/account/order-history")}
+            size="lg"
+          >
+            Go to Order History
+          </Button>
         </div>
       </div>
     );
@@ -59,21 +83,48 @@ export default function TrackingPage() {
       <div className="w-full max-w-2xl mx-auto">
         <Card>
           <CardHeader className="text-center border-b border-border pb-6">
-            <Truck className="h-16 w-16 text-primary mx-auto mb-4" />
-            <CardTitle className="text-3xl font-bold">Order Tracking</CardTitle>
+            <Truck className="h-12 sm:h-16 w-12 sm:w-16 text-primary mx-auto mb-4" />
+            <CardTitle className="text-2xl sm:text-3xl font-bold">
+              Order Tracking
+            </CardTitle>
           </CardHeader>
+
           <CardContent className="pt-6 space-y-6">
             <div className="text-center space-y-2">
-              <p className="text-xl">Tracking for Order #{order.id}</p>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                {/* Replace this with actual tracking status/steps if available */}
-                Status: <span className="font-medium capitalize">{order.status}</span>
+              {/* Order ID */}
+              <p className="text-lg sm:text-xl break-words max-w-full overflow-hidden text-ellipsis">
+                Tracking for Order #{order.id}
               </p>
-              <p className="text-muted-foreground">Placed: {new Date(order.createdAt).toLocaleString()}</p>
+
+              {/* Status */}
+              <p className="text-muted-foreground max-w-full sm:max-w-md mx-auto break-words">
+                Status:{" "}
+                <span className="font-medium capitalize">{order.status}</span>
+              </p>
+
+              {/* Date */}
+              <p className="text-muted-foreground break-words">
+                Placed: {new Date(order.createdAt).toLocaleString()}
+              </p>
             </div>
+
+            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button onClick={() => router.push('/account/order-history')} variant="outline" size="lg">Back to Order History</Button>
-              <Button onClick={() => router.push('/shop')} size="lg">Continue Shopping</Button>
+              <Button
+                onClick={() => router.push("/account/order-history")}
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto text-sm sm:text-base md:text-lg"
+              >
+                Back to Order History
+              </Button>
+              <Button
+                onClick={() => router.push("/shop")}
+                size="lg"
+                className="w-full sm:w-auto text-sm sm:text-base md:text-lg"
+              >
+                Continue Shopping
+              </Button>
             </div>
           </CardContent>
         </Card>

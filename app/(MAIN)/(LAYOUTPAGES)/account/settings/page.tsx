@@ -1,9 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { InputPassword } from "@/components/ui/InputPassword";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -14,7 +26,7 @@ import { BellIcon, ShieldIcon, UserIcon } from "lucide-react";
 import { useState } from "react";
 
 export default function SettingsPage() {
-  const { user } = useUserStore();
+  const { user, actions, userInfoStatus } = useUserStore();
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -30,47 +42,41 @@ export default function SettingsPage() {
     newsletter: false,
     productAlerts: true,
   });
-  const [notificationLoading, setNotificationLoading] = useState(false);
-  const [notificationSuccess, setNotificationSuccess] = useState("");
-  const [notificationError, setNotificationError] = useState("");
 
   if (!user) return null;
 
   const saveNotificationSettings = async () => {
-    setNotificationLoading(true);
-    setNotificationError("");
-    setNotificationSuccess("");
-    
+    actions.setUserInfoStatus("settings.notifications", {
+      error: false,
+      isLoading: true,
+      message: "",
+    });
+
     try {
-      const response = await fetch("/api/auth/me/notifications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(notificationSettings),
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to update notification settings");
-      }
-      
-      setNotificationSuccess("Notification preferences updated successfully");
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setNotificationSuccess("");
-      }, 3000);
+      actions.updateNotificationSettings(notificationSettings);
     } catch (error) {
-      setNotificationError(error instanceof Error ? error.message : "Failed to update notification settings");
-      
+      actions.setUserInfoStatus("settings.notifications", {
+        error: true,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to update notification settings",
+        isLoading: false,
+      });
       // Clear error message after 3 seconds
       setTimeout(() => {
-        setNotificationError("");
+        actions.setUserInfoStatus("settings.notifications", {
+          error: false,
+          isLoading: false,
+          message: "",
+        });
       }, 3000);
     } finally {
-      setNotificationLoading(false);
+      actions.setUserInfoStatus("settings.notifications", {
+        error: false,
+        isLoading: false,
+        message: "",
+      });
     }
   };
 
@@ -78,56 +84,64 @@ export default function SettingsPage() {
     e.preventDefault();
     setError("");
     setSuccess("");
-    
+
     // Validate passwords
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setError("New passwords do not match");
       return;
     }
-    
+
     if (passwordData.newPassword.length < 8) {
       setError("Password must be at least 8 characters");
       return;
     }
-    
-    if (!/(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])/.test(passwordData.newPassword)) {
-      setError("Password must contain at least one uppercase letter, one number, and one special character");
+
+    if (
+      !/(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])/.test(
+        passwordData.newPassword
+      )
+    ) {
+      setError(
+        "Password must contain at least one uppercase letter, one number, and one special character"
+      );
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
       const response = await fetch("/api/auth/me/password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+          Authorization: `Bearer ${cookies.get("access_token")}`,
         },
         body: JSON.stringify({
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || "Failed to change password");
       }
-      
+
       setSuccess("Password changed successfully");
       setPasswordData({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
-      
+
       setTimeout(() => {
         setIsPasswordDialogOpen(false);
       }, 2000);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to change password");
+      setError(
+        error instanceof Error ? error.message : "Failed to change password"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -253,25 +267,43 @@ export default function SettingsPage() {
               }
             />
           </div>
-          
-          {notificationSuccess && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative mt-4" role="alert">
-              <span className="block sm:inline">{notificationSuccess}</span>
-            </div>
+
+          {userInfoStatus && (
+            <>
+              {!userInfoStatus?.["settings.notifications"]?.error &&
+                userInfoStatus?.["settings.notifications"]?.message !== "" && (
+                  <div
+                    className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative mt-4"
+                    role="alert"
+                  >
+                    <span className="block sm:inline">
+                      {userInfoStatus?.["settings.notifications"]?.message}
+                    </span>
+                  </div>
+                )}
+
+              {userInfoStatus?.["settings.notifications"]?.error &&
+                !userInfoStatus?.["settings.notifications"]?.isLoading && (
+                  <div
+                    className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mt-4"
+                    role="alert"
+                  >
+                    <span className="block sm:inline">
+                      {userInfoStatus?.["settings.notifications"]?.message}
+                    </span>
+                  </div>
+                )}
+            </>
           )}
-          
-          {notificationError && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
-              <span className="block sm:inline">{notificationError}</span>
-            </div>
-          )}
-          
-          <Button 
-            onClick={saveNotificationSettings} 
-            disabled={notificationLoading}
+
+          <Button
+            onClick={saveNotificationSettings}
+            disabled={userInfoStatus?.["settings.notifications"]?.isLoading}
             className="mt-4"
           >
-            {notificationLoading ? "Saving..." : "Save Notification Preferences"}
+            {userInfoStatus?.["settings.notifications"]?.isLoading
+              ? "Saving..."
+              : "Save Notification Preferences"}
           </Button>
         </CardContent>
       </Card>
@@ -307,7 +339,10 @@ export default function SettingsPage() {
       </Card>
 
       {/* Password Change Dialog */}
-      <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+      <Dialog
+        open={isPasswordDialogOpen}
+        onOpenChange={setIsPasswordDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Change Password</DialogTitle>
@@ -316,12 +351,18 @@ export default function SettingsPage() {
             </DialogDescription>
           </DialogHeader>
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <div
+              className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
               <span className="block sm:inline">{error}</span>
             </div>
           )}
           {success && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <div
+              className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded relative"
+              role="alert"
+            >
               <span className="block sm:inline">{success}</span>
             </div>
           )}
@@ -330,36 +371,56 @@ export default function SettingsPage() {
               <div className="space-y-2">
                 <Label htmlFor="current">Current Password</Label>
                 <InputPassword
-                  id="current" 
+                  id="current"
                   value={passwordData.currentPassword}
-                  onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      currentPassword: e.target.value,
+                    })
+                  }
                   required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="new">New Password</Label>
-                <InputPassword 
-                  id="new" 
+                <InputPassword
+                  id="new"
                   value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      newPassword: e.target.value,
+                    })
+                  }
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Password must be at least 8 characters with an uppercase letter, number, and special character.
+                  Password must be at least 8 characters with an uppercase
+                  letter, number, and special character.
                 </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm">Confirm New Password</Label>
-                <InputPassword 
-                  id="confirm" 
+                <InputPassword
+                  id="confirm"
                   value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                   required
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setIsPasswordDialogOpen(false)}>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setIsPasswordDialogOpen(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
