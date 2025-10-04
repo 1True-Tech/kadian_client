@@ -1,12 +1,10 @@
 import { CartItemReady } from "@/types/user";
-import { CreateOrderBody, PaymentMethod } from "@/types/order";
+import { CreateOrderBody } from "@/types/order";
 
 export function buildCreateOrderBody(
   items: CartItemReady[],
   formData: any,
-  paymentMethod: PaymentMethod,
-  proofMedia?: string
-): CreateOrderBody{
+): Omit<CreateOrderBody, 'idempotencyKey'>{
   const base = {
     items: items.map((item) => ({
       productId: item.productId,
@@ -26,21 +24,9 @@ export function buildCreateOrderBody(
       name: { first: formData.firstName, last: formData.lastName },
       email: formData.email,
       phone: formData.phone || "",
-    },
-    payment: {
-      method:paymentMethod
     }
   };
 
-  if (paymentMethod === "transfer") {
-    return {
-      ...base,
-      payment:{
-        method:paymentMethod,
-        proof:proofMedia
-      }
-    };
-  }
 
   return base;
 }

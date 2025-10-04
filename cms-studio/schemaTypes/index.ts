@@ -13,6 +13,7 @@ import {lookbook} from './webContentSchemas/lookbook'
 import {styleGuide} from './webContentSchemas/styleGuide'
 import {sizeGuide} from './productSchemas/sizeGuide'
 import {homepageHero} from './webContentSchemas/homepageHero'
+import { deliveryCountries } from './deliverySchema/deliveryCountries'
 
 export const schemaTypes = [
   // Product related schemas
@@ -35,4 +36,5 @@ export const schemaTypes = [
   // Delivery schemas
   deliveryZones,
   deliveryStates,
+  deliveryCountries
 ]

@@ -3,47 +3,41 @@ import { generateAccessibleColorPair } from '@/lib/utils/colorsProcessors/colorG
 import { ellipsisMiddle, initialLetters } from '@/lib/utils/elipsis'
 import { defineField, defineType } from 'sanity'
 
-export const deliveryStates = defineType({
-  name: 'shipping_states',
-  title: 'Shipping States',
+export const deliveryCountries = defineType({
+  name: 'shipping_countries',
+  title: 'Shipping Countries',
   type: 'document',
   fields: [
     defineField({
       name: 'name',
-      title: 'State Name',
+      title: 'Country Name',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'country',
-      title: 'Country',
-      type: 'reference',
-      to: [{ type: 'shipping_countries' }],
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'zone',
-      title: 'Zone',
-      type: 'reference',
-      to: [{ type: 'shipping_zone' }],
-      validation: (Rule) => Rule.required(),
+      name: 'code',
+      title: 'ISO Code',
+      type: 'string',
+      description: 'Two-letter ISO country code (e.g. NG, US, GB)',
+      validation: (Rule) => Rule.required().length(2),
     }),
   ],
   preview: {
     select: {
       title: 'name',
+      code: 'code',
     },
-    prepare({ title }) {
+    prepare({ title, code }) {
       const { primary, text } = generateAccessibleColorPair({ text: '#fff' })
       const previewImg = createColorSwatchDataUrl(
         primary,
         32,
         0,
-        initialLetters(title, 1),
+        initialLetters(title, 2),
         text
       )
       return {
-        title: ellipsisMiddle(title, 5, 'char'),
+        title: ellipsisMiddle(`${title} (${code})`, 10, 'char'),
         imageUrl: previewImg,
       }
     },
