@@ -53,6 +53,7 @@ export async function POST(req: Request) {
             name: customerName || "",
           },
           metadata: { orderId },
+          orderId,
           shippingInfo
         }),
       }

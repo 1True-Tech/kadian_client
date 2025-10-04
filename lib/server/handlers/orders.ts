@@ -5,6 +5,7 @@ import {
   OrderDetailResponse,
   OrderListResponse,
   OrderUpdateBody,
+  ProcessPaymentBody,
 } from "@/types/order";
 import { GeneralResponse } from "@/types/structures";
 
@@ -44,6 +45,24 @@ export async function createOrder(
 ): Promise<OrderCreateResponse & GeneralResponse> {
   const token = cookies.get("access_token") || "";
   const res = await fetch("/api/orders", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(body),
+  });
+  return res.json();
+}
+
+/**
+ * Create a new order
+ */
+export async function processPayment(
+  {body,params}: {body: ProcessPaymentBody, params:{id:string}}
+): Promise<OrderCreateResponse & GeneralResponse> {
+  const token = cookies.get("access_token") || "";
+  const res = await fetch(`/api/orders/${params.id}/payment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
