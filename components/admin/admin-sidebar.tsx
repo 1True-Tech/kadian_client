@@ -1,6 +1,7 @@
 "use client";
-import { Home, LogOut, Package, ShoppingCart, Users } from "lucide-react"
-import Link from "next/link"
+import Profile from "@/app/(ADMIN)/admin/(pages)/components/profile";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -11,11 +12,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger
-} from "@/components/ui/sidebar"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import Profile from "@/app/(ADMIN)/admin/(pages)/components/profile"
-import { useEffect } from "react";
+} from "@/components/ui/sidebar";
+import { Home, LogOut, Package, ShoppingCart, Users } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navigationItems = [
@@ -39,8 +38,8 @@ export function AdminSidebar() {
   
 
   return (
-    <Sidebar className="z-50 sticky top-0 min-h-[100dvh] min-w-3xs">
-      <SidebarContent className="bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/75 shadow-lg border-r border-border/40">
+    <Sidebar className="z-50 sticky top-0 h-[100dvh] min-w-3xs">
+      <SidebarContent className="bg-card/95 sticky top-0 backdrop-blur supports-[backdrop-filter]:bg-card/75 shadow-lg border-r border-border/40">
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="p-6 border-b border-border/40 bg-gradient-to-b from-background to-card flex items-center justify-between">
