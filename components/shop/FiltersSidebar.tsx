@@ -7,19 +7,16 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import processColors, { color } from "@/lib/controllers/processColors";
 import { getContrastingTextColor } from "@/lib/utils/colorsProcessors/colorProcessing";
-import { useNavItems } from "@/store/navItems";
 import useShopFiltersStore from "@/store/shopFilters";
 import { queryParamsToFilters } from "@/store/shopFilters/helper";
-import { ChevronDown, PlusCircleIcon, SearchIcon, X } from "lucide-react";
+import { FiltersReady } from "@/types/structures/filters";
+import { ChevronDown, SearchIcon, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ShopColorPick from "../pages/shop/colorPick";
 import { Input } from "../ui/input";
-import { FiltersReady } from "@/types/structures/filters";
 
 interface FiltersProps {
   className?: string;
@@ -32,10 +29,11 @@ const FiltersSidebar = ({
   availableFilters,
   saveFilter,
 }: FiltersProps) => {
-  const { brands, categories, colors, materials, maxPrice, sizes } =
+  const { brands, categories, colors, materials, maxPrice } =
     availableFilters;
   const { filters, updateFilter, clearFilters } = useShopFiltersStore();
   const queryParams = useSearchParams();
+
 
   useEffect(() => {
     const loadedFilters = queryParamsToFilters(queryParams.toString());

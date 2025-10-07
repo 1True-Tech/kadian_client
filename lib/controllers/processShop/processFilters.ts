@@ -11,7 +11,7 @@ export async function processAvailableFilters(): Promise<FiltersReady> {
     const categories = data.filter(d => d.category).map(d=>d.category);
     const sizes = Array.from(new Set(data.flatMap(d=>d.sizes).map(s=>s.label))).sort((a,b)=>a.localeCompare(b));
     const materials = Array.from(new Set(data.flatMap(d=>d.materials).map(m=>m.name))).sort((a,b)=>a.localeCompare(b));
-
+    console.log(colors)
     return {
         maxPrice,
         colors: Array.from(new Set(colors.map(c=>c.name))).map(name=>colors.find(c=>c.name===name)) as Color[],

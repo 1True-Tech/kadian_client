@@ -14,18 +14,18 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { label: "Home", icon: Home, href: "/" },
   { label: "Shop", icon: ShoppingBag, href: "/shop" },
-  {
-    label: "Browse",
-    icon: Menu,
-    href: "#",
-    subMenu: [
-      { label: "Categories", href: "/category" },
-      { label: "Collections", href: "/collection" },
-      { label: "Lookbook", href: "/lookbook" },
-      { label: "Style Guide", href: "/style-guide" },
-      { label: "Size Guide", href: "/size-guide" },
-    ]
-  },
+  // {
+  //   label: "Browse",
+  //   icon: Menu,
+  //   href: "#",
+  //   subMenu: [
+  //     { label: "Categories", href: "/category" },
+  //     { label: "Collections", href: "/collection" },
+  //     { label: "Lookbook", href: "/lookbook" },
+  //     { label: "Style Guide", href: "/style-guide" },
+  //     { label: "Size Guide", href: "/size-guide" },
+  //   ]
+  // },
   { label: "Wishlist", icon: Heart, href: "/wishlist" },
   { label: "Account", icon: User, href: "/account" },
 ];
@@ -35,14 +35,13 @@ export default function MobileNav() {
 
   return (
     <nav className="w-full md:hidden pointer-events-auto bg-background px-container py-small flex items-center justify-between">
-      {navItems.map(({ label, icon, href, subMenu }) => (
+      {navItems.map(({ label, icon, href }) => (
         <NavItem
           key={label}
           icon={icon}
           label={label}
           href={href}
-          subMenu={subMenu}
-          active={pathname === href || (subMenu?.some(item => pathname === item.href))||false}
+          active={pathname === href || false}
         />
       ))}
     </nav>

@@ -3,7 +3,6 @@
 import ProductListContainer from "@/components/product/ProductGrid";
 import FiltersSidebar from "@/components/shop/FiltersSidebar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -17,19 +16,17 @@ import {
   SheetFooter,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useIsMobile } from "@/lib/hooks/isMobile";
+import {
+  filterProducts
+} from "@/lib/controllers/processShop/processProducts";
 import useShopFiltersStore from "@/store/shopFilters";
 import { filtersToQueryParams } from "@/store/shopFilters/helper";
-import { Filter, Grid3X3, List } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
-  filterProducts,
-  sortProducts,
-} from "@/lib/controllers/processShop/processProducts";
-import { useCallback, useEffect, useState } from "react";
 import { type ShopFilters } from "@/store/shopFilters/types";
 import { ProductReady } from "@/types/product";
 import { FiltersReady } from "@/types/structures/filters";
+import { Filter, Grid3X3, List } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 interface ShopClientProps {
   initialProducts: ProductReady[];
@@ -53,7 +50,6 @@ const ShopClient = ({
   );
   const { push } = useRouter();
   const queryParams = useSearchParams();
-  const isMobile = useIsMobile(768);
   const { filters, saveFilter, savedFilters, updateFilter, setFilters } =
     useShopFiltersStore();
 
