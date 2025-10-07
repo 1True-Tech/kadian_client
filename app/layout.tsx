@@ -10,40 +10,51 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import 'primeicons/primeicons.css';
+import "primeicons/primeicons.css";
 import "../assets/css/fonts.properties.css";
 import "./globals.css";
+import AutoResetPagesScroll from "@/components/feautures/autoResetScroll";
 
 export const metadata: Metadata = {
   title: {
     default: "Kadian - Premium Fashion & Lifestyle",
-    template: "%s | Kadian"
+    template: "%s | Kadian",
   },
-  description: "Discover premium fashion and lifestyle products at Kadian. Shop the latest trends in clothing, accessories, and more.",
-  keywords: ["fashion", "clothing", "lifestyle", "premium", "accessories", "shop", "online store"],
+  description:
+    "Discover premium fashion and lifestyle products at Kadian. Shop the latest trends in clothing, accessories, and more.",
+  keywords: [
+    "fashion",
+    "clothing",
+    "lifestyle",
+    "premium",
+    "accessories",
+    "shop",
+    "online store",
+  ],
   authors: [{ name: "Kadian" }],
-  metadataBase: new URL('https://kadian.com'),
+  metadataBase: new URL("https://kadian-client.vercel.app"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://kadian.com",
+    url: "https://kadian-client.vercel.app",
     siteName: "Kadian",
     title: "Kadian - Premium Fashion & Lifestyle",
-    description: "Discover premium fashion and lifestyle products at Kadian. Shop the latest trends in clothing, accessories, and more.",
+    description:
+      "Discover premium fashion and lifestyle products at Kadian. Shop the latest trends in clothing, accessories, and more.",
     images: [
       {
-        url: "/images/og-image.jpg",
+        url: "/icon.jpg",
         width: 1200,
         height: 630,
-        alt: "Kadian - Premium Fashion & Lifestyle"
-      }
+        alt: "Kadian - Premium Fashion & Lifestyle",
+      },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Kadian - Premium Fashion & Lifestyle",
     description: "Discover premium fashion and lifestyle products at Kadian",
-    images: ["/images/twitter-image.jpg"],
+    images: ["/icon.jpg"],
   },
   robots: {
     index: true,
@@ -51,9 +62,9 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 };
@@ -69,6 +80,8 @@ export default async function RootLayout({
   return (
     <html lang="en" className={currentTheme?.value === "dark" ? "dark" : ""}>
       <body className="font-poppins antialiased">
+        <AutoResetPagesScroll />
+
         <ThemeProvider cookieKey={themeCookie}>
           {children}
 

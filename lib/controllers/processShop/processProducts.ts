@@ -150,7 +150,6 @@ export const filterProducts = (products: ProductReady[], filters: Partial<ShopFi
         product.description,
         product.details,
         ...product.tags,
-        ...product.features,
       ].join(' ').toLowerCase();
 
       // Check if all search terms are found in the product text
