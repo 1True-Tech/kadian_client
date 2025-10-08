@@ -1,8 +1,16 @@
 "use client";
 
-import { useQuery } from "@/lib/server/client-hook";
-import { useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ImageViewer } from "@/components/ui/imageViewer";
+import { Loader } from "@/components/ui/loaders";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -11,28 +19,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useQuery } from "@/lib/server/client-hook";
 import type { OrdersResponseDetails, OrderStatus } from "@/types/order";
-import { ImageViewer } from "@/components/ui/imageViewer";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
-import { toast } from "sonner";
 import {
   CalendarIcon,
   CheckCircleIcon,
   DollarSignIcon,
-  Loader2Icon,
   MailIcon,
   PhoneIcon,
   RefreshCwIcon,
-  UserIcon,
+  UserIcon
 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function OrderDetailsPage() {
   const { id } = useParams() as { id: string }; // expects /orders/[id]
@@ -41,13 +41,10 @@ export default function OrderDetailsPage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  console.log(data);
-
-  const orderStatuses = [
-    "initiated",
-    "processing",
+  const orderStatuses: OrderStatus[] = [
+    "completed",
+    "pending",
     "shipped",
-    "delivered",
     "cancelled",
     "paid",
   ];
@@ -67,8 +64,14 @@ export default function OrderDetailsPage() {
     return (
       <div className="mx-auto p-4">
         <h1 className="text-3xl font-bold mb-8">Orders Management</h1>
-        <p>Loading orders...</p>
-        <Loader2Icon className="animate-spin h-6 w-6 text-gray-500 mt-4" />
+        <div className="w-full h-20">
+          <Loader
+            loader="hr-line-loader"
+            loaderSize="parent"
+            type="content-loader"
+            unLoad={false}
+          />
+        </div>
       </div>
     );
   }
@@ -114,6 +117,7 @@ export default function OrderDetailsPage() {
       <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
         Order #{order.id}
       </h1>
+
       {/* Summary */}
       <Card>
         <CardContent className="p-4 space-y-4">

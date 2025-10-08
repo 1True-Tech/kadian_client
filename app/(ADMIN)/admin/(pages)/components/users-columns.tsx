@@ -25,9 +25,11 @@ import { UserDataMini, UserRole } from "@/types/user";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, Trash2Icon } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
+import { toast } from "sonner";
 
-
-export const columns: (props:{setUsers:Dispatch<SetStateAction<UserDataMini[]>>})=>ColumnDef<UserDataMini>[] = ({setUsers})=>( [
+export const columns: (props: {
+  setUsers: Dispatch<SetStateAction<UserDataMini[]>>;
+}) => ColumnDef<UserDataMini>[] = ({ setUsers }) => [
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -106,7 +108,7 @@ export const columns: (props:{setUsers:Dispatch<SetStateAction<UserDataMini[]>>}
       );
     },
     cell: ({ row }) => {
-      const lastSeen:string = row.getValue("lastSeen");
+      const lastSeen: string = row.getValue("lastSeen");
       return lastSeen ? new Date(lastSeen).toLocaleString() : "Never";
     },
   },
@@ -119,7 +121,10 @@ export const columns: (props:{setUsers:Dispatch<SetStateAction<UserDataMini[]>>}
           if (!res.ok) {
             throw new Error("Failed to delete user");
           }
-          if(res.ok && res.status===200){
+          if (res.ok && res.status === 200) {
+            toast.success(
+              `${user.name.first} ${user.name.last} (${user.email}) has been removed`
+            );
             // Remove user from the list
             setUsers((prev) => prev.filter((u) => u.id !== user.id));
           }
@@ -133,7 +138,7 @@ export const columns: (props:{setUsers:Dispatch<SetStateAction<UserDataMini[]>>}
           if (!res.ok) {
             throw new Error("Failed to delete user");
           }
-          if(res.ok && res.status===200){
+          if (res.ok && res.status === 200) {
             // Update user role in the list
             setUsers((prev) =>
               prev.map((u) =>
@@ -211,10 +216,12 @@ export const columns: (props:{setUsers:Dispatch<SetStateAction<UserDataMini[]>>}
               onClick={() => setAs(user.role === "user" ? "admin" : "user")}
               className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
             >
-              <span className={cn("h-2 w-2 rounded-full", {
-                "bg-green-500": user.role === "user",
-                "bg-yellow-500": user.role === "admin",
-              })} />
+              <span
+                className={cn("h-2 w-2 rounded-full", {
+                  "bg-green-500": user.role === "user",
+                  "bg-yellow-500": user.role === "admin",
+                })}
+              />
               Set as {user.role === "user" ? "Admin" : "User"}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -222,4 +229,4 @@ export const columns: (props:{setUsers:Dispatch<SetStateAction<UserDataMini[]>>}
       );
     },
   },
-]);
+];

@@ -2,7 +2,13 @@
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useQuery } from "@/lib/server/client-hook";
 import { UserDataMini } from "@/types/user";
 import { Plus, RefreshCw } from "lucide-react";
@@ -11,16 +17,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { DataTable } from "../components/data-table";
 import { columns } from "../components/users-columns";
+import { Loader } from "@/components/ui/loaders";
 
 const metaContentClient = {
   title: "Users Management | Admin Dashboard",
   description: "Manage user accounts",
 };
 
-const Meta = ({placeHolder}:{placeHolder?:string}) => {
+const Meta = ({ placeHolder }: { placeHolder?: string }) => {
   return (
     <Head>
-      <title>{placeHolder}|{metaContentClient.title}</title>
+      <title>
+        {placeHolder}|{metaContentClient.title}
+      </title>
       <meta name="description" content={metaContentClient.description} />
     </Head>
   );
@@ -49,10 +58,15 @@ export default function UsersPage() {
   if (status === "loading" || status === "idle") {
     return (
       <div className="mx-auto p-4">
-        <Meta placeHolder={"loading"}/>
+        <Meta placeHolder={"loading"} />
         <h1 className="text-3xl font-bold mb-8">Users Management</h1>
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+        <div className="w-full h-20">
+          <Loader
+            loader="hr-line-loader"
+            loaderSize="parent"
+            type="content-loader"
+            unLoad={false}
+          />
         </div>
       </div>
     );
@@ -61,9 +75,11 @@ export default function UsersPage() {
   if (status === "error") {
     return (
       <div className="mx-auto p-4">
-        <Meta placeHolder={"Something went wrong"}/>
+        <Meta placeHolder={"Something went wrong"} />
         <h1 className="text-3xl font-bold mb-8">Users Management</h1>
-        <p className="text-red-500">Failed to load users data: {String(error)}</p>
+        <p className="text-red-500">
+          Failed to load users data: {String(error)}
+        </p>
         <Button onClick={handleRefresh} className="mt-4">
           <RefreshCw className="mr-2 h-4 w-4" /> Try Again
         </Button>
@@ -73,7 +89,7 @@ export default function UsersPage() {
 
   return (
     <div className="mx-auto p-6">
-        <Meta/>
+      <Meta />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Users Management</h1>
         <div className="flex gap-2">
@@ -87,19 +103,21 @@ export default function UsersPage() {
           </Link>
         </div>
       </div>
-      
+
       <Card>
         <CardHeader>
-          <CardTitle className="text-base sm:text-lg md:text-xl">All Users</CardTitle>
+          <CardTitle className="text-base sm:text-lg md:text-xl">
+            All Users
+          </CardTitle>
           <CardDescription>
             Manage and monitor user accounts across the platform
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <DataTable 
-            columns={columns({setUsers})} 
-            data={users} 
-            searchKey="email" 
+          <DataTable
+            columns={columns({ setUsers })}
+            data={users}
+            searchKey="email"
             placeholder="Search users by email..."
           />
         </CardContent>
