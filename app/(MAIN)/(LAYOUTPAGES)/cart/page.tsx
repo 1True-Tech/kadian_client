@@ -41,17 +41,16 @@ const Cart = () => {
     updateQuantity,
     removeStatus,
     removeError,
-    getCart,
-    CartGetterStatus,
     updateError,
   } = useCart();
+  const { run, data, status } = useQuery("getCart");
   const [currentUpdatedItem, setCurrentUpdatedItem] = useState<string[]>([]);
 
   useEffect(() => {
-    getCart();
-  }, [getCart]);
+    run();
+  }, [run]);
 
-  if (CartGetterStatus === "loading")
+  if (status === "loading")
     return (
       <Loader
         loader="flip-text-loader"
@@ -64,10 +63,10 @@ const Cart = () => {
 
   if (!user) return empty;
 
-  if (!user || user.cart?.length === 0) {
+  if (!data || data.data?.totalItems === 0) {
     return empty;
   }
-  const { cart } = user;
+  const { data: cart } = data;
 
   if (!cart) {
     return empty;
@@ -83,6 +82,7 @@ const Cart = () => {
     const id = "removed-item-id";
     if (res?.response?.success) {
       toast.success("Item removed from cart.", { id });
+      await run(); // Re-fetch cart after removal
     } else {
       toast.error(
         "Failed to remove item: " + (res?.response?.message || "Unknown error"),
@@ -114,6 +114,7 @@ const Cart = () => {
     const res = await updateQuantity(item._id, action === "ADD" ? 1 : -1);
     if (res?.response?.success) {
       toast.success("Cart updated.");
+      await run(); // Re-fetch cart after update
     } else {
       toast.error(
         "Failed to update cart: " + (res?.response?.message || "Unknown error")
@@ -124,8 +125,8 @@ const Cart = () => {
     );
   }
 
-  const subtotal = cart.reduce((acc, item)=>acc + item.price*item.quantity, 0);
-  const shipping = subtotal > 75 ? 0 :  .99;
+  const subtotal = cart?.totalAmount || 0;
+  const shipping = subtotal > 75 ? 0 : 9.99;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
@@ -136,7 +137,7 @@ const Cart = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
-          {cart.map((item: any) => (
+          {cart?.items?.map((item: any) => (
             <Card key={item.id}>
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col min-[498px]:flex-row gap-4">

@@ -2,7 +2,8 @@
 
 import { useQuery } from "@/lib/server/client-hook";
 import { useUserStore } from "@/store/user";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { toast } from "sonner";
 
 export interface CartItem {
   _id?: string;
@@ -20,6 +21,7 @@ export function useCart() {
     run: fetchCart,
     status: CartGetterStatus,
     error: CartGetterError,
+    data: cartData,
   } = useQuery("getCart");
   const {
     run: updateCart,
@@ -37,6 +39,67 @@ export function useCart() {
     error: updateError,
   } = useQuery("updateCartItem");
 
+  // Toast notifications watcher
+  useEffect(() => {
+    // Get Cart
+    if (CartGetterStatus === "loading") {
+      toast.loading("Fetching cart...", { id: "cart-get" });
+    }
+    if (CartGetterStatus === "success") {
+      toast.success("Cart fetched successfully", { id: "cart-get" });
+    }
+    if (CartGetterStatus === "error") {
+      toast.error(CartGetterError || "Failed to fetch cart", {
+        id: "cart-get",
+      });
+    }
+
+    // Add
+    if (addStatus === "loading") {
+      toast.loading("Adding item to cart...", { id: "cart-add" });
+    }
+    if (addStatus === "success") {
+      toast.success("Item added to cart", { id: "cart-add" });
+    }
+    if (addStatus === "error") {
+      toast.error(addError || "Failed to add to cart", { id: "cart-add" });
+    }
+
+    // Remove
+    if (removeStatus === "loading") {
+      toast.loading("Removing item...", { id: "cart-remove" });
+    }
+    if (removeStatus === "success") {
+      toast.success("Item removed from cart", { id: "cart-remove" });
+    }
+    if (removeStatus === "error") {
+      toast.error(removeError || "Failed to remove item", {
+        id: "cart-remove",
+      });
+    }
+
+    // Update
+    if (updateStatus === "loading") {
+      toast.loading("Updating item...", { id: "cart-update" });
+    }
+    if (updateStatus === "success") {
+      toast.success("Item updated", { id: "cart-update" });
+    }
+    if (updateStatus === "error") {
+      toast.error(updateError || "Failed to update item", {
+        id: "cart-update",
+      });
+    }
+  }, [
+    CartGetterStatus,
+    CartGetterError,
+    addStatus,
+    addError,
+    removeStatus,
+    removeError,
+    updateStatus,
+    updateError,
+  ]);
   const addToCart = useCallback(
     async (item: Omit<CartItem, "addedAt" | "updatedAt">) => {
       const response = await updateCart({
@@ -88,12 +151,10 @@ export function useCart() {
         },
       });
       if (user) {
-        const filtered = user.cart.filter((item) => item._id !== itemId)
+        const filtered = user.cart.filter((item) => item._id !== itemId);
         actions.setUser({
           ...user,
-          cart: [
-            ...filtered,
-          ],
+          cart: [...filtered],
         });
       }
       return { response, status: removeStatus, error: removeError };
@@ -122,10 +183,7 @@ export function useCart() {
         const updatedItem = response.data;
         actions.setUser({
           ...user,
-          cart: [
-            ...user.cart.filter((item) => item._id !== itemId),
-            ...updatedItem,
-          ],
+          cart: [...updatedItem],
         });
       }
       return { response, status: updateStatus, error: updateError };
@@ -169,6 +227,7 @@ export function useCart() {
 
   return {
     getCart,
+    cartData,
     CartGetterStatus,
     CartGetterError,
     cart: user?.cart || [],
