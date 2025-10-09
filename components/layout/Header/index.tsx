@@ -123,15 +123,15 @@ const Header = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative"
+                  className="relative  sm:flex"
                   aria-label="Shopping cart"
                 >
                   <ShoppingBag className="h-5 w-5" aria-hidden="true" />
-                  {cartItems && cartItems > 0 && (
+                  {cartItems && cartItems > 0 ? (
                     <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 bg-rose-gold text-rose-gold-foreground text-xs flex items-center justify-center">
                       {cartItems}
                     </Badge>
-                  )}
+                  ):null}
                 </Button>
               </Link>
               <HeaderUserSection />

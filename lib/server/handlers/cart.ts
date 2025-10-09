@@ -1,9 +1,8 @@
-import { GeneralResponse } from "@/types/structures";
-import { OrderItem } from "@/types/order";
-import cookies from "@/lib/utils/cookies";
+import { CartItemResponse, CartUpdateItemResponse } from "@/app/api/auth/me/cart/[id]/route";
 import { CartResponse } from "@/app/api/auth/me/cart/route";
+import cookies from "@/lib/utils/cookies";
+import { GeneralResponse } from "@/types/structures";
 import { CartItem } from "@/types/user";
-import { CartItemResponse } from "@/app/api/auth/me/cart/[id]/route";
 
 /**
  * Get all cart items
@@ -71,7 +70,7 @@ export async function getCartItem(
  */
 export async function updateCartItem(
   {params:{id}, body}: {params:{id:string}, body: {data:{increment?:number, quantity?:number}}}
-): Promise<CartItemResponse> {
+): Promise<CartUpdateItemResponse> {
   const token = cookies.get("access_token") || "";
 
   const res = await fetch(`/api/auth/me/cart/${id}`, {

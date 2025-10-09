@@ -1,6 +1,6 @@
 import { DashboardMetric } from "@/app/api/admin/route";
 import { LoginRequestBody, LoginSuccessResponse } from "@/app/api/auth/login/route";
-import { CartItemResponse } from "@/app/api/auth/me/cart/[id]/route";
+import { CartItemResponse, CartUpdateItemResponse } from "@/app/api/auth/me/cart/[id]/route";
 import { CartResponse } from "@/app/api/auth/me/cart/route";
 import { RegisterRequestBody, RegisterSuccessResponse } from "@/app/api/auth/register/route";
 import { InventoryGetResponse, InventoryItem, InventoryItemsResponse, InventoryPutResponse, InventoryStockUpdateResponse, InventoryVariantResponse } from "@/types/inventory";
@@ -79,7 +79,7 @@ export const routes = {
     body: {} as {data:{
       increment?:number, quantity?:number
     }},
-    response: {} as CartItemResponse,
+    response: {} as CartUpdateItemResponse,
   },
   deleteCartItem: {
     method: "DELETE",
