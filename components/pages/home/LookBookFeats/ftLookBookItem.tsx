@@ -4,13 +4,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { LookBookItem } from "@/types/home";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
   data: LookBookItem;
-  index:number;
+  index: number;
 };
 
-export default function FtLookBookItem({ data,index }: Props) {
+export default function FtLookBookItem({ data, index }: Props) {
   return (
     <Card
       className="card-premium overflow-hidden group cursor-pointer hover-lift animate-fade-up"
@@ -35,12 +36,14 @@ export default function FtLookBookItem({ data,index }: Props) {
                 components={lBPtComponents("")}
               />
             </div>
-            <Button
-              variant="outline"
-              className="btn-ghost-elegant bg-white/10 border-white/30 text-white hover:bg-white/20"
-            >
-              See LookBook
-            </Button>
+            <Link href={`/lookbook/${data.slug}`}>
+              <Button
+                variant="outline"
+                className="btn-ghost-elegant bg-white/10 border-white/30 text-white hover:bg-white/20"
+              >
+                See LookBook
+              </Button>
+            </Link>
           </div>
         </div>
       </CardContent>

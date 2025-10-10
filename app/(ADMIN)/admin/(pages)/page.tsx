@@ -18,6 +18,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { Loader } from "@/components/ui/loaders";
 
 type EmptyStateProps = {
   title: string;
@@ -120,8 +121,13 @@ const AdminDashboardContent: React.FC = () => {
 
   if (status === "loading" || status === "idle") {
     return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+      <div className="w-full h-20">
+        <Loader
+          loader="hr-line-loader"
+          loaderSize="parent"
+          type="content-loader"
+          unLoad={false}
+        />
       </div>
     );
   }
@@ -194,7 +200,9 @@ const AdminDashboardContent: React.FC = () => {
                     <p className="text-xs text-muted-foreground">
                       {stat.title}
                     </p>
-                    <AnimatedNumber value={Number(parseInt(stat.value.replace("$", ""))) || 0} />
+                    <AnimatedNumber
+                      value={Number(parseInt(stat.value.replace("$", ""))) || 0}
+                    />
                     <p className={`text-sm mt-2 ${stat.color}`}>
                       <TrendingUp className="h-3 w-3 inline mr-1" />
                       {stat.change}
@@ -220,7 +228,9 @@ const AdminDashboardContent: React.FC = () => {
         {/* Recent Orders */}
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <CardTitle className="text-base sm:text-lg md:text-xl">Recent Orders</CardTitle>
+            <CardTitle className="text-base sm:text-lg md:text-xl">
+              Recent Orders
+            </CardTitle>
             {recentOrders.length > 0 && (
               <Link href="/admin/orders">
                 <Button variant="outline" size="sm">
@@ -259,7 +269,8 @@ const AdminDashboardContent: React.FC = () => {
                       <div className="flex items-center justify-end gap-2 mt-1">
                         <span
                           className={`w-2 h-2 rounded-full ${
-                            order.status === "delivered" ||order.status === "paid"
+                            order.status === "delivered" ||
+                            order.status === "paid"
                               ? "bg-green-500"
                               : order.status === "pending"
                                 ? "bg-amber-500"
@@ -284,7 +295,9 @@ const AdminDashboardContent: React.FC = () => {
         {/* Top Products */}
         <Card>
           <CardHeader className="flex items-center justify-between">
-            <CardTitle className="text-base sm:text-lg md:text-xl">Top Products</CardTitle>
+            <CardTitle className="text-base sm:text-lg md:text-xl">
+              Top Products
+            </CardTitle>
             {topProducts.length > 0 && (
               <Button variant="outline" size="sm">
                 <Eye className="h-4 w-4 mr-2" />
@@ -338,7 +351,9 @@ const AdminDashboardContent: React.FC = () => {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base sm:text-lg md:text-xl">Quick Actions</CardTitle>
+          <CardTitle className="text-base sm:text-lg md:text-xl">
+            Quick Actions
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-[repeat(auto-fit,_minmax(10rem,_1fr))] gap-4 w-full">

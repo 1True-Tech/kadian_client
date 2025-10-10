@@ -41,7 +41,6 @@ const Cart = () => {
     updateQuantity,
     removeStatus,
     removeError,
-    updateStatus,
     updateError,
   } = useCart();
   const { run, data, status } = useQuery("getCart");
@@ -58,6 +57,7 @@ const Cart = () => {
         type="content-loader"
         text="CART"
         loaderSize="fullscreen"
+        unLoad={false}
       />
     );
 
@@ -147,6 +147,7 @@ const Cart = () => {
                       <Image
                         width={720}
                         height={480}
+                        loading="lazy"
                         src={item.image.src}
                         alt={item.image.alt}
                         className="w-full h-full object-cover"

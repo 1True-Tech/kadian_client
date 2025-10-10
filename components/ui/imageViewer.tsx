@@ -72,6 +72,7 @@ export function ImageViewer({ preview, modal, alt, src }: ImageViewerProps) {
               width: preview?.width,
               height: preview?.height,
             }}
+            loading="lazy"
             quality={100}
             onError={() => setErrorPreview(true)}
             className={cn(
@@ -126,6 +127,7 @@ export function ImageViewer({ preview, modal, alt, src }: ImageViewerProps) {
                 width={4000}
                 height={4000}
                 quality={100}
+                loading="lazy"
                 onError={() => setErrorModal(true)}
                 className={cn("object-contain select-none", modal?.className)}
                 style={{

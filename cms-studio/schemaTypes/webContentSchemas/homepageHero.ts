@@ -54,10 +54,11 @@ export const homepageHero = defineType({
           type: "string",
         }),
         defineField({
-          name: "link",
-          title: "Link",
-          type: "string",
-          description: "URL or internal link path",
+          name: "offer",
+          title: "Special Offer Link",
+          type: "reference",
+          to: [{ type: "special_offers" }],
+          description: "Choose a special offer this CTA should link to",
         }),
         defineField({
           name: "style",

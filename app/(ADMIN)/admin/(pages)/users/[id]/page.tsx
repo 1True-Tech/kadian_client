@@ -1,19 +1,43 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
-import { useQuery } from "@/lib/server/client-hook";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Loader2, Save, Trash2, UserCog } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { Loader } from "@/components/ui/loaders";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
+import { useQuery } from "@/lib/server/client-hook";
 import { UserData, UserRole } from "@/types/user";
+import { ArrowLeft, Loader2, Save, Trash2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function UserDetailPage() {
   const params = useParams();
@@ -21,41 +45,45 @@ export default function UserDetailPage() {
   const { toast } = useToast();
   const userId = params.id as string;
   const isNewUser = userId === "new";
-  
-  const { run: fetchUser, data: userData, status: userStatus } = useQuery("getUserById");
+
+  const {
+    run: fetchUser,
+    data: userData,
+    status: userStatus,
+  } = useQuery("getUserById");
   const { run: updateUser, status: updateStatus } = useQuery("updateUser");
   const { run: createUser, status: createStatus } = useQuery("createUser");
   const { run: deleteUser, status: deleteStatus } = useQuery("deleteUser");
-  
+
   const [user, setUser] = useState({
     id: "",
     email: "",
     name: {
       first: "",
-      last: ""
+      last: "",
     },
     phone: "",
     role: "user",
-    active: true
+    active: true,
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!isNewUser) {
-      fetchUser({ params:{userId}});
+      fetchUser({ params: { userId } });
     }
   }, [fetchUser, userId, isNewUser]);
 
   useEffect(() => {
     if (userData?.data) {
       setUser({
-        active:true,
-        email:userData.data.email,
-        id:userData.data._id,
-        name:userData.data.name,
-        phone:userData.data.phone||"",
-        role:userData.data.role
+        active: true,
+        email: userData.data.email,
+        id: userData.data._id,
+        name: userData.data.name,
+        phone: userData.data.phone || "",
+        role: userData.data.role,
       });
     }
   }, [userData]);
@@ -114,54 +142,62 @@ export default function UserDetailPage() {
     const { name, value } = e.target;
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
-      setUser(prev => ({
+      setUser((prev) => ({
         ...prev,
         [parent]: {
           ...(prev[parent as keyof typeof prev] as Record<string, string>),
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setUser(prev => ({
+      setUser((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
 
   const handleRoleChange = (value: UserRole) => {
-    setUser(prev => ({
+    setUser((prev) => ({
       ...prev,
-      role: value
+      role: value,
     }));
   };
 
   const handleActiveChange = (checked: boolean) => {
-    setUser(prev => ({
+    setUser((prev) => ({
       ...prev,
-      active: checked
+      active: checked,
     }));
   };
 
   const handleSubmit = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     if (isNewUser) {
-      createUser({body:{...user} as Partial<UserData> });
+      createUser({ body: { ...user } as Partial<UserData> });
     } else {
-      updateUser({ params: {userId}, body:{ ...user } as Partial<UserData> });
+      updateUser({
+        params: { userId },
+        body: { ...user } as Partial<UserData>,
+      });
     }
   };
 
   const handleDelete = () => {
-    deleteUser({ params: {userId} });
+    deleteUser({ params: { userId } });
   };
 
   if (!isNewUser && userStatus === "loading") {
     return (
-      <div className="mx-auto p-4 flex items-center justify-center h-[60vh]">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary"></div>
+      <div className="w-full h-20">
+        <Loader
+          loader="hr-line-loader"
+          loaderSize="parent"
+          type="content-loader"
+          unLoad={false}
+        />
       </div>
     );
   }
@@ -169,64 +205,79 @@ export default function UserDetailPage() {
   return (
     <div className="mx-auto p-4">
       <div className="flex items-center mb-8">
-        <Button variant="ghost" onClick={() => router.push("/admin/users")} className="mr-4">
+        <Button
+          variant="ghost"
+          onClick={() => router.push("/admin/users")}
+          className="mr-4"
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Users
         </Button>
-        <h1 className="text-3xl font-bold">{isNewUser ? "Create New User" : "Edit User"}</h1>
+        <h1 className="text-3xl font-bold">
+          {isNewUser ? "Create New User" : "Edit User"}
+        </h1>
       </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); handleSubmit(e as any); }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(e as any);
+        }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-base sm:text-lg md:text-xl">User Information</CardTitle>
-                <CardDescription>Manage user&lsquo;s personal information</CardDescription>
+                <CardTitle className="text-base sm:text-lg md:text-xl">
+                  User Information
+                </CardTitle>
+                <CardDescription>
+                  Manage user&lsquo;s personal information
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name.first">First Name</Label>
-                    <Input 
-                      id="name.first" 
-                      name="name.first" 
-                      value={user.name.first} 
-                      onChange={handleInputChange} 
-                      required 
+                    <Input
+                      id="name.first"
+                      name="name.first"
+                      value={user.name.first}
+                      onChange={handleInputChange}
+                      required
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="name.last">Last Name</Label>
-                    <Input 
-                      id="name.last" 
-                      name="name.last" 
-                      value={user.name.last} 
-                      onChange={handleInputChange} 
-                      required 
+                    <Input
+                      id="name.last"
+                      name="name.last"
+                      value={user.name.last}
+                      onChange={handleInputChange}
+                      required
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input 
-                    id="email" 
-                    name="email" 
-                    type="email" 
-                    value={user.email} 
-                    onChange={handleInputChange} 
-                    required 
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={user.email}
+                    onChange={handleInputChange}
+                    required
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input 
-                    id="phone" 
-                    name="phone" 
-                    value={user.phone} 
-                    onChange={handleInputChange} 
+                  <Input
+                    id="phone"
+                    name="phone"
+                    value={user.phone}
+                    onChange={handleInputChange}
                   />
                 </div>
               </CardContent>
@@ -236,16 +287,17 @@ export default function UserDetailPage() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-base sm:text-lg md:text-xl">Account Settings</CardTitle>
-                <CardDescription>Manage user&lsquo;s role and status</CardDescription>
+                <CardTitle className="text-base sm:text-lg md:text-xl">
+                  Account Settings
+                </CardTitle>
+                <CardDescription>
+                  Manage user&lsquo;s role and status
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="role">User Role</Label>
-                  <Select 
-                    value={user.role} 
-                    onValueChange={handleRoleChange}
-                  >
+                  <Select value={user.role} onValueChange={handleRoleChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
@@ -257,23 +309,29 @@ export default function UserDetailPage() {
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {user.role === "admin" && "Full access to all system features and settings"}
-                    {user.role === "manager" && "Can manage products, orders, and view reports"}
-                    {user.role === "support" && "Can view orders and handle customer inquiries"}
-                    {user.role === "user" && "Standard customer account with shopping privileges"}
+                    {user.role === "admin" &&
+                      "Full access to all system features and settings"}
+                    {user.role === "manager" &&
+                      "Can manage products, orders, and view reports"}
+                    {user.role === "support" &&
+                      "Can view orders and handle customer inquiries"}
+                    {user.role === "user" &&
+                      "Standard customer account with shopping privileges"}
                   </p>
                 </div>
-                
+
                 <Separator className="my-4" />
-                
+
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="active" className="text-base">Active Account</Label>
+                    <Label htmlFor="active" className="text-base">
+                      Active Account
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       User can login and access their account
                     </p>
                   </div>
-                  <Switch 
+                  <Switch
                     id="active"
                     checked={user.active}
                     onCheckedChange={handleActiveChange}
@@ -291,10 +349,13 @@ export default function UserDetailPage() {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete the user
-                          account and remove their data from our servers.
+                          This action cannot be undone. This will permanently
+                          delete the user account and remove their data from our
+                          servers.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

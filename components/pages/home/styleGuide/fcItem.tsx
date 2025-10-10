@@ -11,7 +11,7 @@ type Props = {
 export default function FcItem({ item }: Props) {
   return (
     <Link
-      href={`/guides/style/${item.slug}`}
+      href={`/style-guide/${item.slug}`}
       className="style-guide-item relative block w-full overflow-hidden rounded-md border-2 border-accent/50 shadow-sm transition-all"
     >
       {/* Image */}
@@ -21,6 +21,7 @@ export default function FcItem({ item }: Props) {
         width={500}
         height={700}
         quality={75}
+        loading="lazy"
         className="item_bg aspect-square w-full object-cover object-top transition-transform duration-300"
       />
 

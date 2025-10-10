@@ -37,6 +37,7 @@ const CategoryShowcase = ({ categories }: { categories: Category[] }) => {
                         width={720}
                         height={480}
                         src={category.category_images[0]?.src}
+                        loading="lazy"
                         alt={category.category_images[0]?.alt || category.name}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />

@@ -7,7 +7,6 @@ import Link from "next/link";
 import WishlistButton from "./WishlistButton";
 import AddToCartButton from "./AddToCartButton";
 
-
 interface ProductCardProps {
   product: ProductReady;
   className?: string;
@@ -15,8 +14,12 @@ interface ProductCardProps {
   display?: "grid" | "list";
 }
 
-
-const ProductCard = ({ product, className = "", style, display = "grid" }: ProductCardProps) => {
+const ProductCard = ({
+  product,
+  className = "",
+  style,
+  display = "grid",
+}: ProductCardProps) => {
   const primaryImage = product.mainImage?.src ?? product.gallery?.[0]?.src;
   const primaryAlt =
     product.mainImage?.alt ?? product.gallery?.[0]?.alt ?? product.name;
@@ -35,6 +38,7 @@ const ProductCard = ({ product, className = "", style, display = "grid" }: Produ
                   src={primaryImage}
                   alt={primaryAlt}
                   width={128}
+                  loading="lazy"
                   height={128}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -51,7 +55,6 @@ const ProductCard = ({ product, className = "", style, display = "grid" }: Produ
                 className="h-8 w-8 p-0 bg-white/80 backdrop-blur-sm"
                 productId={product._id}
               />
-              
             </div>
           </div>
           <div className="flex-1 p-4 flex flex-col gap-1 min-w-0">
@@ -74,13 +77,13 @@ const ProductCard = ({ product, className = "", style, display = "grid" }: Produ
               )}
             </div>
             <AddToCartButton
-                product={product}
-                size="sm"
-                variant="outline"
-                className="h-8 w-8 p-0 bg-white/80 backdrop-blur-sm"
-                quantityChangerPositionClassName="w-fit"
-                productVariant={product.firstVariant as ProductVariant}
-              />
+              product={product}
+              size="sm"
+              variant="outline"
+              className="h-8 w-8 p-0 bg-white/80 backdrop-blur-sm"
+              quantityChangerPositionClassName="w-fit"
+              productVariant={product.firstVariant as ProductVariant}
+            />
           </div>
         </CardContent>
       </Card>

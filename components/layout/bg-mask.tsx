@@ -4,7 +4,7 @@ import React from "react";
 
 type Props = {
   position: `${"top" | "bottom"}-${"right" | "left"}`;
-  image: string
+  image: string;
 };
 
 export default function BgMask({ position = "bottom-left", image }: Props) {
@@ -23,7 +23,7 @@ export default function BgMask({ position = "bottom-left", image }: Props) {
         style={
           {
             "--image-url": `url('/images/bg-image-${position}.png')`,
-            "--mask-position": position.includes("right")?`right`:"left",
+            "--mask-position": position.includes("right") ? `right` : "left",
           } as React.CSSProperties
         }
         className={cn(
@@ -41,6 +41,7 @@ export default function BgMask({ position = "bottom-left", image }: Props) {
         <Image
           src={image}
           alt="image"
+          loading="lazy"
           width={1024}
           height={720}
           className="size-full object-cover object-center brightness-30 md:brightness-100"

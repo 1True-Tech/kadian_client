@@ -5,7 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader } from "@/components/ui/loaders";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUserStore } from "@/store/user";
 import { ProductReady } from "@/types/product";
@@ -15,12 +21,11 @@ import {
   RotateCcw,
   Share2,
   Shield,
-  Truck
+  Truck,
 } from "lucide-react";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 interface ProductDetailClientProps {
   product: ProductReady;
@@ -30,14 +35,14 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
   const [isLoading, setIsLoading] = useState(true);
   const [variantSheetOpen, setVariantSheetOpen] = useState(false);
-  const {user} = useUserStore()
-  
+  const { user } = useUserStore();
+
   useEffect(() => {
     // Simulate loading of product details
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 500);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -46,7 +51,10 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   // All possible images, unique by src
   const allImages = Array.from(
     new Map(
-      [...selectedVariant.images, ...product.gallery].map((img) => [img.src, img])
+      [...selectedVariant.images, ...product.gallery].map((img) => [
+        img.src,
+        img,
+      ])
     ).values()
   );
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -56,7 +64,11 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   if (isLoading) {
     return (
       <div className="container h-fit mx-auto px-4 py-8 flex justify-center items-center min-h-[600px]">
-        <Loader loaderSize="parent" loader="flip-text-loader" text="Loading product details..." />
+        <Loader
+          loaderSize="parent"
+          loader="flip-text-loader"
+          text="Loading product details..."
+        />
       </div>
     );
   }
@@ -134,7 +146,9 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
               {product.variants.map((variant, idx) => (
                 <Button
                   key={variant.sku + idx}
-                  variant={selectedVariant.sku === variant.sku ? "default" : "outline"}
+                  variant={
+                    selectedVariant.sku === variant.sku ? "default" : "outline"
+                  }
                   onClick={() => setSelectedVariant(variant)}
                   className="min-w-24 flex flex-col items-center"
                 >
@@ -147,74 +161,137 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           {/* Variant Info Sheet Trigger */}
           <Sheet open={variantSheetOpen} onOpenChange={setVariantSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="secondary" className="mt-2" onClick={() => setVariantSheetOpen(true)}>
+              <Button
+                variant="secondary"
+                className="mt-2"
+                onClick={() => setVariantSheetOpen(true)}
+              >
                 View Variant Info
               </Button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="max-w-md w-full rounded-t-2xl">
+            <SheetContent
+              side="bottom"
+              className="max-w-md w-full rounded-t-2xl"
+            >
               <SheetHeader>
                 <SheetTitle>Variant Information</SheetTitle>
               </SheetHeader>
               <div className="mt-4 space-y-4 text-sm">
                 <div className="grid grid-cols-2 gap-2">
-                  {selectedVariant.sku && <>
-                    <span className="font-medium">SKU:</span>
-                    <span>{selectedVariant.sku}</span>
-                  </>}
-                  {selectedVariant.size?.label && <>
-                    <span className="font-medium">Size:</span>
-                    <span>{selectedVariant.size.label}</span>
-                  </>}
-                  {selectedVariant.size?.description && <>
-                    <span className="font-medium">Size Description:</span>
-                    <span>{selectedVariant.size.description}</span>
-                  </>}
+                  {selectedVariant.sku && (
+                    <>
+                      <span className="font-medium">SKU:</span>
+                      <span>{selectedVariant.sku}</span>
+                    </>
+                  )}
+                  {selectedVariant.size?.label && (
+                    <>
+                      <span className="font-medium">Size:</span>
+                      <span>{selectedVariant.size.label}</span>
+                    </>
+                  )}
+                  {selectedVariant.size?.description && (
+                    <>
+                      <span className="font-medium">Size Description:</span>
+                      <span>{selectedVariant.size.description}</span>
+                    </>
+                  )}
                   {selectedVariant.size?.measurements && (
                     <>
                       <span className="font-medium">Measurements:</span>
                       <span>
-                        {selectedVariant.size.measurements.chest !== undefined && <>Chest: {selectedVariant.size.measurements.chest}</>}
-                        {selectedVariant.size.measurements.waist !== undefined && <>, Waist: {selectedVariant.size.measurements.waist}</>}
-                        {selectedVariant.size.measurements.hips !== undefined && <>, Hips: {selectedVariant.size.measurements.hips}</>}
-                        {selectedVariant.size.measurements.length !== undefined && <>, Length: {selectedVariant.size.measurements.length}</>}
+                        {selectedVariant.size.measurements.chest !==
+                          undefined && (
+                          <>Chest: {selectedVariant.size.measurements.chest}</>
+                        )}
+                        {selectedVariant.size.measurements.waist !==
+                          undefined && (
+                          <>
+                            , Waist: {selectedVariant.size.measurements.waist}
+                          </>
+                        )}
+                        {selectedVariant.size.measurements.hips !==
+                          undefined && (
+                          <>, Hips: {selectedVariant.size.measurements.hips}</>
+                        )}
+                        {selectedVariant.size.measurements.length !==
+                          undefined && (
+                          <>
+                            , Length: {selectedVariant.size.measurements.length}
+                          </>
+                        )}
                       </span>
                     </>
                   )}
-                  {selectedVariant.color && <>
-                    <span className="font-medium">Color:</span>
-                    <span>{selectedVariant.color.name} <span className="inline-block w-4 h-4 rounded-full border ml-2 align-middle" style={{background:selectedVariant.color.hex||selectedVariant.color.rgba}} title={selectedVariant.color.name}></span></span>
-                  </>}
-                  {selectedVariant.price !== undefined && <>
-                    <span className="font-medium">Price:</span>
-                    <span>${selectedVariant.price}</span>
-                  </>}
-                  {selectedVariant.stock !== undefined && <>
-                    <span className="font-medium">Stock:</span>
-                    <span>{selectedVariant.stock}</span>
-                  </>}
-                  {selectedVariant.stockThreshold !== undefined && <>
-                    <span className="font-medium">Stock Threshold:</span>
-                    <span>{selectedVariant.stockThreshold}</span>
-                  </>}
-                  {selectedVariant.weight && selectedVariant.weight.value !== undefined && selectedVariant.weight.unit && <>
-                    <span className="font-medium">Weight:</span>
-                    <span>{selectedVariant.weight.value} {selectedVariant.weight.unit}</span>
-                  </>}
+                  {selectedVariant.color && (
+                    <>
+                      <span className="font-medium">Color:</span>
+                      <span>
+                        {selectedVariant.color.name}{" "}
+                        <span
+                          className="inline-block w-4 h-4 rounded-full border ml-2 align-middle"
+                          style={{
+                            background:
+                              selectedVariant.color.hex ||
+                              selectedVariant.color.rgba,
+                          }}
+                          title={selectedVariant.color.name}
+                        ></span>
+                      </span>
+                    </>
+                  )}
+                  {selectedVariant.price !== undefined && (
+                    <>
+                      <span className="font-medium">Price:</span>
+                      <span>${selectedVariant.price}</span>
+                    </>
+                  )}
+                  {selectedVariant.stock !== undefined && (
+                    <>
+                      <span className="font-medium">Stock:</span>
+                      <span>{selectedVariant.stock}</span>
+                    </>
+                  )}
+                  {selectedVariant.stockThreshold !== undefined && (
+                    <>
+                      <span className="font-medium">Stock Threshold:</span>
+                      <span>{selectedVariant.stockThreshold}</span>
+                    </>
+                  )}
+                  {selectedVariant.weight &&
+                    selectedVariant.weight.value !== undefined &&
+                    selectedVariant.weight.unit && (
+                      <>
+                        <span className="font-medium">Weight:</span>
+                        <span>
+                          {selectedVariant.weight.value}{" "}
+                          {selectedVariant.weight.unit}
+                        </span>
+                      </>
+                    )}
                 </div>
-                {selectedVariant.images && selectedVariant.images.length > 0 && (
-                  <div>
-                    <span className="font-medium block mb-1">Images:</span>
-                    <div className="flex gap-2 flex-wrap">
-                      {selectedVariant.images.map((img, i) => (
-                        <Image key={i} src={img.src} alt={img.alt || ""} width={60} height={60} className="rounded border" />
-                      ))}
+                {selectedVariant.images &&
+                  selectedVariant.images.length > 0 && (
+                    <div>
+                      <span className="font-medium block mb-1">Images:</span>
+                      <div className="flex gap-2 flex-wrap">
+                        {selectedVariant.images.map((img, i) => (
+                          <Image
+                            loading="lazy"
+                            key={i}
+                            src={img.src}
+                            alt={img.alt || ""}
+                            width={60}
+                            height={60}
+                            className="rounded border"
+                          />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             </SheetContent>
           </Sheet>
-
 
           {/* Actions */}
           {user && (
@@ -225,53 +302,6 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 size="lg"
                 variant="glow"
                 className="w-full btn-hero"
-                cartActionStatus={{
-                  onAddStatusChange(status, context) {
-                    const toastId = "cart-add-loading";
-                    if (status === "loading") {
-                      toast.loading("Adding item to cart...", { id: toastId });
-                    } else if (status === "success") {
-                      toast.dismiss(toastId);
-                      toast.success(
-                        `${context.quantity} x ${product.name} (${selectedVariant.sku}) added to cart.`,
-                        { duration: 4000 }
-                      );
-                    } else if (status === "error") {
-                      toast.dismiss(toastId);
-                      toast.error("Failed to add item to cart. Please try again.", { duration: 3500 });
-                    }
-                  },
-                  onRemoveStatusChange(status, context) {
-                    const toastId = "cart-remove-loading";
-                    if (status === "loading") {
-                      toast.loading("Removing item from cart...", { id: toastId });
-                    } else if (status === "success") {
-                      toast.dismiss(toastId);
-                      toast.success(
-                        `${context.quantity} x ${product.name} (${selectedVariant.sku}) removed from cart.`,
-                        { duration: 4000 }
-                      );
-                    } else if (status === "error") {
-                      toast.dismiss(toastId);
-                      toast.error("Failed to remove item from cart. Please try again.", { duration: 3500 });
-                    }
-                  },
-                  onUpdateStatusChange(status, context) {
-                    const toastId = "cart-update-loading";
-                    if (status === "loading") {
-                      toast.loading("Updating cart item...", { id: toastId });
-                    } else if (status === "success") {
-                      toast.dismiss(toastId);
-                      toast.success(
-                        `Updated ${product.name} (${selectedVariant.sku}) quantity to ${context.newQuantity}.`,
-                        { duration: 4000 }
-                      );
-                    } else if (status === "error") {
-                      toast.dismiss(toastId);
-                      toast.error("Failed to update cart item. Please try again.", { duration: 3500 });
-                    }
-                  },
-                }}
               >
                 Add to Cart
               </AddToCartButton>
@@ -361,6 +391,7 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                           alt={image.alt}
                           width={300}
                           height={300}
+                          loading="lazy"
                           className="mt-4 rounded-lg"
                         />
                       ))}
@@ -382,33 +413,34 @@ const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                             </tr>
                           </thead>
                           <tbody>
-                            {product.sizeGuide.sizeChart.measurements&&product.sizeGuide.sizeChart.measurements.map(
-                              (measurement, index) => (
-                                <tr key={index} className="border-b">
-                                  <td className="py-2">
-                                    {measurement.sizeName}
-                                  </td>
-                                  <td className="py-2">
-                                    {measurement.chest}{" "}
-                                    {product.sizeGuide.sizeChart.units}
-                                  </td>
-                                  <td className="py-2">
-                                    {measurement.waist}{" "}
-                                    {product.sizeGuide.sizeChart.units}
-                                  </td>
-                                  <td className="py-2">
-                                    {measurement.hips}{" "}
-                                    {product.sizeGuide.sizeChart.units}
-                                  </td>
-                                  {measurement.inseam !== undefined && (
+                            {product.sizeGuide.sizeChart.measurements &&
+                              product.sizeGuide.sizeChart.measurements.map(
+                                (measurement, index) => (
+                                  <tr key={index} className="border-b">
                                     <td className="py-2">
-                                      {measurement.inseam}{" "}
+                                      {measurement.sizeName}
+                                    </td>
+                                    <td className="py-2">
+                                      {measurement.chest}{" "}
                                       {product.sizeGuide.sizeChart.units}
                                     </td>
-                                  )}
-                                </tr>
-                              )
-                            )}
+                                    <td className="py-2">
+                                      {measurement.waist}{" "}
+                                      {product.sizeGuide.sizeChart.units}
+                                    </td>
+                                    <td className="py-2">
+                                      {measurement.hips}{" "}
+                                      {product.sizeGuide.sizeChart.units}
+                                    </td>
+                                    {measurement.inseam !== undefined && (
+                                      <td className="py-2">
+                                        {measurement.inseam}{" "}
+                                        {product.sizeGuide.sizeChart.units}
+                                      </td>
+                                    )}
+                                  </tr>
+                                )
+                              )}
                           </tbody>
                         </table>
                       </div>

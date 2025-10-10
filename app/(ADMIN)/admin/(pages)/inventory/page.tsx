@@ -10,7 +10,16 @@ export default async function InventoryPage() {
   const inventoryData: InventoryItemsResponse = await res.json();
 
   if (!inventoryData.data)
-    return <Loader loader="hr-line-loader" loaderSize="parent" />;
+    return (
+      <div className="w-full h-20">
+        <Loader
+          loader="hr-line-loader"
+          loaderSize="parent"
+          type="content-loader"
+          unLoad={false}
+        />
+      </div>
+    );
 
   return <Inventory items={inventoryData.data} />;
 }

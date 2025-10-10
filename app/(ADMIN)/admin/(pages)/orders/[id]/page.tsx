@@ -1,8 +1,34 @@
 "use client";
 
-import { useQuery } from "@/lib/server/client-hook";
-import { useParams } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ImageViewer } from "@/components/ui/imageViewer";
+import { Loader } from "@/components/ui/loaders";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -11,28 +37,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useQuery } from "@/lib/server/client-hook";
 import type { OrdersResponseDetails, OrderStatus } from "@/types/order";
-import { ImageViewer } from "@/components/ui/imageViewer";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
-import { toast } from "sonner";
 import {
   CalendarIcon,
   CheckCircleIcon,
   DollarSignIcon,
-  Loader2Icon,
   MailIcon,
   PhoneIcon,
   RefreshCwIcon,
+  Trash2Icon,
   UserIcon,
+  XCircleIcon,
 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function OrderDetailsPage() {
   const { id } = useParams() as { id: string }; // expects /orders/[id]
@@ -40,17 +60,70 @@ export default function OrderDetailsPage() {
   const updateOrder = useQuery("updateOrder");
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const {
+    run: cancelOrderRun,
+    data: cancelOrderData,
+    status: cancelOrderStatus,
+  } = useQuery("cancelOrder");
+  const {
+    run: deleteOrderRun,
+    data: deleteOrderData,
+    status: deleteOrderStatus,
+  } = useQuery("deleteOrder");
+  const router = useRouter();
 
-  console.log(data);
-
-  const orderStatuses = [
-    "initiated",
-    "processing",
+  const orderStatuses: OrderStatus[] = [
+    "completed",
+    "pending",
     "shipped",
-    "delivered",
     "cancelled",
     "paid",
   ];
+  useEffect(() => {
+    if (!cancelOrderStatus) return;
+
+    if (cancelOrderStatus === "loading") {
+      toast.loading("Canceling order...", { id: "cancel-order" });
+      return;
+    }
+
+    if (cancelOrderStatus === "success") {
+      if (cancelOrderData?.statusCode === 200) {
+        toast.success("Order canceled successfully!", { id: "cancel-order" });
+      } else {
+        toast.error(cancelOrderData?.message || "Failed to cancel order.", {
+          id: "cancel-order",
+        });
+      }
+    }
+
+    if (cancelOrderStatus === "error") {
+      toast.error("Failed to cancel order.", { id: "cancel-order" });
+    }
+  }, [cancelOrderStatus, cancelOrderData]);
+  useEffect(() => {
+    if (!deleteOrderStatus) return;
+
+    if (deleteOrderStatus === "loading") {
+      toast.loading("Deleting order...", { id: "delete-order" });
+      return;
+    }
+
+    if (deleteOrderStatus === "success") {
+      if (deleteOrderData?.statusCode === 200) {
+        toast.success("Order deleted successfully!", { id: "delete-order" });
+        router.replace("/admin/orders");
+      } else {
+        toast.error(deleteOrderData?.message || "Failed to delete order.", {
+          id: "delete-order",
+        });
+      }
+    }
+
+    if (deleteOrderStatus === "error") {
+      toast.error("Failed to delete order.", { id: "delete-order" });
+    }
+  }, [deleteOrderStatus, deleteOrderData, router]);
 
   if (status === "idle") run({ params: { id } });
 
@@ -67,8 +140,14 @@ export default function OrderDetailsPage() {
     return (
       <div className="mx-auto p-4">
         <h1 className="text-3xl font-bold mb-8">Orders Management</h1>
-        <p>Loading orders...</p>
-        <Loader2Icon className="animate-spin h-6 w-6 text-gray-500 mt-4" />
+        <div className="w-full h-20">
+          <Loader
+            loader="hr-line-loader"
+            loaderSize="parent"
+            type="content-loader"
+            unLoad={false}
+          />
+        </div>
       </div>
     );
   }
@@ -108,45 +187,49 @@ export default function OrderDetailsPage() {
       setIsUpdating(false);
     }
   };
+  const createdAtDate = new Date(order.createdAt);
+  const now = new Date();
+  const fourDaysInMs = 4 * 24 * 60 * 60 * 1000;
+  const isOlderThanFourDays =
+    now.getTime() - createdAtDate.getTime() > fourDaysInMs;
 
   return (
     <div className="mx-auto p-4 space-y-6">
       <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
         Order #{order.id}
       </h1>
+
       {/* Summary */}
       <Card>
         <CardContent className="p-4 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <p className="flex items-center gap-2">
-              <UserIcon className="w-4 h-4 text-muted-foreground" />
-              <span className="font-semibold">Customer:</span>
-              <span>
-                {order.customerInfo?.name
-                  ? `${order.customerInfo.name.first} ${order.customerInfo.name.last}`
-                  : "-"}
-              </span>
-            </p>
+          <p className="flex items-center gap-2">
+            <UserIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="font-semibold">Customer:</span>
+            <span>
+              {order.customerInfo?.name
+                ? `${order.customerInfo.name.first} ${order.customerInfo.name.last}`
+                : "-"}
+            </span>
+          </p>
 
-            <p className="flex items-center gap-2">
-              <MailIcon className="w-4 h-4 text-muted-foreground" />
-              <span className="font-semibold">Email:</span>
-              <span>{order.customerInfo?.email ?? "-"}</span>
-            </p>
+          <p className="flex items-center gap-2">
+            <MailIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="font-semibold">Email:</span>
+            <span>{order.customerInfo?.email ?? "-"}</span>
+          </p>
 
-            <p className="flex items-center gap-2">
-              <PhoneIcon className="w-4 h-4 text-muted-foreground" />
-              <span className="font-semibold">Phone:</span>
-              <span>{order.customerInfo?.phone ?? "-"}</span>
-            </p>
+          <p className="flex items-center gap-2">
+            <PhoneIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="font-semibold">Phone:</span>
+            <span>{order.customerInfo?.phone ?? "-"}</span>
+          </p>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2">
-                <CheckCircleIcon className="w-4 h-4 text-muted-foreground" />
-                <span className="font-semibold">Status:</span>
-                <span>{order.status}</span>
-              </div>
-              <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <CheckCircleIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="font-semibold">Status:</span>
+            <span>{order.status}</span>
+            {(order.status === "pending" || order.status === "shipped") && (
+              <>
                 <Select
                   value={selectedStatus}
                   onValueChange={setSelectedStatus}
@@ -166,7 +249,6 @@ export default function OrderDetailsPage() {
                   onClick={updateOrderStatus}
                   disabled={isUpdating || selectedStatus === order.status}
                   size="sm"
-                  className="w-[120px]"
                 >
                   {isUpdating ? (
                     <div className="flex items-center gap-1">
@@ -177,26 +259,169 @@ export default function OrderDetailsPage() {
                     "Update Status"
                   )}
                 </Button>
-              </div>
-            </div>
+              </>
+            )}
+          </div>
 
-            <p className="flex items-center gap-2">
-              <DollarSignIcon className="w-4 h-4 text-muted-foreground" />
-              <span className="font-semibold">Total:</span>
-              <span>${order.totalAmount?.toFixed(2)}</span>
-            </p>
+          <p className="flex items-center gap-2">
+            <DollarSignIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="font-semibold">Total:</span>
+            <span>${order.totalAmount?.toFixed(2)}</span>
+          </p>
 
-            <p className="flex items-center gap-2">
-              <CalendarIcon className="w-4 h-4 text-muted-foreground" />
-              <span className="font-semibold">Created:</span>
-              <span>{new Date(order.createdAt).toLocaleString()}</span>
-            </p>
+          <p className="flex items-center gap-2">
+            <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="font-semibold">Created:</span>
+            <span>{new Date(order.createdAt).toLocaleString()}</span>
+          </p>
 
-            <p className="flex items-center gap-2">
-              <CalendarIcon className="w-4 h-4 text-muted-foreground" />
-              <span className="font-semibold">Updated:</span>
-              <span>{new Date(order.updatedAt).toLocaleString()}</span>
-            </p>
+          <p className="flex items-center gap-2">
+            <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+            <span className="font-semibold">Updated:</span>
+            <span>{new Date(order.updatedAt).toLocaleString()}</span>
+          </p>
+
+          <div className="w-full flex items-center gap-small">
+            {/* Cancel Order */}
+            {isOlderThanFourDays ||
+            order.status === "completed" ||
+            order.status === "paid" ||
+            order.status === "shipped" ? (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      className="flex items-center gap-2 opacity-30 rounded-lg px-3 py-2"
+                    >
+                      <XCircleIcon className="h-4 w-4" />
+                      Cancel Order
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-52">
+                    <p>
+                      {isOlderThanFourDays
+                        ? "Order placed more than 4 days ago, can’t cancel order"
+                        : order.status === "completed"
+                          ? "Order has already been completed, cannot cancel"
+                          : order.status === "paid"
+                            ? "Order has been paid, canceling is not allowed"
+                            : "You can cancel this order"}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    className="flex items-center gap-2 rounded-lg px-3 py-2"
+                  >
+                    <XCircleIcon className="h-4 w-4" />
+                    Cancel Order
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent className="rounded-2xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Cancel order <b>{order.id}</b>?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. The order will be
+                      permanently canceled and the customer will be notified.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="rounded-lg">
+                      Keep Order
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() =>
+                        cancelOrderRun({
+                          params: { id: order.id },
+                        })
+                      }
+                      className="rounded-lg bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                    >
+                      Yes, Cancel
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+
+            {/* Delete Order */}
+            {isOlderThanFourDays ||
+            order.status === "completed" ||
+            order.status === "paid" ||
+            order.status === "shipped" ? (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      className="flex items-center gap-2 opacity-30 rounded-lg px-3 py-2"
+                    >
+                      <Trash2Icon className="h-4 w-4" />
+                      Delete Order
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-52">
+                    <p>
+                      {isOlderThanFourDays
+                        ? "Order placed more than 4 days ago, can’t delete order"
+                        : order.status === "completed"
+                          ? "Order has already been completed, cannot delete"
+                          : order.status === "paid"
+                            ? "Order has been paid, deleting is not allowed"
+                            : "You can delete this order"}
+                    </p>{" "}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    className="flex items-center gap-2 rounded-lg px-3 py-2"
+                    disabled={deleteOrderStatus === "loading"}
+                  >
+                    <Trash2Icon className="h-4 w-4" />
+                    Delete Order
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent className="rounded-2xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Delete order <b>{order.id}</b>?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. The order will be
+                      permanently removed from the system.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="rounded-lg">
+                      Keep Order
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() =>
+                        deleteOrderRun({ params: { id: order.id } })
+                      }
+                      className="rounded-lg bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                    >
+                      Yes, Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </CardContent>
       </Card>

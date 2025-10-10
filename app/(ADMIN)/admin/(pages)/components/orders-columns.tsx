@@ -31,6 +31,7 @@ export const columns: ColumnDef<OrdersResponseData>[] = [
               src={firstImage.src}
               alt={firstImage?.alt || "Product image"}
               className="w-8 h-8 rounded object-cover"
+              loading="lazy"
             />
           )}
           <span className="font-medium">{item._id}</span>

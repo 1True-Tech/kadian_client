@@ -10,9 +10,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export interface CartItemResponse extends GeneralResponse {
-  data?: CartItemReady & {
+  data?: CartItem & {
     itemsLeft: number;
   };
+}
+
+export interface CartUpdateItemResponse extends GeneralResponse {
+  data?: CartItem[];
 }
 
 type Params = ParamsProps<{ id: string }>;
@@ -131,7 +135,7 @@ export async function PATCH(req: Request, { params }: Params) {
     const data = await res.json();
 
     if (res.ok && data.status === "good") {
-      const successResponse: CartItemResponse = {
+      const successResponse: CartUpdateItemResponse = {
         status: "good",
         connectionActivity: "online",
         statusCode: res.status,

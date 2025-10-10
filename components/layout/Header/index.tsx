@@ -21,98 +21,137 @@ const Header = () => {
   const wishListItems = user?.wishList.length;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-      <div className="mx-auto px-container">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto px-container flex flex-col">
+        {/* Top Row: Logo + Actions */}
         <div className="flex h-16 items-center justify-between">
-          {/* Mobile menu */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-80">
-              <div className="flex flex-col space-y-4 mt-8 w-full">
-                <Link
-                  href="/"
-                  className="text-2xl font-light font-cinzel tracking-wider"
+          {/* Left: Logo */}
+          <div className="flex items-center gap-2">
+            {/* Mobile menu */}
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  aria-label="Open navigation menu"
                 >
-                  Kadian Fashion
-                </Link>
-                <ul className="flex flex-col gap-small w-full">
-                  {items.map((item) => (
-                    <HeaderMobileNavListItem key={item.label} {...item} />
-                  ))}
-                </ul>
-              </div>
-            </SheetContent>
-          </Sheet>
+                  <Menu className="h-6 w-6" aria-hidden="true" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-72 sm:w-80">
+                <nav aria-label="Mobile navigation">
+                  <div className="flex flex-col mt-8 space-y-6 w-full">
+                    <Link
+                      href="/"
+                      aria-label="Kadian Fashion homepage"
+                      className="text-2xl font-light font-cinzel tracking-wider"
+                    >
+                      Kadian Fashion
+                    </Link>
+                    <ul className="flex flex-col gap-2 w-full">
+                      {items.map((item) => (
+                        <HeaderMobileNavListItem key={item.label} {...item} />
+                      ))}
+                    </ul>
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
 
-          {/* Logo */}
-          <div className="w-fit hidden min-[250px]:flex items-center justify-center gap-small">
-            <Image
-              width={360}
-              height={280}
-              src={"/icon.jpg"}
-              alt="kadian logo"
-              className="size-5 -mt-[2px]"
-            />
-
-            <Link href="/" className="flex items-center space-x-2 font-cinzel">
-              <span className="text-2xl font-light tracking-wider md:hidden lg:inline">
-                Kadian
-              </span>
-              <span className="text-2xl font-thin text-accent hidden min-[360px]:inline md:hidden lg:inline">
-                Fashion
-              </span>
-            </Link>
+            {/* Desktop Logo */}
+            <div className="hidden sm:flex items-center gap-2">
+              <Link
+                href="/"
+                aria-label="Kadian Fashion homepage"
+                className="flex items-center gap-2"
+              >
+                <Image
+                  width={32}
+                  height={32}
+                  src="/icon.jpg"
+                  alt="Kadian Fashion logo"
+                  className="rounded-full"
+                  priority
+                />
+                <span className="text-xl sm:text-2xl font-light tracking-wider font-cinzel">
+                  Kadian
+                </span>
+                <span className="text-xl sm:text-2xl font-thin text-accent font-cinzel hidden md:inline">
+                  Fashion
+                </span>
+              </Link>
+            </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <ul className="w-fit flex items-center gap-medium justify-between">
-              {items.map((i, idx) => (
-                <HeaderNavListItem key={idx} {...i} />
-              ))}
-            </ul>
-          </nav>
-
-          {/* Actions */}
+          {/* Right: Actions */}
           <div className="flex items-center space-x-4">
+            {/* Search */}
             <Link href="/shop">
-              <Button variant="ghost" size="icon" className="hidden sm:flex">
-                <Search className="h-5 w-5" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden sm:flex"
+                aria-label="Search products"
+              >
+                <Search className="h-5 w-5" aria-hidden="true" />
               </Button>
             </Link>
+
+            {/* Wishlist */}
             {user && (
               <Link href="/wishlist">
-                <Button variant="ghost" size="icon" className="hidden sm:flex relative">
-                  <Heart className="h-5 w-5" />
-                  {wishListItems && wishListItems > 0 ?(
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hidden sm:flex relative"
+                  aria-label="Wishlist"
+                >
+                  <Heart className="h-5 w-5" aria-hidden="true" />
+                  {wishListItems && wishListItems > 0 && (
                     <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 bg-rose-gold text-rose-gold-foreground text-xs flex items-center justify-center">
                       {wishListItems}
                     </Badge>
-                  ):null}
-                  
+                  )}
                 </Button>
               </Link>
             )}
 
+            {/* Cart + User */}
             <MobileHeaderNav mobileSize={640}>
               <Link href="/cart">
-                <Button variant="ghost" size="icon" className="relative">
-                  <ShoppingBag className="h-5 w-5" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative  sm:flex"
+                  aria-label="Shopping cart"
+                >
+                  <ShoppingBag className="h-5 w-5" aria-hidden="true" />
                   {cartItems && cartItems > 0 ? (
                     <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 bg-rose-gold text-rose-gold-foreground text-xs flex items-center justify-center">
                       {cartItems}
                     </Badge>
-                  ):null}
+                  ) : null}
                 </Button>
               </Link>
               <HeaderUserSection />
             </MobileHeaderNav>
           </div>
         </div>
+
+        {/* Bottom Row: Desktop Navigation */}
+        <nav
+          className="hidden md:flex items-center justify-center border-t border-border h-12"
+          aria-label="Main navigation"
+        >
+          <ul className="flex items-center gap-6 overflow-x-auto scrollbar-none px-4">
+            {items.map((i, idx) => (
+              <li key={idx} className="flex-shrink-0">
+                <HeaderNavListItem {...i} />
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </header>
   );

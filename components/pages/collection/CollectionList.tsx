@@ -13,12 +13,15 @@ interface CollectionListProps {
   initialCollections: Collection[];
 }
 
-export default function CollectionList({ initialCollections }: CollectionListProps) {
+export default function CollectionList({
+  initialCollections,
+}: CollectionListProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredCollections = initialCollections.filter(collection =>
-    collection.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    collection.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCollections = initialCollections.filter(
+    (collection) =>
+      collection.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      collection.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -29,7 +32,8 @@ export default function CollectionList({ initialCollections }: CollectionListPro
             Our Collections
           </h2>
           <p className="text-elegant max-w-2xl mx-auto">
-            Discover our latest collections, featuring timeless designs and contemporary styles.
+            Discover our latest collections, featuring timeless designs and
+            contemporary styles.
           </p>
           <div className="max-w-md mx-auto mt-8">
             <div className="relative">
@@ -47,7 +51,10 @@ export default function CollectionList({ initialCollections }: CollectionListPro
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredCollections.map((collection) => (
-            <Link href={`/collection/${collection.slug.current}`} key={collection._id}>
+            <Link
+              href={`/collection/${collection.slug.current}`}
+              key={collection._id}
+            >
               <Card className="card-premium overflow-hidden group cursor-pointer hover-lift animate-fade-up">
                 <CardContent className="p-0 relative overflow-hidden">
                   <div className="relative h-96">
@@ -56,6 +63,7 @@ export default function CollectionList({ initialCollections }: CollectionListPro
                         width={720}
                         height={480}
                         src={collection.collection_images[0].src}
+                        loading="lazy"
                         alt={collection.collection_images[0].alt}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
@@ -67,9 +75,16 @@ export default function CollectionList({ initialCollections }: CollectionListPro
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
 
                     <div className="absolute bottom-8 left-8 right-8 text-white">
-                      <h3 className="text-2xl font-light mb-2">{collection.title}</h3>
-                      <p className="text-white/90 mb-4">{collection.description}</p>
-                      <Button variant="outline" className="btn-ghost-elegant bg-white/10 border-white/30 text-white hover:bg-white/20">
+                      <h3 className="text-2xl font-light mb-2">
+                        {collection.title}
+                      </h3>
+                      <p className="text-white/90 mb-4">
+                        {collection.description}
+                      </p>
+                      <Button
+                        variant="outline"
+                        className="btn-ghost-elegant bg-white/10 border-white/30 text-white hover:bg-white/20"
+                      >
                         View Collection
                       </Button>
                     </div>

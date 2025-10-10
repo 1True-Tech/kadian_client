@@ -1,5 +1,5 @@
 import { categoryForShopList } from "./Category";
-import { homepageHero, homePageLookBook, HomePageSpecialOffer, homePageStyleGuide } from "./HomepageContent";
+import { homepageHero, homePageLookBook, specialOfferQuery, HomePageSpecialOffer, homePageStyleGuide, specialOfferSingleQuery } from "./HomepageContent";
 import { shopCategory, shopCollection } from "./shop";
 import { colors } from './Colors';
 import { allCategories, categoryBySlug, searchCategories, homepageCategories } from './Categories';
@@ -22,6 +22,8 @@ const queries = {
     categoryBySlug,
     searchCategories,
     homepageCategories,
+    specialOfferQuery,
+    specialOfferSingleQuery,
     // Collection queries
     allCollections,
     collectionBySlug,

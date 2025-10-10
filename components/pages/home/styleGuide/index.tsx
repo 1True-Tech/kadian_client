@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { ArrowRightCircle } from "lucide-react";
 import { Fragment } from "react";
 import FcItem from "./fcItem";
+import Link from "next/link";
 
 export default async function StyleGuideContent() {
   const styleGuide = await processHomeStyleGuide();
@@ -52,19 +53,21 @@ export default async function StyleGuideContent() {
             })}
           </div>
           <div className="w-full flex items-center justify-center mt-peers">
-            <Button
-            variant={"default"}
-            className={cn(
-              "fluid_btn !bg-transparent !overflow-hidden !mx-auto border-2 relative isolate !border-accent !text-white !h-fit !py-2 !px-4 rounded-full",
-              "before:w-0 before:h-full before:absolute before:left-0 before:inset-0",
-              "before:duration-300 before:bg-accent/70 before:backdrop-blur-3xl before:-z-1"
-            )}
-          >
-            See All Guides{" "}
-            <span className="hidden_icon [--w:calc(var(--spacing)_*_5)] overflow-hidden">
-              <ArrowRightCircle className="size-5" />
-            </span>
-          </Button>
+            <Link href={"/style-guide"}>
+              <Button
+                variant={"default"}
+                className={cn(
+                  "fluid_btn !bg-transparent !overflow-hidden !mx-auto border-2 relative isolate !border-accent !text-white !h-fit !py-2 !px-4 rounded-full",
+                  "before:w-0 before:h-full before:absolute before:left-0 before:inset-0",
+                  "before:duration-300 before:bg-accent/70 before:backdrop-blur-3xl before:-z-1"
+                )}
+              >
+                See All styles{" "}
+                <span className="hidden_icon [--w:calc(var(--spacing)_*_5)] overflow-hidden">
+                  <ArrowRightCircle className="size-5" />
+                </span>
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

@@ -22,13 +22,16 @@ const categoryLabels: Record<string, string> = {
 
 export default function StyleGuideList({ initialGuides }: StyleGuideListProps) {
   // Group guides by category
-  const guidesByCategory = initialGuides.reduce((acc, guide) => {
-    if (!acc[guide.category]) {
-      acc[guide.category] = [];
-    }
-    acc[guide.category].push(guide);
-    return acc;
-  }, {} as Record<string, StyleGuide[]>);
+  const guidesByCategory = initialGuides.reduce(
+    (acc, guide) => {
+      if (!acc[guide.category]) {
+        acc[guide.category] = [];
+      }
+      acc[guide.category].push(guide);
+      return acc;
+    },
+    {} as Record<string, StyleGuide[]>
+  );
 
   const categories = Object.keys(guidesByCategory);
 
@@ -36,9 +39,13 @@ export default function StyleGuideList({ initialGuides }: StyleGuideListProps) {
     <section className="py-16 bg-background">
       <div className="px-container">
         <div className="text-center mb-12 animate-fade-up">
-          <h1 className="heading-section text-5xl font-cinzel mb-4 text-primary">Style Guide</h1>
+          <h1 className="heading-section text-5xl font-cinzel mb-4 text-primary">
+            Style Guide
+          </h1>
           <p className="text-elegant max-w-2xl mx-auto text-lg">
-            Expert fashion advice and styling tips for every occasion and body type. Browse curated guides, discover new trends, and elevate your wardrobe.
+            Expert fashion advice and styling tips for every occasion and body
+            type. Browse curated guides, discover new trends, and elevate your
+            wardrobe.
           </p>
         </div>
 
@@ -70,6 +77,7 @@ export default function StyleGuideList({ initialGuides }: StyleGuideListProps) {
                             <Image
                               src={guide.sections[0].styleImages[0].src}
                               alt={guide.sections[0].styleImages[0].alt}
+                              loading="lazy"
                               fill
                               className="object-cover transition-transform duration-700 group-hover:scale-105"
                             />

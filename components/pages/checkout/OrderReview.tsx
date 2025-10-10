@@ -29,6 +29,7 @@ export const OrderReview = () => {
                     width={720}
                     height={480}
                     src={item.image?.src || "/placeholder.svg"}
+                    loading="lazy"
                     alt={item.name || ""}
                     className="w-full h-full object-cover"
                   />
