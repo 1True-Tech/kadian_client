@@ -1,11 +1,11 @@
 import { StyleGuide } from "@/types/guides";
 import { ReadyImage } from "@/types/structures";
-import { MarkDef } from "@/types/structures/content";
+import { TypedObject } from "sanity";
 
 type StyleGuideRaw = Omit<StyleGuide, "sections"> & {
   sections: Array<{
     title: string;
-    content: MarkDef[];
+    content: TypedObject[];
     styleImages: (ReadyImage & { caption: string })[];
   }>;
 };

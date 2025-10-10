@@ -31,7 +31,7 @@ export interface StyleGuide {
   description?: TypedObject[];
   sections: {
     title: string;
-    content: any[];
+    content: TypedObject[];
     styleImages: (ReadyImage&{caption:string})[];
   }[];
 }

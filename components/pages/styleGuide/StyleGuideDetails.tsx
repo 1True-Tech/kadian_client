@@ -12,6 +12,7 @@ interface StyleGuideDetailsProps {
 }
 
 export default function StyleGuideDetails({ styleGuide }: StyleGuideDetailsProps) {
+  console.log(styleGuide)
   return (
     <section className="py-16 bg-background">
       <div className="px-container">
@@ -39,7 +40,7 @@ export default function StyleGuideDetails({ styleGuide }: StyleGuideDetailsProps
 
                 {/* Section Content */}
                 <div className="prose prose-elegant max-w-none text-lg text-muted-foreground">
-                  {section.content}
+                  <PortableText value={section.content}/>
                 </div>
 
                 {/* Image Gallery */}
