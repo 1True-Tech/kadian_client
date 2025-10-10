@@ -147,6 +147,7 @@ const Cart = () => {
                       <Image
                         width={720}
                         height={480}
+                        loading="lazy"
                         src={item.image.src}
                         alt={item.image.alt}
                         className="w-full h-full object-cover"

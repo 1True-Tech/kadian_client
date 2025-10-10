@@ -93,10 +93,8 @@ const variantFragment = groq`
   weight
 `;
 
-// Query for getting a single product by slug
-export const productBySlugQuery = groq`
-  *[_type == "product" && slug.current == $slug][0]{
-    _id,
+export const productInfo = `
+_id,
     _type,
     _createdAt,
     _updatedAt,
@@ -174,6 +172,12 @@ export const productBySlugQuery = groq`
     // Additional fields
     sustainabilityInfo,
     isActive,
+`
+
+// Query for getting a single product by slug
+export const productBySlugQuery = groq`
+  *[_type == "product" && slug.current == $slug][0]{
+    ${productInfo}
   }
 `;
 

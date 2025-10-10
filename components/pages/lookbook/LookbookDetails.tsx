@@ -18,7 +18,7 @@ export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
     <section className="py-16 bg-background">
       <div className="px-container">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-up">
+        <div className="text-center mb-16 animate-fade-up">
           <div className="text-sm font-medium text-muted-foreground mb-2 tracking-wide uppercase">
             {lookbook.season.name} {lookbook.season.year}
           </div>
@@ -32,46 +32,53 @@ export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
           )}
         </div>
 
-        {/* Lookbook Content */}
-        <div className="space-y-24">
+        {/* Looks */}
+        <div className="space-y-32">
           {lookbook.looks.map((look, index) => (
             <React.Fragment key={index}>
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 {/* Look Image */}
-                <div className="relative aspect-[2/3] rounded-xl overflow-hidden shadow-lg border border-accent">
+                <div className="relative w-full rounded-xl overflow-hidden shadow-xl border border-accent/30 group">
                   {look.image.src ? (
                     <Image
                       src={look.image.src}
                       alt={look.image.alt}
                       fill
-                      className="object-cover transition-transform duration-700 hover:scale-105"
+                      loading="lazy"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                    <div className="w-full h-96 bg-muted flex items-center justify-center">
                       <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
                     </div>
                   )}
                   {look.image.caption && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 text-sm">
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm text-white p-3 text-sm">
                       {look.image.caption}
                     </div>
                   )}
                 </div>
 
                 {/* Look Details */}
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-semibold text-primary mb-2">Outfit Details</h2>
-                  <div className="space-y-4">
+                <div className="space-y-8">
+                  <h2 className="text-2xl font-semibold text-primary mb-2">
+                    Outfit Details
+                  </h2>
+                  <div className="space-y-6">
                     {look.outfitDetails.map((detail, detailIndex) => (
-                      <Card key={detailIndex} className="border border-accent/40 shadow-sm">
+                      <Card
+                        key={detailIndex}
+                        className="border border-accent/30 shadow-sm hover:shadow-md transition-shadow duration-300"
+                      >
                         <CardContent className="p-4 flex gap-4 items-center">
                           {/* Product Image */}
-                          <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-muted">
+                          <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-muted">
                             {detail.productLink.image.src ? (
                               <Image
                                 src={detail.productLink.image.src}
                                 alt={detail.productLink.image.alt}
                                 fill
+                                loading="lazy"
                                 className="object-cover"
                               />
                             ) : (
@@ -80,7 +87,8 @@ export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
                               </div>
                             )}
                           </div>
-                          {/* Product Details */}
+
+                          {/* Product Info */}
                           <div className="flex-1">
                             <h3 className="font-medium mb-1 text-lg text-primary">
                               {detail.name}
@@ -91,7 +99,11 @@ export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
                               </p>
                             )}
                             <Link href={`/product/${detail.productLink.slug.current}`}>
-                              <Button variant="outline" size="sm" className="mt-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="mt-2 transition-colors duration-300 hover:bg-primary hover:text-primary-foreground"
+                              >
                                 View Product
                               </Button>
                             </Link>
@@ -102,8 +114,9 @@ export default function LookbookDetails({ lookbook }: LookbookDetailsProps) {
                   </div>
                 </div>
               </div>
+
               {index < lookbook.looks.length - 1 && (
-                <div className="my-12 border-t border-dashed border-accent/30" />
+                <div className="my-16 border-t border-dashed border-accent/30" />
               )}
             </React.Fragment>
           ))}

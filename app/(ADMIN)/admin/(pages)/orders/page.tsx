@@ -95,6 +95,7 @@ export default function OrdersPage() {
                                 height={200}
                                 src={firstImage.src}
                                 alt={firstImage?.alt || "Product image"}
+                                loading="lazy"
                                 className="w-8 h-8 rounded object-cover"
                               />
                             )}
@@ -158,6 +159,7 @@ export default function OrdersPage() {
                                                 width={50}
                                                 height={50}
                                                 src={item.product.mainImage.src}
+                                                loading="lazy"
                                                 alt={
                                                   item.product.mainImage.alt ||
                                                   item.product?.name

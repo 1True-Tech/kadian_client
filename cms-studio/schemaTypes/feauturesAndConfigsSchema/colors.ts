@@ -44,7 +44,7 @@ export const colorType = defineType({
       const sub =
         hex && rgba ? `${hex} (${rgba})` : hex ? hex : rgba ? rgba : "";
 
-      let url = createColorSwatchDataUrl(
+      const url = createColorSwatchDataUrl(
         primary || "#fff",
         32,
         0,

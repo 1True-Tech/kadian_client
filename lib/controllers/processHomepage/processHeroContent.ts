@@ -1,49 +1,83 @@
+// lib/processors/specialOfferProcessor.ts
 import queries from "@/lib/queries";
 import { client } from "@/lib/utils/NSClient";
 import { fashionImageBuilder } from "@/lib/utils/fashionImageTransformer";
+import { SpecialOfferRaw, SpecialOfferReady } from "@/types/specialoffer";
 import { imageAssetWithAsset } from "@/types/structures";
-import { HomePageHero } from "@/types/home";
+import { processProducts } from "../processShop/processProducts";
 
-export const processHomepageHeroContent = async (): Promise<HomePageHero[]> => {
-  const items = await client.fetch<(Omit<HomePageHero, "image">&{image:{
-    main:imageAssetWithAsset|null;
-    mobile:imageAssetWithAsset|null;
-    alt:string;
-  }})[]>(queries.homepageHero);
-  return items.map((item) => {
-    const image = item.image ?? {};
+interface PropsAll {
+  type?: "all";
+}
 
-    const mainObj = image.main;
-    const mobileObj = image.mobile;
+interface PropsSingle {
+  type: "single";
+  id: string;
+}
 
-    let mainUrl: string | null = null;
-    if (mainObj&& mainObj.asset) {
-      mainUrl = fashionImageBuilder([mainObj], {
-        height: 700,
-        width: 1200,
-        quality: 100,
-        format: "webp",
-      })[0];
+type SpecialOfferParams = PropsAll | PropsSingle;
+
+export const processSpecialOffers = async ({
+  type = "all",
+  ...props
+}: SpecialOfferParams): Promise<SpecialOfferReady[] | SpecialOfferReady | null> => {
+  const query = type==="all"?"specialOfferQuery":"specialOfferSingleQuery"
+  const id = type=="single"?(props as PropsSingle).id:""
+  const raw = await client.fetch<SpecialOfferRaw[] | null>(
+    queries[query],
+    {id}
+  );
+  if (!raw) return null;
+
+  const normalizeAsset = (img: any): imageAssetWithAsset | null => {
+    if (!img?.asset) return null;
+    if (img.asset._ref) return img as imageAssetWithAsset;
+    if (img.asset.asset?._ref) {
+      return {
+        ...img,
+        asset: { _ref: img.asset.asset._ref, _type: "reference" },
+      } as imageAssetWithAsset;
     }
+    return null;
+  };
 
-    let mobileUrl: string | null = null;
-    if (mobileObj&& mobileObj.asset) {
-      mobileUrl = fashionImageBuilder([mobileObj], {
-        height: 700,
-        width: 1200,
-        quality: 100,
-        format: "webp",
-      })[0];
-    }
+  const mapImages = (
+    imgs: (imageAssetWithAsset & { alt?: string; primary?: boolean })[] = []
+  ) =>
+    imgs.map((img) => {
+      const normalized = normalizeAsset(img);
+      return {
+        alt: img.alt ?? "",
+        primary: img.primary ?? false,
+        src: normalized
+          ? fashionImageBuilder([normalized], {
+              width: 800,
+              height: 800,
+              quality: 90,
+              format: "webp",
+            })[0]
+          : null,
+      };
+    });
 
-    // return the transformed item
-    return {
-      ...item,
-      image: {
-        ...image,
-        main: mainUrl,
-        mobile: mobileUrl,
-      },
-    };
-  });
+  const processed = raw.map((offer) => ({
+    ...offer,
+    displayImages: mapImages(offer.displayImages),
+    metadata: offer.metadata
+      ? {
+          ...offer.metadata,
+        }
+      : undefined,
+    products: offer.products.map((p) => ({
+      ...p,
+      product: processProducts([p.product])[0],
+    })),
+  }));
+
+  if (type === "single") {
+    const found = processed[0]
+    return found ?? null;
+  }
+
+  return processed;
 };

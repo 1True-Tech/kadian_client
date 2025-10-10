@@ -11,9 +11,7 @@ interface StyleGuideDetailsProps {
   styleGuide: StyleGuide;
 }
 
-export default function StyleGuideDetails({
-  styleGuide,
-}: StyleGuideDetailsProps) {
+export default function StyleGuideDetails({ styleGuide }: StyleGuideDetailsProps) {
   return (
     <section className="py-16 bg-background">
       <div className="px-container">
@@ -26,37 +24,41 @@ export default function StyleGuideDetails({
             {styleGuide.title}
           </h1>
           {styleGuide.introduction && (
-            <div className="prose prose-elegant max-w-2xl mx-auto text-lg">
+            <div className="prose prose-elegant max-w-2xl mx-auto text-lg text-muted-foreground">
               <PortableText value={styleGuide.introduction} />
             </div>
           )}
         </div>
 
-        {/* Style Guide Content */}
-        <div className="space-y-20">
-          {styleGuide.sections.map((section, index) => (
-            <React.Fragment key={index}>
-              <div className="space-y-8">
-                <h2 className="text-2xl font-semibold text-primary mb-2">{section.title}</h2>
+        {/* Sections */}
+        <div className="space-y-24">
+          {styleGuide.sections.map((section, idx) => (
+            <React.Fragment key={idx}>
+              <div className="space-y-8 animate-fade-up">
+                <h2 className="text-3xl font-semibold text-primary">{section.title}</h2>
 
                 {/* Section Content */}
-                <div className="prose prose-elegant max-w-none text-lg">
+                <div className="prose prose-elegant max-w-none text-lg text-muted-foreground">
                   {section.content}
                 </div>
 
                 {/* Image Gallery */}
                 {section.styleImages && section.styleImages.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                    {section.styleImages.map((image, imageIndex) => (
-                      <Card key={imageIndex} className="overflow-hidden border border-accent/40 shadow-sm">
-                        <CardContent className="p-0">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+                    {section.styleImages.map((image, i) => (
+                      <Card
+                        key={i}
+                        className="overflow-hidden border border-accent/30 shadow-md transform transition-transform duration-500 hover:scale-105 hover:-translate-y-1 cursor-pointer"
+                      >
+                        <CardContent className="p-0 relative">
                           <div className="relative aspect-[3/4]">
                             {image.src ? (
                               <Image
                                 src={image.src}
                                 alt={image.alt}
                                 fill
-                                className="object-cover transition-transform duration-700 hover:scale-105"
+                                loading="lazy"
+                                className="object-cover transition-transform duration-700 hover:scale-110"
                               />
                             ) : (
                               <div className="absolute inset-0 bg-muted flex items-center justify-center">
@@ -65,10 +67,8 @@ export default function StyleGuideDetails({
                             )}
                           </div>
                           {image.caption && (
-                            <div className="p-4">
-                              <p className="text-sm text-muted-foreground">
-                                {image.caption}
-                              </p>
+                            <div className="p-4 bg-background">
+                              <p className="text-sm text-muted-foreground">{image.caption}</p>
                             </div>
                           )}
                         </CardContent>
@@ -77,8 +77,10 @@ export default function StyleGuideDetails({
                   </div>
                 )}
               </div>
-              {index < styleGuide.sections.length - 1 && (
-                <div className="my-12 border-t border-dashed border-accent/30" />
+
+              {/* Section Divider */}
+              {idx < styleGuide.sections.length - 1 && (
+                <div className="my-16 border-t border-dashed border-accent/30" />
               )}
             </React.Fragment>
           ))}

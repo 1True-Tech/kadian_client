@@ -40,6 +40,7 @@ function OrderItemDetail({ item }: { item: OrderItem }) {
           <Image
             src={image.src}
             alt={image.alt || name}
+            loading="lazy"
             fill
             className="rounded"
           />

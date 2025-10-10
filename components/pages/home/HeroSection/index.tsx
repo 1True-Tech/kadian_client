@@ -1,10 +1,11 @@
 import { Carousel, CarouselContent } from "@/components/ui/carousel";
-import { processHomepageHeroContent } from "@/lib/controllers/processHomepage/processHeroContent";
 import HeroItem from "./heroItem";
+import { processSpecialOffers } from "@/lib/controllers/processHomepage/processHeroContent";
+import { SpecialOfferReady } from "@/types/specialoffer";
 
 export default async function HeroSection() {
   try {
-    const heroData = await processHomepageHeroContent();
+    const heroData = (await processSpecialOffers({type:"all"})) as SpecialOfferReady[];
 
     if (!heroData || heroData.length <= 0) {
       return (
@@ -43,8 +44,8 @@ export default async function HeroSection() {
         </Carousel>
       </section>
     );
-  } catch (error) {
-    console.error("Error loading hero section:", error);
+  } catch (err){
+    console.log(err)
     return (
       <section className="w-full overflow-x-hidden relative isolate flex items-center justify-center h-screen max-h-[500px] bg-secondary/10">
         <div className="text-center">

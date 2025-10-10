@@ -11,20 +11,26 @@ interface CollectionProductsProps {
   collection: Collection;
 }
 
-export default function CollectionProducts({ collection }: CollectionProductsProps) {
+export default function CollectionProducts({
+  collection,
+}: CollectionProductsProps) {
   return (
     <div className="py-16">
       <div className="px-container">
         {/* Collection Header */}
         <div className="text-center mb-12 animate-fade-up">
-          <h1 className="heading-section text-4xl font-cinzel mb-4">{collection.title}</h1>
-          <p className="text-elegant max-w-2xl mx-auto">{collection.description}</p>
+          <h1 className="heading-section text-4xl font-cinzel mb-4">
+            {collection.title}
+          </h1>
+          <p className="text-elegant max-w-2xl mx-auto">
+            {collection.description}
+          </p>
           {collection.dateRange && (
             <div className="flex items-center justify-center gap-2 mt-4 text-muted-foreground">
               <CalendarIcon className="h-4 w-4" />
               <span>
-                {new Date(collection.dateRange.startDate).toLocaleDateString()} - 
-                {new Date(collection.dateRange.endDate).toLocaleDateString()}
+                {new Date(collection.dateRange.startDate).toLocaleDateString()}{" "}
+                -{new Date(collection.dateRange.endDate).toLocaleDateString()}
               </span>
             </div>
           )}
@@ -52,7 +58,9 @@ export default function CollectionProducts({ collection }: CollectionProductsPro
         <div className="space-y-8">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-light">Products in Collection</h2>
-            <p className="text-muted-foreground">{collection.products.length} items</p>
+            <p className="text-muted-foreground">
+              {collection.products.length} items
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -65,6 +73,7 @@ export default function CollectionProducts({ collection }: CollectionProductsPro
                         <Image
                           src={product.image.src}
                           alt={product.image.alt}
+                          loading="lazy"
                           fill
                           className="object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-105"
                         />

@@ -9,7 +9,8 @@ const HeroSection = () => {
         <Image
           width={1024}
           height={720}
-          src={'/images/hero-image-1.jpg'}
+          src={"/images/hero-image-1.jpg"}
+          loading="lazy"
           alt="Kadian Fashion - Premium women's clothing"
           className="w-full h-full object-cover object-center"
         />
@@ -37,18 +38,15 @@ const HeroSection = () => {
             </Button>
           </div>
         </div>
-
-        
       </div>
       {/* Scroll Indicator */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
-          </div>
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce">
+        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
         </div>
+      </div>
     </section>
   );
 };
 
 export default HeroSection;
-

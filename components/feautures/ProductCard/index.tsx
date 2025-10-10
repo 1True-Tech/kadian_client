@@ -27,11 +27,12 @@ export default function ProductCard({
     product.discount
       ? product.discount.type !== "percentage"
         ? product.discount.value
-        : product.price-calculatePercentage({
-          fromOriginal:product.price,
-          value:product.discount.value,
-          valueAs:"percentage"
-        })
+        : product.price -
+          calculatePercentage({
+            fromOriginal: product.price,
+            value: product.discount.value,
+            valueAs: "percentage",
+          })
       : product.price
   ).toFixed(2);
   return (
@@ -50,6 +51,7 @@ export default function ProductCard({
             src={product.image.src}
             alt={product.image.alt}
             width={300}
+            loading="lazy"
             height={500}
             quality={75}
             className="object-cover product-card-image object-center w-full h-full transition duration-300 scale-100"

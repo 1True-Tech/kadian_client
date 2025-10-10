@@ -8,7 +8,7 @@ export const fashionStructure: GroupDefinition = {
     "styleGuide",
     "sizeGuide",
     // "blogPost",
-    "homepageHero",
+    // "homepageHero",
   ],
   builders() {
     return [];

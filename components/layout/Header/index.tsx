@@ -131,7 +131,7 @@ const Header = () => {
                     <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 bg-rose-gold text-rose-gold-foreground text-xs flex items-center justify-center">
                       {cartItems}
                     </Badge>
-                  ):null}
+                  ) : null}
                 </Button>
               </Link>
               <HeaderUserSection />

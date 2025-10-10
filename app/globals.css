@@ -10,6 +10,7 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant hover (&:hover);
 
+/* ─── ROOT VARIABLES ───────────────────────────────────────── */
 :root {
   /* sizing */
   --spacing-sections: calc(var(--spacing) * 8);
@@ -20,73 +21,56 @@
   --spacing-container: calc(var(--spacing) * 4);
   /* Radius */
   --radius: 0.625rem;
-}
 
-@media (width >= 40rem) {
-  :root {
-    --spacing-container: calc(var(--spacing) * 8);
-    --spacing-sections: calc(var(--spacing) * 15);
-    --spacing-medium: calc(var(--spacing) * 8);
-    --spacing-peers: calc(var(--spacing) * 4);
-    --spacing-small: calc(var(--spacing) * 2);
-    --spacing-xtrasmall: calc(var(--spacing) * 1);
-  }
-}
-
-:root {
-  /* ─── Base Colors ───────────────────────────────────────────── */
-  --background: hsl(0 0% 98%); /* off-white canvas */
-  --foreground: hsl(240 12% 10%); /* ink black with slight warmth */
+  /* ─── Base Colors ───────────────────────────────────────── */
+  --background: hsl(0 0% 97%);       /* slightly warmer off-white */
+  --foreground: hsl(240 10% 12%);    /* soft ink black */
 
   --card: hsl(0 0% 100%);
   --card-foreground: var(--foreground);
   --popover: hsl(0 0% 100%);
   --popover-foreground: var(--foreground);
 
-  /* ─── Brand Core ───────────────────────────────────────────── */
-  --primary: hsl(240 6% 8%); /* soft black */
-  --primary-foreground: hsl(0 0% 98%); /* soft white */
+  /* ─── Brand Core ───────────────────────────────────────── */
+  --primary: hsl(240 5% 10%);        /* premium black */
+  --primary-foreground: hsl(0 0% 97%);
 
-  --accent: hsl(14 35% 68%); /* rose-gold — slightly warmer */
-  --accent-foreground: hsl(240 5% 15%); /* charcoal ink */
+  --accent: hsl(14 45% 65%);         /* warmer rose-gold */
+  --accent-hover: hsl(14 55% 55%);   /* pop for hover states */
+  --accent-foreground: hsl(240 5% 15%);
 
-  --secondary: hsl(36 30% 90%); /* warm stone beige */
-  --secondary-foreground: hsl(240 10% 20%); /* rich charcoal */
+  --secondary: hsl(36 35% 88%);      /* subtle warm beige */
+  --secondary-foreground: hsl(240 10% 18%);
 
-  --muted: hsl(0 0% 85%); /* light grey */
-  --muted-foreground: hsl(0 0% 45%); /* medium grey */
+  --tertiary: hsl(270 40% 40%);      /* deep violet for contrast and elegance */
 
-  /* ─── Elegant Depth ────────────────────────────────────────── */
-  --elevated-bg: hsl(0 0% 100%);
+  --muted: hsl(0 0% 82%);
+  --muted-foreground: hsl(0 0% 45%);
+
+  /* ─── Elegant Depth ────────────────────────────────────── */
+  --elevated-bg: var(--card);
   --elevated-border: hsl(240 5% 92%);
   --elevated-shadow: 0 4px 12px hsl(0 0% 0% / 6%);
 
-  /* ─── Feedback & Status ───────────────────────────────────── */
-  --success: hsl(146 45% 38%); /* moss green */
+  /* ─── Feedback & Status ───────────────────────────────── */
+  --success: hsl(142 45% 40%);
   --success-foreground: hsl(0 0% 100%);
 
-  --warning: hsl(42 90% 52%); /* golden mustard */
-  --warning-foreground: hsl(0 0% 8%);
+  --warning: hsl(42 85% 55%);
+  --warning-foreground: hsl(0 0% 12%);
 
-  --destructive: hsl(358 68% 45%); /* editorial red */
+  --destructive: hsl(358 70% 48%);
   --destructive-foreground: hsl(0 0% 100%);
 
-  --info: hsl(208 70% 52%); /* refined blue */
+  --info: hsl(208 70% 55%);
   --error: var(--destructive);
 
-  /* ─── Form Elements ───────────────────────────────────────── */
+  /* ─── Form Elements ───────────────────────────────────── */
   --input: hsl(0 0% 100%);
   --border: hsl(240 5% 86%);
   --ring: var(--accent);
 
-  /* ─── Data Viz / Charts ───────────────────────────────────── */
-  --chart-1: var(--success);
-  --chart-2: var(--info);
-  --chart-3: var(--error);
-  --chart-4: var(--accent);
-  --chart-5: hsl(270 40% 45%); /* violet */
-
-  /* ─── Sidebar ─────────────────────────────────────────────── */
+  /* ─── Sidebar ────────────────────────────────────────── */
   --sidebar: var(--card);
   --sidebar-foreground: var(--primary);
   --sidebar-primary: var(--primary);
@@ -96,64 +80,36 @@
   --sidebar-border: var(--border);
   --sidebar-ring: var(--accent);
 }
-/* .dark {
-  --background: hsl(240 10% 4%);
+
+/* ─── Dark Mode ────────────────────────────────────────── */
+.dark {
+  --background: hsl(240 8% 6%);
   --foreground: hsl(0 0% 92%);
 
-  --card: hsl(240 8% 10%);
+  --card: hsl(240 6% 12%);
   --card-foreground: var(--foreground);
-  --popover: hsl(240 8% 10%);
+  --popover: hsl(240 6% 12%);
   --popover-foreground: var(--foreground);
 
   --primary: hsl(0 0% 100%);
-  --primary-foreground: hsl(240 10% 4%);
+  --primary-foreground: hsl(240 8% 6%);
 
-  --accent: hsl(14 35% 68%);
-  --accent-foreground: hsl(240 10% 10%);
+  --accent: hsl(14 50% 70%);
+  --accent-hover: hsl(14 60% 60%);
+  --accent-foreground: hsl(240 10% 8%);
 
-  --secondary: hsl(240 6% 20%);
+  --secondary: hsl(240 8% 18%);
   --secondary-foreground: hsl(0 0% 92%);
   --muted: hsl(240 6% 30%);
   --muted-foreground: hsl(0 0% 60%);
 
-  --elevated-bg: hsl(240 6% 12%);
+  --elevated-bg: hsl(240 6% 14%);
   --elevated-border: hsl(240 5% 25%);
   --elevated-shadow: 0 6px 20px hsl(0 0% 0% / 50%);
+}
 
-  --success: hsl(142 55% 50%);
-  --success-foreground: hsl(0 0% 10%);
-
-  --warning: hsl(40 80% 60%);
-  --warning-foreground: hsl(0 0% 10%);
-
-  --destructive: hsl(358 70% 55%);
-  --destructive-foreground: hsl(0 0% 100%);
-
-  --info: hsl(208 70% 60%);
-  --error: var(--destructive);
-
-  --input: hsl(240 5% 14%);
-  --border: hsl(240 5% 26%);
-  --ring: var(--accent);
-
-  --chart-1: var(--success);
-  --chart-2: var(--info);
-  --chart-3: var(--error);
-  --chart-4: var(--accent);
-  --chart-5: hsl(270 40% 60%);
-
-  --sidebar: hsl(240 6% 8%);
-  --sidebar-foreground: var(--foreground);
-  --sidebar-primary: var(--accent);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: var(--accent);
-  --sidebar-accent-foreground: var(--background);
-  --sidebar-border: var(--border);
-  --sidebar-ring: var(--accent);
-} */
-/* ─── TAILWIND THEME MAPPING ───────────────────────────────────────────── */
+/* ─── Tailwind Theme Mapping ───────────────────────────── */
 @theme inline {
-  /* Core Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -164,13 +120,14 @@
   --color-secondary-foreground: var(--secondary-foreground);
 
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
+
+  --color-tertiary: var(--tertiary);
 
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
 
-  /* State Colors */
-  --color-info: var(--info);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
@@ -179,25 +136,15 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
-  /* UI Surfaces */
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
 
-  /* Borders & Forms */
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Charts */
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-
-  /* Sidebar */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -207,18 +154,15 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Elevation */
   --color-elevated-bg: var(--elevated-bg);
   --color-elevated-border: var(--elevated-border);
   --color-elevated-shadow: var(--elevated-shadow);
 
-  /* Radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* Spacing */
   --spacing-sections: var(--spacing-sections);
   --spacing-peers: var(--spacing-peers);
   --spacing-container: var(--spacing-container);
@@ -226,64 +170,32 @@
   --spacing-xtrasmall: var(--spacing-xtrasmall);
   --spacing-medium: var(--spacing-medium);
 
-  /* Typography */
   --leading-medium: 160%;
   --leading-xtrasmall: 120%;
   --leading-small: 140%;
   --leading-large: 180%;
 
-  /* Animation Presets */
   --animate-scale-in: scaleIn 0.5s ease-out;
   --animate-bounce-self: bounce-self 0.5s ease-out;
   --animate-truck-back-and-forth: truck-back-and-forth 5s linear infinite;
   --animate-road-dash: road-dash 1s linear infinite;
 }
 
+/* ─── Animations ────────────────────────────────────────── */
 .animate-road-dash {
-    background-image: repeating-linear-gradient(to right, #facc15 0 20px, transparent 20px 40px);
-    background-size: 40px 1px;
-    animation: road-dash 1s linear infinite;
-  }
-/* ─── BASE STYLES ──────────────────────────────────────────────────────────── */
+  background-image: repeating-linear-gradient(to right, var(--accent) 0 20px, transparent 20px 40px);
+  background-size: 40px 1px;
+  animation: road-dash 1s linear infinite;
+}
+
+/* ─── BASE STYLES ───────────────────────────────────────── */
 @layer base {
-  *,
-  *::before,
-  *::after {
-    @apply border-border outline-ring/50;
-  }
-  .link:hover {
-    @apply underline;
-  }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply leading-small;
-  }
-  b,
-  a,
-  p,
-  i,
-  em,
-  strong {
-    @apply leading-medium;
-  }
-  * {
-    @apply box-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply w-full;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+  *,:before,:after { @apply border-border outline-ring/50 box-border; }
+  body { @apply bg-background text-foreground; }
+  html { @apply w-full; }
+  h1,h2,h3,h4,h5,h6 { @apply leading-small; }
+  b,a,p,i,em,strong { @apply leading-medium; }
+  .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
+  .scrollbar-hide::-webkit-scrollbar { display:none; }
+  .link:hover { @apply underline; }
 }

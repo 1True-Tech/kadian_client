@@ -1,4 +1,5 @@
-import { ProductListingItem } from "./Product";
+import { groq } from "next-sanity";
+import { productInfo } from "./products";
 
 export const homepageHero = `
 *[
@@ -48,7 +49,80 @@ export const homePageStyleGuide = `
   "description":introduction,
   title
 }
-`
+`;
+export const specialOfferQuery = groq`
+*[_type == "special_offers"]{
+  _id,
+  title,
+  description,
+  "slug": slug.current,
+  category,
+  start_date,
+  end_date,
+  minPurchase,
+  maxDiscount,
+  highlightColor->{
+    name,
+    hex,
+    rgba
+  },
+  terms[],
+  metadata{
+    metaTitle,
+    metaDescription
+  },
+  displayImages[]{
+    alt,
+    primary,
+    asset
+  },
+  products[]{
+    discountType,
+    discountValue,
+    featured,
+    product->{
+      ${productInfo}
+    }
+  }
+}
+`;
+export const specialOfferSingleQuery = groq`
+*[_type == "special_offers" && slug.current == $id]{
+  _id,
+  title,
+  description,
+  "slug": slug.current,
+  category,
+  start_date,
+  end_date,
+  minPurchase,
+  maxDiscount,
+  highlightColor->{
+    name,
+    hex,
+    rgba
+  },
+  terms[],
+  metadata{
+    metaTitle,
+    metaDescription
+  },
+  displayImages[]{
+    alt,
+    primary,
+    asset
+  },
+  products[]{
+    discountType,
+    discountValue,
+    featured,
+    product->{
+      ${productInfo}
+    }
+  }
+}
+`;
+
 export const HomePageSpecialOffer = `
 *[_type == "special_offers"][0...5]{
   "displayImages": displayImages[]{
@@ -126,4 +200,4 @@ export const HomePageSpecialOffer = `
 }
 }
 
-`
+`;

@@ -41,7 +41,12 @@ export default function Inventory({ items }: InventoryProps) {
 
       <Card className="w-full !rounded-none">
         <CardContent className="p-4 flex flex-col items-end gap-peers">
-          <Button variant="glow" size="sm" className="w-fit" onClick={refreshInventory}>
+          <Button
+            variant="glow"
+            size="sm"
+            className="w-fit"
+            onClick={refreshInventory}
+          >
             <RotateCcwIcon className="h-4 w-4 mr-1" /> Refresh
           </Button>
 
@@ -70,7 +75,11 @@ export default function Inventory({ items }: InventoryProps) {
                           {item.productData?.variants.length}
                         </TableCell>
                         <TableCell>
-                          {new Date(item.productData?._updatedAt||item.productData?._createdAt||"").toLocaleDateString()}
+                          {new Date(
+                            item.productData?._updatedAt ||
+                              item.productData?._createdAt ||
+                              ""
+                          ).toLocaleDateString()}
                         </TableCell>
                         <TableCell className="text-right">
                           <Button
@@ -121,6 +130,7 @@ export default function Inventory({ items }: InventoryProps) {
                                             <Image
                                               width={64}
                                               height={64}
+                                              loading="lazy"
                                               src={variant.images[0].src}
                                               alt={
                                                 variant.images[0].alt ||
@@ -181,6 +191,7 @@ export default function Inventory({ items }: InventoryProps) {
                                           <Image
                                             width={64}
                                             height={64}
+                                            loading="lazy"
                                             src={variant.images[0].src}
                                             alt={
                                               variant.images[0].alt || "Variant"
