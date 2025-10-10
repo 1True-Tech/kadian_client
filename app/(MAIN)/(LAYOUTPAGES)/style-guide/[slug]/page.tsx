@@ -67,6 +67,7 @@ export default async function StyleGuidePage({
     const styleGuideRaw = await client.fetch(styleGuideBySlugQuery, {
       slug,
     });
+    console.log(styleGuideRaw)
 
     if (!styleGuideRaw) {
       notFound();

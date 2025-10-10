@@ -141,10 +141,10 @@ const Header = () => {
 
         {/* Bottom Row: Desktop Navigation */}
         <nav
-          className="hidden md:flex items-center justify-center border-t border-border h-12"
+          className="hidden md:flex items-center justify-center border-t border-border py-xtrasmall"
           aria-label="Main navigation"
         >
-          <ul className="flex items-center gap-6 overflow-x-auto scrollbar-none px-4">
+          <ul className="flex items-center gap-6 px-4">
             {items.map((i, idx) => (
               <li key={idx} className="flex-shrink-0">
                 <HeaderNavListItem {...i} />

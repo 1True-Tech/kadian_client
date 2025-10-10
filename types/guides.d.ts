@@ -32,8 +32,26 @@ export interface StyleGuide {
   sections: {
     title: string;
     content: TypedObject[];
-    styleImages: (ReadyImage&{caption:string})[];
+    styleImages: (ReadyImage & { caption: string })[];
+    tips?: {
+      tip: string;
+      importance: "essential" | "recommended" | "optional";
+    }[];
+    relatedProducts?: {
+      _id: string;
+      title: string;
+      slug: string;
+      image?: ReadyImage;
+      price?: number;
+    }[];
   }[];
+  difficulty?: "beginner" | "intermediate" | "advanced";
+  targetAudience?: string[];
+  seasonality?: string[];
+  seo?: {
+    title?: string;
+    description?: string;
+  };
 }
 
 export interface SizeGuide {
