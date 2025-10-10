@@ -1,7 +1,6 @@
 import { TypedObject } from "sanity";
 import { Product } from "./shop";
 import { ReadyImage } from "./structures";
-
 export interface Lookbook {
   _id: string;
   title: string;
@@ -13,12 +12,12 @@ export interface Lookbook {
   introduction: TypedObject[];
   description?: TypedObject[];
   looks: {
-    image: (ReadyImage&{caption:string});
-    outfitDetails: {
-      name: string;
-      description?: string;
-      productLink: Product;
+    image: ReadyImage & { caption: string };
+    products?: {
+      product: Product;
+      coordinates: { x: number; y: number };
     }[];
+    styleNotes?: string;
   }[];
 }
 

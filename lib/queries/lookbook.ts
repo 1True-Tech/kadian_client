@@ -39,10 +39,8 @@ export const lookbookBySlugQuery = `*[_type == "lookbook" && slug.current == $sl
       caption,
       "src": asset->url
     },
-    outfitDetails[] {
-      name,
-      description,
-      productLink->{
+    products[] {
+      product->{
         _id,
         name,
         slug,
@@ -51,7 +49,19 @@ export const lookbookBySlugQuery = `*[_type == "lookbook" && slug.current == $sl
           "src": asset->url,
           alt
         }
+      },
+      coordinates {
+        x,
+        y
       }
-    }
+    },
+    styleNotes
+  },
+  publishDate,
+  tags,
+  seo {
+    title,
+    description,
+    keywords
   }
-}`
+}`;
