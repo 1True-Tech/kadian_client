@@ -49,6 +49,8 @@ export default async function LookbookPage({ params }: ParamsProps<{ slug: strin
     const lookbookRaw = await client.fetch(lookbookBySlugQuery, {
       slug,
     });
+  console.log(lookbookRaw)
+
 
     if (!lookbookRaw) {
       notFound();

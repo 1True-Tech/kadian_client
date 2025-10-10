@@ -8,22 +8,22 @@ import { useEffect } from "react";
 
 export default function CheckoutSuccess() {
   const router = useRouter();
-  const getOrder = useQuery("getOrder");
+  const {run:getOrder, data:getOrderData, isLoading:getOrderIsLoading, error:getOrderError} = useQuery("getOrder");
   const { id } = useParams() as { id: string };
 
   useEffect(() => {
-    if (id) getOrder.run({ params: { id } });
-  }, [id]);
+    if (id) getOrder({ params: { id } });
+  }, [getOrder, id]);
 
   useEffect(() => {
-    if (getOrder.data && getOrder.data.data) {
-      if (getOrder.data.data.status === "cancelled") {
+    if (getOrderData && getOrderData.data) {
+      if (getOrderData.data.status === "cancelled") {
         router.replace(`/checkout/${id}/cancel`);
       }
     }
-  }, [getOrder.data, id, router]);
+  }, [getOrderData, id, router]);
 
-  if (getOrder.isLoading) {
+  if (getOrderIsLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] w-full px-4 py-12">
         <div className="w-full max-w-2xl mx-auto text-center">
@@ -36,7 +36,7 @@ export default function CheckoutSuccess() {
     );
   }
 
-  if (getOrder.error || !getOrder.data || !getOrder.data.data) {
+  if (getOrderError || !getOrderData || !getOrderData.data) {
     return (
       <div className="flex items-center justify-center min-h-[60vh] w-full px-4 py-12">
         <div className="w-full max-w-2xl mx-auto text-center">
@@ -51,7 +51,7 @@ export default function CheckoutSuccess() {
     );
   }
 
-  const order = getOrder.data.data;
+  const order = getOrderData.data;
 
   return (
     <div className="flex items-center justify-center min-h-[60vh] w-full px-4 py-12">
